@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Killing the "designated scroller" — Erick Mercado</title>
+<meta name="description" content="A product case study on the Disneyland app: why paid line-skipping creates a designated scroller in every party, and what it would take to fix.">
+<link rel="canonical" href="https://erickmercado.com/work/disneyland-app.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Killing the &quot;designated scroller&quot;">
+<meta property="og:description" content="Why paid line-skipping creates a designated scroller in every party, and what it would take to fix.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%231E223B'/><path d='M4 16 Q8 6 12 16 T20 16 T28 16' stroke='%23ED7F6E' stroke-width='3' fill='none'/><path d='M4 18 Q8 8 12 18 T20 18 T28 18' stroke='%2371649C' stroke-width='3' fill='none' opacity='.8'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bangers&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   Self-contained on purpose. This page loads no external CSS or
+   JS, so it can never fall out of sync with the homepage or 404
+   on a missing assets folder. The palette below is a copy of the
+   one in index.html — if you change the colours there, paste the
+   same eight values here.
+   ============================================================ */
+:root{
+  --ink:#1E223B;
+  --panel:#404272;
+  --panel-lift:#4E5089;
+  --paper:#F4EAE6;
+
+  --coral:#ED7F6E;
+  --coral-lift:#F5A79A;
+  --rose:#DB5266;
+  --berry:#A64863;
+  --mauve:#C97CA4;
+  --peri:#71649C;
+  --deep:#4F0914;
+
+  --line:#121426;
+  --text:#EFE6E9;
+  --text-dim:#C2BAD6;
+
+  --display:"Anton",Impact,sans-serif;
+  --comic:"Bangers",cursive;
+  --body:"Inter",-apple-system,system-ui,sans-serif;
+
+  --gut:clamp(1.25rem,5vw,3rem);
+  --measure:40rem;
+  --snap:steps(4,end);
+}
+
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
+body{
+  margin:0;background:var(--ink);color:var(--text);
+  font-family:var(--body);font-size:clamp(1rem,0.96rem + 0.2vw,1.08rem);
+  line-height:1.65;overflow-x:hidden;
+}
+a{color:inherit;}
+button{font:inherit;color:inherit;}
+.wrap{max-width:72rem;margin:0 auto;padding-inline:var(--gut);}
+.skip{position:absolute;left:-9999px;top:0;background:var(--coral);color:var(--deep);padding:0.7rem 1.1rem;font-weight:600;z-index:400;border:3px solid var(--line);}
+.skip:focus{left:0;}
+:focus-visible{outline:3px solid var(--coral);outline-offset:3px;}
+::selection{background:var(--rose);color:var(--paper);}
+
+body::after{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:60;
+  background-image:radial-gradient(circle at center,rgba(237,127,110,0.18) 1px,transparent 1.3px);
+  background-size:5px 5px;mix-blend-mode:screen;opacity:0.55;
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(40rem 30rem at 12% 0%,rgba(64,66,114,0.55),transparent 62%),
+    radial-gradient(38rem 28rem at 88% 8%,rgba(166,72,99,0.34),transparent 62%);
+}
+body > *{position:relative;z-index:1;}
+
+.nav{
+  position:sticky;top:0;z-index:200;
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;
+  padding:0.7rem clamp(1.25rem,5vw,3rem);
+  background:rgba(30,34,59,0.86);
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  border-bottom:3px solid var(--line);
+}
+.nav__mark{
+  font-family:var(--display);font-size:1.4rem;letter-spacing:0.04em;
+  text-decoration:none;color:var(--paper);
+  text-shadow:2px 0 0 var(--peri),-2px 0 0 var(--coral);
+}
+.nav__links{display:flex;gap:clamp(0.9rem,3vw,1.9rem);}
+.nav__links a{
+  font-family:var(--comic);font-size:1.05rem;letter-spacing:0.04em;
+  color:var(--text-dim);text-decoration:none;transition:color 120ms var(--snap);
+}
+.nav__links a:hover{color:var(--coral-lift);}
+
+.caption{
+  display:inline-block;font-family:var(--comic);font-size:1.05rem;letter-spacing:0.05em;
+  background:var(--coral);color:var(--deep);border:3px solid var(--line);
+  padding:0.25rem 0.85rem 0.15rem;box-shadow:4px 4px 0 var(--line);transform:rotate(-1.4deg);
+}
+.caption--mauve{background:var(--mauve);}
+
+.backlink{
+  display:inline-block;font-family:var(--comic);font-size:1rem;letter-spacing:0.05em;
+  color:var(--text-dim);text-decoration:none;margin-bottom:1.4rem;
+}
+.backlink:hover{color:var(--coral-lift);}
+
+.head{padding-block:clamp(2rem,6vw,4rem) clamp(1.2rem,3vw,2rem);text-align:center;}
+.head h1{
+  font-family:var(--display);font-weight:400;text-transform:uppercase;
+  font-size:clamp(2rem,1.2rem + 3.6vw,4.2rem);
+  line-height:0.92;letter-spacing:0.01em;margin:1rem auto 1rem;max-width:17ch;
+  color:var(--paper);text-shadow:4px 0 0 var(--peri),-4px 0 0 var(--coral);
+}
+.standfirst{color:var(--text-dim);max-width:44ch;margin:0 auto;font-size:clamp(1rem,0.96rem + 0.4vw,1.2rem);}
+
+.byline{
+  display:flex;flex-wrap:wrap;justify-content:center;gap:0.55rem;
+  margin:0 auto clamp(2rem,5vw,3rem);
+}
+.byline span{
+  font-family:var(--comic);font-size:0.95rem;letter-spacing:0.04em;
+  border:3px solid var(--line);background:var(--panel);padding:0.2rem 0.8rem 0.1rem;
+  box-shadow:3px 3px 0 var(--line);
+}
+
+.divider{
+  height:5px;border:0;margin:0;
+  background:repeating-linear-gradient(90deg,
+    var(--line) 0 14px,var(--rose) 14px 28px,var(--line) 28px 42px,var(--peri) 42px 56px);
+}
+
+/* ---- long-form reading column -------------------------------- */
+.prose{max-width:var(--measure);margin:0 auto;padding-block:clamp(2rem,5vw,3.5rem) clamp(3rem,7vw,5rem);}
+.prose h2{
+  font-family:var(--display);font-weight:400;text-transform:uppercase;
+  font-size:clamp(1.5rem,1.2rem + 1.5vw,2.2rem);
+  line-height:0.98;letter-spacing:0.01em;
+  margin:clamp(2.6rem,6vw,4rem) 0 1rem;color:var(--paper);
+}
+.prose h2:first-child{margin-top:0;}
+.prose h3{
+  font-family:var(--comic);font-size:1.3rem;letter-spacing:0.05em;
+  margin:2.2rem 0 0.6rem;color:var(--coral-lift);
+}
+.prose p{margin:0 0 1.2rem;color:var(--text-dim);}
+.prose ul,.prose ol{margin:0 0 1.5rem;padding-left:1.3rem;color:var(--text-dim);}
+.prose li{margin-bottom:0.6rem;}
+.prose li::marker{color:var(--coral);}
+.prose strong{color:var(--paper);font-weight:600;}
+.prose em{color:var(--paper);font-style:italic;}
+.prose a{color:var(--coral-lift);text-decoration:none;border-bottom:2px solid var(--coral-lift);}
+.prose hr{border:0;height:3px;background:var(--line);margin:clamp(2.6rem,6vw,3.6rem) 0;}
+
+.prose blockquote{
+  margin:2rem 0;padding:1.3rem 1.5rem;
+  background:var(--panel);border:4px solid var(--line);
+  box-shadow:8px 8px 0 var(--berry),8px 8px 0 4px var(--line);
+}
+.prose blockquote p{color:var(--paper);margin:0;font-size:1.06rem;}
+
+.note{
+  background:var(--panel);border:4px solid var(--line);
+  box-shadow:7px 7px 0 var(--line);
+  padding:1.2rem 1.4rem;margin:2rem 0;
+}
+.note p{margin:0;color:var(--text-dim);}
+.note .note-label{
+  font-family:var(--comic);font-size:1.05rem;letter-spacing:0.05em;
+  color:var(--coral-lift);display:block;margin-bottom:0.5rem;
+}
+
+.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.8rem 0 2.2rem;}
+table{width:100%;border-collapse:collapse;font-size:0.92rem;min-width:30rem;}
+th,td{
+  text-align:left;padding:0.75rem 0.9rem;vertical-align:top;
+  border-bottom:2px solid rgba(244,234,230,0.14);color:var(--text-dim);
+}
+th{
+  font-family:var(--comic);font-size:0.95rem;letter-spacing:0.05em;
+  color:var(--paper);border-bottom:3px solid var(--line);background:var(--panel);
+}
+td strong{color:var(--paper);}
+
+/* ---- footer --------------------------------------------------- */
+.contact{border-top:5px solid var(--line);}
+.contact .inner{padding-block:clamp(2.6rem,7vw,4.5rem);text-align:center;}
+.contact h2{
+  font-family:var(--display);font-weight:400;text-transform:uppercase;
+  font-size:clamp(1.6rem,1.2rem + 2vw,2.8rem);line-height:0.96;
+  margin:1rem auto 1rem;max-width:20ch;color:var(--paper);
+  text-shadow:3px 0 0 var(--peri),-3px 0 0 var(--coral);
+}
+.contact p{color:var(--text-dim);max-width:44ch;margin:0 auto;}
+.pills{display:flex;flex-wrap:wrap;justify-content:center;gap:0.8rem;margin-top:2rem;}
+.pill{
+  font-family:var(--comic);font-size:1.2rem;letter-spacing:0.05em;text-decoration:none;
+  background:var(--panel);color:var(--paper);border:3px solid var(--line);
+  padding:0.4rem 1.2rem 0.28rem;box-shadow:5px 5px 0 var(--line);
+  transition:transform 100ms var(--snap),box-shadow 100ms var(--snap),background 100ms var(--snap);
+}
+.pill:hover{transform:translate(3px,3px);box-shadow:2px 2px 0 var(--line);background:var(--panel-lift);}
+.pill--primary{background:var(--rose);color:var(--paper);}
+.pill--primary:hover{background:var(--coral);color:var(--deep);}
+.colophon{
+  text-align:center;font-family:var(--comic);font-size:0.95rem;letter-spacing:0.08em;
+  color:var(--text-dim);padding-block:1.6rem 2.6rem;border-top:3px solid var(--line);
+}
+
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto;}
+  *{animation:none!important;transition:none!important;}
+}
+
+@media print{
+  body::before,body::after,.nav,.contact,.backlink{display:none;}
+  body{background:#fff;color:#000;font-size:11pt;}
+  .prose p,.prose li,td{color:#000;}
+  .prose h2,.prose h3,.head h1{color:#000;text-shadow:none;}
+  .prose{max-width:none;}
+}
+</style>
+</head>
+
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="nav">
+  <a class="nav__mark" href="../index.html">EM</a>
+  <nav class="nav__links" aria-label="Primary">
+    <a href="../index.html#work">Work</a>
+    <a href="../index.html#about">About</a>
+    <a href="#contact">Contact</a>
+  </nav>
+</header>
+
+<main id="main">
+
+  <section class="wrap head">
+    <a class="backlink" href="../index.html#work">&larr; All work</a>
+    <div><span class="caption caption--mauve">Case Study &middot; Disneyland App</span></div>
+    <h1>Killing the "designated scroller"</h1>
+    <p class="standfirst">Disney's paid line-skipping system works. It also created a job nobody wanted: one person per party spends the day operating an app instead of being on vacation.</p>
+  </section>
+
+  <div class="wrap">
+    <div class="byline">
+      <span>Self-directed</span>
+      <span>2026</span>
+      <span>~12 min read</span>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="wrap">
+    <article class="prose">
+
+      <div class="note">
+        <span class="note-label">Note on method</span>
+        <p>This is independent work. I have no access to Disney's internal analytics. Every number below is either externally sourced or explicitly labelled as an assumption I would test.</p>
+      </div>
+
+      <h2>The bet</h2>
+
+      <p>Disney can separate <em>getting a good ride schedule</em> from <em>manually operating the app all day</em>. I propose <strong>Park Autopilot</strong>: an opt-in, preference-driven booking agent inside the Disneyland app that reserves and re-books Lightning Lane selections on the guest's behalf, and simply tells them where to walk next.</p>
+
+      <p><strong>North star metric:</strong> attractions experienced per guest-day, per app interaction. Today's system improves the numerator by inflating the denominator. The goal is to hold or raise attractions experienced while cutting app interactions per park hour by half.</p>
+
+      <p><strong>Why now:</strong> in July 2026, Disney Experiences Chair Thomas Mazloum publicly acknowledged the complexity of the Lightning Lane system and said simplifying the guest experience was under consideration. This proposal targets a problem leadership has already named.</p>
+
+      <hr>
+
+      <h2>Strategic context</h2>
+
+      <p>Disney Parks monetizes two scarce resources: <strong>guest time in park</strong> and <strong>guest attention</strong>. The current digital layer optimizes the first while quietly destroying the second.</p>
+
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Force</th><th>Direction</th></tr></thead>
+          <tbody>
+            <tr><td>Paid line-skipping drives high-margin per-guest revenue</td><td>Toward more app complexity</td></tr>
+            <tr><td>Satisfaction depends on feeling immersed, not managed</td><td>Toward less app usage</td></tr>
+            <tr><td>Rumored cross-property "Super App" consolidation</td><td>Toward more surface area in one place</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>The company is caught between these. The strategic insight: <strong>complexity is not the product — outcomes are.</strong> Guests don't want to operate a reservation system well. They want to ride more rides and walk less. A feature that delivers the outcome without the operation captures the revenue <em>and</em> the satisfaction.</p>
+
+      <hr>
+
+      <h2>The problem</h2>
+
+      <h3>What guests actually do</h3>
+
+      <p>At Disneyland, Lightning Lane Multi Pass requires scanning into the park before booking a first selection. A guest then holds up to three selections at a time and can book another only after redeeming one, plus a limited number of Single Passes for headliner attractions. Selections can be modified before the arrival window opens — subject to availability.</p>
+
+      <p>That last clause is where the damage happens. Because thousands of guests are constantly modifying and cancelling, desirable return times surface unpredictably. The only winning strategy is to refresh continuously. Guests have nicknamed this "playing the Disney slots."</p>
+
+      <h3>The resulting failure modes</h3>
+
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>#</th><th>Failure mode</th><th>Evidence</th></tr></thead>
+          <tbody>
+            <tr><td>P1</td><td><strong>Attention tax.</strong> One party member is effectively removed from the vacation to operate the app.</td><td>WSJ reporting; the community's own term for it</td></tr>
+            <tr><td>P2</td><td><strong>Anxiety and regret.</strong> Optimization pressure turns a leisure purchase into a performance test with a visible scoreboard.</td><td>App reviews; fan forums</td></tr>
+            <tr><td>P3</td><td><strong>Battery as a single point of failure.</strong> The app holds entry, tickets, passes and orders. A dead phone ends the day.</td><td>App reviews; standard advice to carry a battery pack</td></tr>
+            <tr><td>P4</td><td><strong>Reliability at the gate.</strong> Recurring reports of pass screens failing at entry, plus resort-wide outages during third-party cloud incidents.</td><td>Google Play reviews; outage coverage</td></tr>
+            <tr><td>P5</td><td><strong>Skill-based inequity.</strong> Two families paying the same price get different days based on app fluency.</td><td>An entire guide industry exists because the system requires expertise</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Why I scoped to P1 and P2</h3>
+
+      <ul>
+        <li>P3 and P4 are reliability problems with known owners. They need investment, not product invention.</li>
+        <li>P5 is a <em>consequence</em> of P1. Remove the skill requirement and the equity gap narrows on its own.</li>
+        <li>P1 is the problem the Chair of Disney Experiences publicly flagged. Solving it comes with executive air cover.</li>
+      </ul>
+
+      <blockquote>
+        <p>Guests who pay for Lightning Lane must continuously operate the app to get the value they paid for. This converts a premium leisure purchase into an unpaid logistics job, degrading satisfaction for the whole party while producing no additional revenue for Disney.</p>
+      </blockquote>
+
+      <hr>
+
+      <h2>Users</h2>
+
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Persona</th><th>Job to be done</th><th>Current pain</th></tr></thead>
+          <tbody>
+            <tr><td><strong>The Operator</strong><br>adult who plans the trip</td><td>Get my family on the most rides without ruining my own day</td><td>Becomes the designated scroller; ends the trip resentful</td></tr>
+            <tr><td><strong>Once-in-a-Lifetime Family</strong><br>out of state, one visit</td><td>Don't waste the money we saved for this</td><td>No system fluency; loses hours to bad picks; highest regret risk</td></tr>
+            <tr><td><strong>Magic Key Local</strong><br>frequent, low stakes</td><td>A pleasant few hours after work</td><td>Over-served by a system built for full-day optimization</td></tr>
+            <tr><td><strong>Park Operations</strong><br>internal</td><td>Distribute demand smoothly across the day</td><td>Refresh-driven churn creates noisy, hard-to-forecast demand</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>The Once-in-a-Lifetime Family is the priority persona: highest spend, highest emotional stakes, lowest fluency, and the segment whose word of mouth drives future demand.</p>
+
+      <hr>
+
+      <h2>The proposal: Park Autopilot</h2>
+
+      <p>An opt-in mode in the Disneyland app. The guest states intent once; the system executes all day.</p>
+
+      <h3>Core flow</h3>
+
+      <p><strong>Set intent</strong> — two minutes, before or at park entry. Rank must-ride attractions, set party composition (height and age constraints apply automatically), pick a pace, name a lunch window, and enter hard constraints like a parade time, a stroller, or mobility needs.</p>
+
+      <p><strong>Autopilot runs</strong> — the system holds the maximum allowed selections at all times and re-books toward better times as inventory appears. The same behaviour the designated scroller performs manually, executed server-side. Guest-facing complexity: zero.</p>
+
+      <p><strong>The app says where to walk</strong> — one card, readable in under three seconds: next attraction, walking time, when the window opens, and what's queued after it.</p>
+
+      <p><strong>Adapt without ceremony</strong> — "not feeling this one" swaps it and rebalances the day in one tap. A ride breakdown triggers an automatic re-plan and a push notification. No refreshing.</p>
+
+      <h3>Supporting features</h3>
+
+      <ul>
+        <li><strong>Watchlist alerts</strong> — for guests who don't want full automation: notify me if this ride drops below a 40-minute wait, or a window opens before 6pm. Converts refreshing into a passive subscription. This is the cheapest thing to build and I would ship it first.</li>
+        <li><strong>Pocket Mode</strong> — a low-power, lock-screen-first surface. Directly attacks both battery drain and screen time.</li>
+        <li><strong>Party sync</strong> — everyone sees the same plan, so the burden stops falling on one person.</li>
+      </ul>
+
+      <h3>What I'm deliberately not proposing</h3>
+
+      <ul>
+        <li><strong>Not making Lightning Lane free.</strong> The revenue is structural. This makes the paid product better, not cheaper.</li>
+        <li><strong>Not a Super App merged with streaming.</strong> Adding video to an app that already struggles at the park gate increases risk in exactly the area guests complain about most.</li>
+        <li><strong>Not a fixed full-day itinerary.</strong> Rigid plans break on first contact with a closure and feel like homework.</li>
+        <li><strong>Not gamification.</strong> Streaks and badges would raise engagement metrics while making the core problem worse.</li>
+      </ul>
+
+      <hr>
+
+      <h2>Success metrics</h2>
+
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Type</th><th>Metric</th><th>Target</th></tr></thead>
+          <tbody>
+            <tr><td>Primary</td><td>App interactions per park hour</td><td>&minus;50% vs. control</td></tr>
+            <tr><td>Primary</td><td>Attractions experienced per guest-day</td><td>&ge; control (must not regress)</td></tr>
+            <tr><td>Satisfaction</td><td>"I felt present during my visit"</td><td>+10 pts</td></tr>
+            <tr><td>Satisfaction</td><td>Post-visit NPS</td><td>+5 pts</td></tr>
+            <tr><td><strong>Guardrail</strong></td><td>Lightning Lane attach rate &amp; revenue per guest</td><td>Flat or up — non-negotiable</td></tr>
+            <tr><td><strong>Guardrail</strong></td><td>Standby waits for non-purchasers</td><td>No degradation</td></tr>
+            <tr><td><strong>Guardrail</strong></td><td>Median party phone battery at 6pm</td><td>Improved</td></tr>
+            <tr><td>Adoption</td><td>Share of purchasers enabling Autopilot</td><td>30% within two quarters</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>The revenue guardrail matters most politically. <strong>If Autopilot reduces the perceived need to buy Lightning Lane, it fails commercially no matter how much guests like it.</strong> My hypothesis is the opposite — that removing the operational burden expands the market to guests who currently decline because it looks like too much work — but that is a hypothesis to test, not an assumption to build on.</p>
+
+      <hr>
+
+      <h2>Risks</h2>
+
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Risk</th><th>Mitigation</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Contention arms race.</strong> Automated re-booking outcompetes manual users and increases churn.</td><td>Rate-limit to human-plausible frequency; hold out a control to measure the effect on manual users before scaling.</td></tr>
+            <tr><td><strong>Cannibalization.</strong> Guests decide a lower tier is now good enough.</td><td>Revenue guardrail; pilot only on existing purchasers so no new demand is diverted during measurement.</td></tr>
+            <tr><td><strong>Loss of serendipity.</strong> Over-optimized days feel scripted.</td><td>Relaxed pace as default; never fill 100% of the day.</td></tr>
+            <tr><td><strong>Operational load imbalance.</strong> Autopilot herds guests into the same lands at once.</td><td>Optimize with a park-level distribution constraint, not greedily per guest. Ops gets a dial.</td></tr>
+            <tr><td><strong>Trust failure.</strong> A bad automated swap costs someone their must-ride.</td><td>Hard locks on top-ranked attractions; explicit confirmation before any change to a locked selection.</td></tr>
+            <tr><td><strong>Accessibility regression.</strong> Automation obscures mobility and disability accommodations.</td><td>Constraints entered up front are hard constraints in the optimizer, not preferences. Accessibility review gates the pilot.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <hr>
+
+      <h2>MVP and rollout</h2>
+
+      <p><strong>Phase 0 — Watchlist alerts.</strong> Low complexity, no automation risk, immediately reduces refresh behaviour, and generates the demand-signal dataset Autopilot needs.</p>
+
+      <p><strong>Phase 1 — Autopilot pilot at Disneyland Resort.</strong> Disneyland over Walt Disney World: single resort, two parks, and a large annual-pass population that visits often and tolerates beta behaviour. Opt-in, capped cohort, existing purchasers only.</p>
+
+      <p><strong>Phase 2 — Measure.</strong> A/B against a matched control on every metric above, with explicit stop conditions on the revenue and standby guardrails.</p>
+
+      <p><strong>Phase 3 — Pocket Mode and party sync, then Walt Disney World.</strong></p>
+
+      <p>Randomize at party level rather than individual, since the whole party shares the outcome. Minimum four weeks to cover weekday, weekend and crowd-level variation, with pre-registered success thresholds.</p>
+
+      <hr>
+
+      <h2>Assumptions, and what I'd validate</h2>
+
+      <div class="note">
+        <span class="note-label">Stated plainly</span>
+        <p>A case study built on invented numbers is worthless. These are the load-bearing guesses.</p>
+      </div>
+
+      <ol>
+        <li><strong>Assumed:</strong> a meaningful share of purchasers show high-frequency refresh behaviour. <strong>Validate:</strong> session-level interaction logs; distribution of taps per park hour.</li>
+        <li><strong>Assumed:</strong> high app interaction correlates negatively with post-visit satisfaction. <strong>Validate:</strong> join interaction telemetry to post-visit survey results.</li>
+        <li><strong>Assumed:</strong> some guests decline Lightning Lane because of perceived complexity. <strong>Validate:</strong> intercept survey of non-purchasers at exit.</li>
+        <li><strong>Assumed:</strong> re-booking can be rate-limited without materially reducing the benefit. <strong>Validate:</strong> simulate against historical inventory-release data before any guest-facing pilot.</li>
+        <li><strong>Unknown:</strong> the true contention model of Lightning Lane inventory. This is the biggest gap between this proposal and an implementable plan.</li>
+      </ol>
+
+      <hr>
+
+      <h2>Sources</h2>
+      <ul>
+        <li>Wall Street Journal reporting on Lightning Lane complexity and the "designated scroller," as summarized by Inside the Magic, July 2026 — including Thomas Mazloum's acknowledgment that simplification is under consideration</li>
+        <li>Disneyland Lightning Lane Multi Pass, Single Pass and Premier Pass mechanics, 2026 guides</li>
+        <li>Disneyland app reviews, Google Play, 2025–2026</li>
+        <li>Coverage of the cloud outage affecting Disneyland and Walt Disney World app services</li>
+      </ul>
+
+    </article>
+  </div>
+
+</main>
+
+<footer class="contact" id="contact">
+  <div class="wrap inner">
+    <span class="caption">Get In Touch</span>
+    <h2>Building something people live inside?</h2>
+    <p>Currently in Los Angeles, looking for product roles in guest experience, consumer platforms, and technical products where the systems work is genuinely hard.</p>
+    <div class="pills">
+      <a class="pill pill--primary" href="mailto:REPLACE@example.com">Email me</a>
+      <a class="pill" href="https://linkedin.com/in/REPLACE">LinkedIn</a>
+      <a class="pill" href="../resume.pdf">R&eacute;sum&eacute;</a>
+    </div>
+  </div>
+  <div class="colophon">ERICK MERCADO &middot; LOS ANGELES &middot; <span id="year">2026</span></div>
+</footer>
+
+<script>
+document.getElementById("year").textContent = new Date().getFullYear();
+</script>
+
+</body>
+</html>
