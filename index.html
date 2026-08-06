@@ -11,68 +11,80 @@
 <meta property="og:description" content="Embedded systems engineer working on product. Case studies on guest experience and consumer systems.">
 <meta property="og:url" content="https://erickmercado.com/">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230a0a0c'/><path d='M4 16 Q8 6 12 16 T20 16 T28 16' stroke='%232997ff' stroke-width='2.5' fill='none'/></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%231E223B'/><path d='M4 16 Q8 6 12 16 T20 16 T28 16' stroke='%23ED7F6E' stroke-width='3' fill='none'/><path d='M4 18 Q8 8 12 18 T20 18 T28 18' stroke='%2371649C' stroke-width='3' fill='none' opacity='.8'/></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bangers&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
 /* ============================================================
-   DESIGN TOKENS
-   Every colour and size on this page resolves to a variable
-   below. To re-theme the whole site, edit here only — you should
-   never need to hunt through the rules underneath.
+   DESIGN TOKENS — "Spider-Verse"
+
+   The look is built from five techniques borrowed from the films:
+     1. Halftone (Ben-Day) dots over everything, like cheap comic
+        printing
+     2. Chromatic aberration — red and cyan channels knocked out of
+        register, as if the press misaligned
+     3. Hard black panel borders with unblurred drop shadows, so
+        every card reads as a comic panel stuck to the page
+     4. Caption boxes in flat colour for labels
+     5. Animation "on 2s" — motion updates at 12fps instead of 60,
+        which is the single most recognisable thing the films do
+
+   Change a value here and the whole page follows.
    ============================================================ */
 :root{
-  /* 60% — the canvas everything sits on */
-  --canvas:#0a0a0c;
+  /* ---- Dusk palette ----------------------------------------------
+     The whole scheme lives in this block. Every rule below reads a
+     variable — nothing downstream hardcodes a colour, so swapping
+     these eight values re-skins the entire page.
 
-  /* 30% — structure and text */
-  --surface:#131316;
-  --surface-lift:#1a1a1f;
-  --hairline:rgba(255,255,255,0.09);
-  --hairline-strong:rgba(255,255,255,0.16);
-  --white:#f5f5f7;
-  --silver:#86868b;
-  --silver-dim:#5e5e63;
-  --body-text:#c8c9ce;
+     Where the bright version used cyan against magenta for the
+     misregistered-print effect, this one splits warm against cool:
+     coral pulling one way, periwinkle the other. Same trick, far
+     less glare.
+     ---------------------------------------------------------------- */
+  --ink:#1E223B;            /* page */
+  --panel:#404272;          /* raised panel */
+  --panel-lift:#4E5089;     /* panel, hovered */
+  --paper:#F4EAE6;          /* warm newsprint — caption boxes, light text */
 
-  /* 10% — the accent. Focus points and CTAs only. If it starts
-     showing up everywhere, the hierarchy is broken. */
-  --accent:#2997ff;
-  --accent-dim:rgba(41,151,255,0.55);
-  --accent-glow:rgba(41,151,255,0.22);
+  --coral:#ED7F6E;
+  --coral-lift:#F5A79A;   /* coral, lightened for text on dark panels */          /* warm ink — highlights, captions */
+  --rose:#DB5266;           /* primary action */
+  --berry:#A64863;          /* panel shadows */
+  --mauve:#C97CA4;          /* category chips */
+  --peri:#71649C;           /* cool ink, dim rules */
+  --deep:#4F0914;           /* oxblood — text on light fills */
+
+  --line:#121426;           /* every border. Near-black, navy-biased */
+  --text:#EFE6E9;
+  --text-dim:#C2BAD6;
 
   /* type */
-  --sans:-apple-system,BlinkMacSystemFont,"SF Pro Display","Inter",system-ui,"Segoe UI",sans-serif;
+  --display:"Anton",Impact,sans-serif;
+  --comic:"Bangers",cursive;
+  --body:"Inter",-apple-system,system-ui,sans-serif;
 
   /* layout */
-  --gut:clamp(1.25rem,5vw,3rem);   /* page side padding */
-  --max:70rem;                      /* content max width */
-  --measure:42rem;                  /* comfortable reading width */
-  --radius:22px;
+  --gut:clamp(1.25rem,5vw,3rem);
+  --max:72rem;
+  --measure:40rem;
 
-  /* motion — one easing curve for the whole page, so nothing
-     feels like it came from a different site */
-  --ease:cubic-bezier(0.16,1,0.3,1);
+  /* motion — steps() everywhere. Nothing eases smoothly; it judders. */
+  --snap:steps(4,end);
 }
 
-/* ============================================================
-   BASE
-   ============================================================ */
 *{box-sizing:border-box;}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
 
 body{
   margin:0;
-  background:var(--canvas);
-  color:var(--white);
-  font-family:var(--sans);
-  font-size:clamp(1rem,0.96rem + 0.2vw,1.09rem);
-  line-height:1.55;
-  letter-spacing:-0.01em;
-  -webkit-font-smoothing:antialiased;
-  -moz-osx-font-smoothing:grayscale;
+  background:var(--ink);
+  color:var(--text);
+  font-family:var(--body);
+  font-size:clamp(1rem,0.96rem + 0.2vw,1.08rem);
+  line-height:1.6;
   overflow-x:hidden;
 }
 
@@ -88,146 +100,209 @@ button{font:inherit;color:inherit;}
 }
 
 .skip{
-  position:absolute;left:-9999px;top:0;background:var(--white);color:var(--canvas);
-  padding:0.7rem 1.1rem;font-size:0.85rem;font-weight:600;z-index:300;border-radius:0 0 8px 0;
+  position:absolute;left:-9999px;top:0;background:var(--coral);color:var(--deep);
+  padding:0.7rem 1.1rem;font-weight:700;z-index:400;border:3px solid var(--line);
 }
 .skip:focus{left:0;}
 
-:focus-visible{outline:2px solid var(--accent);outline-offset:4px;border-radius:6px;}
-::selection{background:var(--accent);color:#fff;}
+:focus-visible{outline:3px solid var(--coral);outline-offset:3px;}
+::selection{background:var(--rose);color:var(--paper);}
 
-/* Ambient glow bleeding down from the top of the viewport.
-   Fixed, so it stays put while content scrolls over it. */
+/* ---------- layer 1: the halftone screen ----------
+   A dot grid over the entire viewport. This is what makes the page
+   read as printed rather than rendered. Kept faint — at full
+   strength it eats the text. */
+body::after{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:60;
+  background-image:radial-gradient(circle at center,rgba(237,127,110,0.18) 1px,transparent 1.3px);
+  background-size:5px 5px;
+  mix-blend-mode:screen;opacity:0.55;
+}
+
+/* ---------- layer 2: ambient ink bloom ---------- */
 body::before{
   content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
-  background:radial-gradient(60rem 40rem at 50% -10%,var(--accent-glow),transparent 65%);
-  opacity:0.7;
+  background:
+    radial-gradient(40rem 30rem at 12% 0%,rgba(64,66,114,0.55),transparent 60%),
+    radial-gradient(38rem 28rem at 88% 8%,rgba(166,72,99,0.34),transparent 62%),
+    radial-gradient(34rem 26rem at 50% 100%,rgba(191,108,152,0.20),transparent 65%);
 }
 body > *{position:relative;z-index:1;}
 
 /* ============================================================
-   NAV — sticky, frosted glass
+   CAPTION BOX — the flat label with a hard shadow, used anywhere
+   a section needs naming. Lifted straight from comic narration.
+   ============================================================ */
+.caption{
+  display:inline-block;
+  font-family:var(--comic);font-size:1.05rem;letter-spacing:0.05em;
+  background:var(--coral);color:var(--deep);
+  border:3px solid var(--line);
+  padding:0.25rem 0.85rem 0.15rem;
+  box-shadow:4px 4px 0 var(--line);
+  transform:rotate(-1.4deg);
+}
+.caption--cyan{background:var(--peri);}
+.caption--magenta{background:var(--rose);color:var(--paper);}
+
+/* ============================================================
+   NAV
    ============================================================ */
 .nav{
   position:sticky;top:0;z-index:200;
   display:flex;align-items:center;justify-content:space-between;gap:1rem;
-  padding:0.85rem clamp(1.25rem,5vw,3rem);
-  background:rgba(10,10,12,0.72);
-  -webkit-backdrop-filter:saturate(180%) blur(20px);
-  backdrop-filter:saturate(180%) blur(20px);
-  border-bottom:1px solid var(--hairline);
-  font-size:0.82rem;
+  padding:0.7rem clamp(1.25rem,5vw,3rem);
+  background:rgba(30,34,59,0.86);
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  border-bottom:3px solid var(--line);
 }
 .nav__mark{
-  color:var(--white);font-weight:600;letter-spacing:0.04em;
-  font-size:0.9rem;text-decoration:none;
+  font-family:var(--display);font-size:1.4rem;letter-spacing:0.04em;
+  text-decoration:none;color:var(--paper);
+  text-shadow:2px 0 0 var(--peri),-2px 0 0 var(--rose);
 }
-.nav__links{display:flex;gap:clamp(1rem,3.5vw,2rem);}
-.nav__links a{color:var(--silver);text-decoration:none;transition:color 200ms ease;}
-.nav__links a:hover{color:var(--white);}
+.nav__links{display:flex;gap:clamp(0.9rem,3vw,1.9rem);}
+.nav__links a{
+  font-family:var(--comic);font-size:1.05rem;letter-spacing:0.04em;
+  color:var(--text-dim);text-decoration:none;
+  transition:color 120ms var(--snap);
+}
+.nav__links a:hover{color:var(--coral-lift);}
 
 /* ============================================================
    HERO
-   The signature element is the trace: a signal that starts as
-   noise on the left and resolves into a clean waveform on the
-   right. Drawn by JS at the bottom of this file.
    ============================================================ */
-.hero{
-  text-align:center;
-  padding-block:clamp(4rem,13vw,9rem) clamp(1rem,3vw,2rem);
-}
-.hero__title{
-  font-size:clamp(2.5rem,1.2rem + 6.8vw,6rem);
-  font-weight:700;line-height:1.03;letter-spacing:-0.035em;
-  margin:0 auto 1.5rem;max-width:16ch;
-  background:linear-gradient(180deg,#ffffff 0%,#b9bcc4 100%);
-  -webkit-background-clip:text;background-clip:text;color:transparent;
-}
-.hero__title em{
-  font-style:normal;
-  background:linear-gradient(120deg,var(--accent) 0%,#7fc4ff 100%);
-  -webkit-background-clip:text;background-clip:text;color:transparent;
-}
-.hero__sub{
-  font-size:clamp(1.05rem,1rem + 0.6vw,1.4rem);
-  line-height:1.42;letter-spacing:-0.015em;color:var(--silver);
-  max-width:34ch;margin:0 auto 2.4rem;
-}
-.hero__meta{
-  display:flex;flex-wrap:wrap;justify-content:center;gap:0.55rem;
-  font-size:0.78rem;color:var(--silver);
-}
-.hero__meta span{
-  border:1px solid var(--hairline);border-radius:100px;
-  padding:0.4rem 0.95rem;background:rgba(255,255,255,0.02);
-}
-/* The stage holds two layers: the stretched waveform, and the
-   surfer sitting on top of it at its own true aspect ratio. */
-.trace-stage{
-  position:relative;
-  margin-top:clamp(2.5rem,6vw,4rem);
-  height:clamp(110px,15vw,180px);
-}
-.trace{
-  width:100%;height:100%;display:block;
-  filter:drop-shadow(0 0 14px var(--accent-glow));
-}
-.trace path{fill:none;stroke:var(--accent);stroke-width:1.4;vector-effect:non-scaling-stroke;}
-.trace .trace__ghost{stroke:rgba(255,255,255,0.07);stroke-width:1;}
+.hero{position:relative;text-align:center;padding-block:clamp(3.5rem,11vw,7.5rem) clamp(1rem,3vw,2rem);}
 
-/* The surfer is a separate element so it never gets stretched by
-   the waveform's preserveAspectRatio="none". JS parks its bottom
-   edge on the wave and tilts it to match the local slope. */
+/* speed-burst rays behind the headline */
+.hero__burst{
+  position:absolute;inset:-30% -10% auto;height:130%;pointer-events:none;
+  background:repeating-conic-gradient(from 0deg at 50% 42%,
+    rgba(237,127,110,0.14) 0deg 2.4deg, transparent 2.4deg 8deg);
+  -webkit-mask-image:radial-gradient(circle at 50% 42%,#000 0%,transparent 62%);
+  mask-image:radial-gradient(circle at 50% 42%,#000 0%,transparent 62%);
+}
+
+.hero__title{
+  position:relative;
+  font-family:var(--display);font-weight:400;
+  font-size:clamp(2.9rem,1.2rem + 8.4vw,7.5rem);
+  line-height:0.88;letter-spacing:0.005em;text-transform:uppercase;
+  margin:0 auto 1.4rem;max-width:14ch;color:var(--paper);
+  transform:skewY(-2deg);
+  /* the misregistered press: cyan pushed one way, magenta the other */
+  text-shadow:5px 0 0 var(--peri),-5px 0 0 var(--rose);
+  animation:chroma 1.8s steps(3,end) infinite;
+}
+.hero__title span{color:var(--coral);display:inline-block;}
+
+@keyframes chroma{
+  0%   {text-shadow:5px 0 0 var(--peri),-5px 0 0 var(--rose);}
+  33%  {text-shadow:8px -3px 0 var(--peri),-6px 3px 0 var(--rose);}
+  66%  {text-shadow:3px 3px 0 var(--peri),-9px -2px 0 var(--rose);}
+  100% {text-shadow:5px 0 0 var(--peri),-5px 0 0 var(--rose);}
+}
+
+.hero__sub{
+  position:relative;
+  font-size:clamp(1.02rem,0.98rem + 0.55vw,1.3rem);
+  color:var(--text-dim);max-width:36ch;margin:0 auto 2rem;
+}
+.hero__meta{display:flex;flex-wrap:wrap;justify-content:center;gap:0.6rem;}
+.hero__meta span{
+  font-family:var(--comic);font-size:0.95rem;letter-spacing:0.04em;
+  border:3px solid var(--line);background:var(--panel);color:var(--text);
+  padding:0.2rem 0.8rem 0.1rem;box-shadow:3px 3px 0 var(--line);
+}
+.hero__meta span:nth-child(1){transform:rotate(-1.5deg);}
+.hero__meta span:nth-child(2){transform:rotate(1deg);}
+.hero__meta span:nth-child(3){transform:rotate(-0.6deg);}
+
+/* ---------- the signature: robot surfing the signal ---------- */
+.trace-stage{
+  position:relative;margin-top:clamp(2rem,5vw,3.5rem);
+  height:clamp(120px,16vw,190px);
+}
+.trace{width:100%;height:100%;display:block;}
+.trace__ghost{stroke:rgba(244,234,230,0.10);stroke-width:1;fill:none;}
+/* Drawn three times, offset, in three inks — the same misregistration
+   trick as the headline, applied to a line. */
+.trace__c{stroke:var(--peri);stroke-width:5;fill:none;vector-effect:non-scaling-stroke;opacity:0.85;}
+.trace__m{stroke:var(--rose);stroke-width:5;fill:none;vector-effect:non-scaling-stroke;opacity:0.85;}
+.trace__k{stroke:var(--paper);stroke-width:3;fill:none;vector-effect:non-scaling-stroke;}
+
 .surfer{
   position:absolute;left:0;top:0;
-  width:clamp(38px,5.2vw,62px);
-  transform-origin:50% 100%;   /* pivot at the board, not the head */
-  pointer-events:none;
-  will-change:transform;
-  filter:drop-shadow(0 3px 10px rgba(0,0,0,0.5));
+  width:clamp(42px,5.6vw,68px);
+  transform-origin:50% 100%;pointer-events:none;will-change:transform;
 }
 .surfer svg{width:100%;height:auto;display:block;overflow:visible;}
 
-/* Robot palette — kept separate from the site tokens so the bot
-   can be recoloured without touching anything else. */
-.bot-shell{fill:#d7d9de;}
-.bot-shell-light{fill:var(--white);}
-.bot-limb{stroke:#b9bcc4;stroke-linecap:round;fill:none;}
-.bot-lit{fill:var(--accent);}
-.bot-board{fill:var(--accent);}
-.bot-board-stripe{stroke:rgba(255,255,255,0.55);stroke-linecap:round;}
+/* ---- comic inking -----------------------------------------------
+   Real comic linework has variable weight: heavier on the shadow
+   side, lighter on the lit side. SVG strokes are uniform, so each
+   limb is drawn twice — a fat black pass, then a narrower metal
+   pass offset up and left. What's left showing along the bottom
+   right IS the weighted edge. Same trick on the torso and head via
+   .bot-weight, which traces only the shaded contour.
+   ------------------------------------------------------------------ */
+.bot-shell{fill:#DDD3D8;stroke:var(--line);stroke-width:2.5;}
+.bot-shell-light{fill:var(--paper);stroke:var(--line);stroke-width:2.5;}
+.bot-limb{stroke:var(--line);stroke-linecap:round;stroke-linejoin:round;fill:none;}
+.bot-limb-fill{stroke:#B3A9C4;stroke-linecap:round;stroke-linejoin:round;fill:none;}
+.bot-weight{stroke:var(--line);stroke-width:3.4;stroke-linecap:round;fill:none;}
+.bot-lit{fill:var(--peri);stroke:var(--line);stroke-width:2;}
+.bot-board{fill:var(--rose);stroke:var(--line);stroke-width:2.5;}
+.bot-shadow{fill:url(#htDots);opacity:0.75;}
+.bot-speed{stroke:var(--paper);stroke-linecap:round;fill:none;opacity:0.5;}
+
+/* Poses are three separate drawings. JS shows one at a time; there
+   is no tweening between them — that is the whole point. */
+.pose{display:none;}
+.pose.is-on{display:inline;}
+
+/* ---- Kirby Krackle ----------------------------------------------
+   Black dots ringed in light, clustered over the noisy left end of
+   the signal where it hasn't resolved yet. Flickers on the same
+   12fps beat as everything else, via staggered steps() animations.
+   ------------------------------------------------------------------ */
+.krackle{position:absolute;inset:0;pointer-events:none;}
+.krackle i{
+  position:absolute;display:block;border-radius:50%;
+  background:var(--line);box-shadow:0 0 0 2px var(--paper);
+  animation:krack 1s steps(2,end) infinite;
+}
+@keyframes krack{0%,49%{opacity:.9;transform:scale(1);}50%,100%{opacity:.25;transform:scale(.6);}}
 
 /* ============================================================
-   SECTION SCAFFOLDING
+   SECTIONS
    ============================================================ */
-.section{padding-block:clamp(3.5rem,9vw,7rem);}
-.section__eyebrow{
-  font-size:0.75rem;font-weight:600;color:var(--accent);
-  margin:0 0 0.9rem;text-align:center;
-}
+.section{padding-block:clamp(3rem,8vw,6rem);}
+.section__head{text-align:center;margin-bottom:clamp(1.6rem,4vw,2.6rem);}
 .section__title{
-  font-size:clamp(1.8rem,1.2rem + 2.4vw,3.2rem);
-  font-weight:700;letter-spacing:-0.03em;line-height:1.07;
-  margin:0 auto 1rem;max-width:20ch;text-align:center;
-  background:linear-gradient(180deg,#ffffff 0%,#c4c7cd 100%);
-  -webkit-background-clip:text;background-clip:text;color:transparent;
+  font-family:var(--display);font-weight:400;text-transform:uppercase;
+  font-size:clamp(2rem,1.2rem + 3.2vw,4rem);
+  line-height:0.92;letter-spacing:0.01em;
+  margin:1rem auto 0.8rem;max-width:18ch;color:var(--paper);
+  text-shadow:3px 0 0 var(--peri),-3px 0 0 var(--rose);
 }
-.section__lede{
-  color:var(--silver);max-width:44ch;margin:0 auto;
-  text-align:center;font-size:1.03rem;
+.section__lede{color:var(--text-dim);max-width:44ch;margin:0 auto;}
+
+.divider{
+  height:5px;border:0;margin:0;
+  background:repeating-linear-gradient(90deg,
+    var(--line) 0 14px, var(--rose) 14px 28px, var(--line) 28px 42px, var(--peri) 42px 56px);
 }
-.divider{height:1px;background:var(--hairline);border:0;margin:0;}
 
 /* ============================================================
-   CAROUSEL
-   Slides are stacked in the same box and crossfaded. Only the
-   active slide receives pointer and keyboard events.
+   CAROUSEL — each slide is a comic panel
    ============================================================ */
-.showcase{padding-block:clamp(1.5rem,4vw,3rem) clamp(3rem,7vw,5rem);}
-
+.showcase{padding-block:clamp(1.5rem,4vw,2.5rem) clamp(2.5rem,6vw,4rem);}
 .showcase__frame{
-  position:relative;border-radius:28px;overflow:hidden;
-  border:1px solid var(--hairline);background:var(--surface);
+  position:relative;overflow:hidden;
+  border:5px solid var(--line);
+  box-shadow:12px 12px 0 var(--berry),12px 12px 0 5px var(--line);
+  background:var(--panel);
   aspect-ratio:4/5;min-height:340px;
 }
 @media(min-width:640px){.showcase__frame{aspect-ratio:16/9;}}
@@ -236,271 +311,271 @@ body > *{position:relative;z-index:1;}
 .slide{
   position:absolute;inset:0;
   display:flex;flex-direction:column;justify-content:flex-end;
-  padding:clamp(1.5rem,4vw,3.2rem);
+  padding:clamp(1.4rem,4vw,3rem);
   text-decoration:none;color:inherit;
-  opacity:0;transform:scale(1.04);pointer-events:none;
-  transition:opacity 900ms var(--ease),transform 1400ms var(--ease);
+  opacity:0;pointer-events:none;
 }
 .slide::before{
-  /* tint layer — the colour comes from the data array */
   content:"";position:absolute;inset:0;
   background:
-    linear-gradient(0deg,rgba(0,0,0,0.82) 0%,rgba(0,0,0,0.25) 55%,rgba(0,0,0,0.1) 100%),
-    radial-gradient(120% 140% at 15% 0%,var(--tint,#1c2b3a) 0%,var(--canvas) 70%);
+    linear-gradient(0deg,rgba(30,34,59,0.94) 0%,rgba(30,34,59,0.40) 55%,transparent 100%),
+    radial-gradient(130% 150% at 18% 0%,var(--tint,#33305C) 0%,var(--ink) 72%);
 }
-.slide__bg{
-  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.55;
+/* halftone inside the panel, heavier than the page-wide one */
+.slide::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:radial-gradient(circle at center,rgba(18,20,38,0.5) 1.1px,transparent 1.5px);
+  background-size:6px 6px;opacity:0.5;
 }
-.slide.is-active{opacity:1;transform:scale(1);pointer-events:auto;}
-.slide > *{position:relative;}
+.slide__bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.5;}
+.slide.is-active{opacity:1;pointer-events:auto;animation:panelPop 260ms var(--snap);}
+.slide > *{position:relative;z-index:2;}
 
-.slide__eyebrow{
-  font-size:0.76rem;font-weight:600;color:var(--accent);margin:0 0 0.55rem;
+@keyframes panelPop{
+  from{opacity:0;transform:scale(1.05) translateY(10px);}
+  to{opacity:1;transform:none;}
 }
+
 .slide__title{
-  font-size:clamp(1.45rem,1.1rem + 2.2vw,2.5rem);
-  font-weight:700;letter-spacing:-0.03em;line-height:1.08;
-  margin:0 0 0.6rem;max-width:22ch;color:#fff;
+  font-family:var(--display);font-weight:400;text-transform:uppercase;
+  font-size:clamp(1.6rem,1.1rem + 2.6vw,2.9rem);
+  line-height:0.94;letter-spacing:0.01em;
+  margin:0.7rem 0 0.6rem;max-width:20ch;color:var(--paper);
+  text-shadow:3px 3px 0 var(--line);
 }
 .slide__summary{
-  font-size:clamp(0.94rem,0.9rem + 0.3vw,1.06rem);
-  color:rgba(255,255,255,0.74);max-width:44ch;margin:0 0 1.2rem;line-height:1.5;
+  font-size:clamp(0.93rem,0.9rem + 0.3vw,1.05rem);
+  color:#E4D8DC;max-width:44ch;margin:0 0 1.2rem;
 }
 .slide__cta{
-  font-size:0.86rem;font-weight:500;color:#fff;
+  font-family:var(--comic);font-size:1.15rem;letter-spacing:0.05em;
+  background:var(--coral);color:var(--deep);border:3px solid var(--line);
+  padding:0.25rem 0.9rem 0.15rem;box-shadow:4px 4px 0 var(--line);
   display:inline-flex;align-items:center;gap:0.4rem;width:fit-content;
+  transition:transform 100ms var(--snap),box-shadow 100ms var(--snap);
 }
-.slide__cta svg{width:14px;height:14px;transition:transform 240ms var(--ease);}
-.slide:hover .slide__cta svg,
-.slide:focus-visible .slide__cta svg{transform:translateX(4px);}
+.slide__cta svg{width:15px;height:15px;}
+.slide:hover .slide__cta{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--line);}
 
-.showcase__controls{
-  display:flex;align-items:center;justify-content:center;gap:0.9rem;margin-top:1.3rem;
-}
+.showcase__controls{display:flex;align-items:center;justify-content:center;gap:0.9rem;margin-top:1.4rem;}
 .showcase__dots{display:flex;gap:0.5rem;}
 .dot{
-  width:8px;height:8px;border-radius:50%;padding:0;cursor:pointer;
-  background:var(--hairline-strong);border:0;
-  transition:background 240ms ease,transform 240ms var(--ease);
+  width:14px;height:14px;padding:0;cursor:pointer;
+  background:var(--panel);border:3px solid var(--line);
+  transition:background 100ms var(--snap);
 }
-.dot:hover{background:var(--silver);}
-.dot.is-active{background:var(--accent);transform:scale(1.35);}
+.dot:hover{background:var(--text-dim);}
+.dot.is-active{background:var(--coral);}
 
 .arrow{
-  width:36px;height:36px;border-radius:50%;cursor:pointer;
-  border:1px solid var(--hairline);background:var(--surface);color:var(--white);
+  width:40px;height:40px;cursor:pointer;
+  border:3px solid var(--line);background:var(--panel);color:var(--paper);
+  box-shadow:4px 4px 0 var(--line);
   display:flex;align-items:center;justify-content:center;
-  transition:border-color 200ms ease,background 200ms ease;
+  transition:transform 100ms var(--snap),box-shadow 100ms var(--snap),background 100ms var(--snap);
 }
-.arrow:hover{border-color:var(--hairline-strong);background:var(--surface-lift);}
-.arrow svg{width:15px;height:15px;}
+.arrow:hover{background:var(--rose);transform:translate(2px,2px);box-shadow:2px 2px 0 var(--line);}
+.arrow svg{width:16px;height:16px;}
 
-/* One featured item means nothing to navigate between — hide the
-   controls rather than showing buttons that do nothing. */
 .showcase[data-count="1"] .showcase__controls,
 .showcase[data-count="0"] .showcase__controls{display:none;}
 
 /* ============================================================
-   LIBRARY CONTROLS — search, category chips, sort
+   LIBRARY CONTROLS
    ============================================================ */
-.controls{
-  display:flex;flex-direction:column;gap:1rem;
-  margin-top:clamp(2rem,5vw,3rem);
-}
+.controls{display:flex;flex-direction:column;gap:1.1rem;margin-top:clamp(1.6rem,4vw,2.4rem);}
 
 .search{position:relative;max-width:26rem;width:100%;margin-inline:auto;}
 .search > svg{
-  position:absolute;left:1rem;top:50%;transform:translateY(-50%);
-  width:15px;height:15px;color:var(--silver-dim);pointer-events:none;
+  position:absolute;left:0.9rem;top:50%;transform:translateY(-50%);
+  width:17px;height:17px;color:var(--line);pointer-events:none;z-index:2;
 }
 .search input{
-  width:100%;font-family:inherit;font-size:0.95rem;color:var(--white);
-  background:var(--surface);border:1px solid var(--hairline);
-  border-radius:100px;padding:0.75rem 2.6rem;
-  transition:border-color 200ms ease,background 200ms ease;
+  width:100%;font-family:var(--body);font-size:0.98rem;font-weight:500;color:var(--deep);
+  background:var(--paper);border:3px solid var(--line);
+  box-shadow:5px 5px 0 var(--line);
+  padding:0.7rem 2.6rem;
 }
-.search input::placeholder{color:var(--silver-dim);}
-.search input:focus{outline:none;border-color:var(--accent-dim);background:var(--surface-lift);}
-.search input:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+.search input::placeholder{color:#6F646C;}
+.search input:focus{outline:none;background:#FDF7F4;box-shadow:5px 5px 0 var(--rose);}
+.search input:focus-visible{outline:3px solid var(--coral);outline-offset:3px;}
 .search__clear{
-  position:absolute;right:0.55rem;top:50%;transform:translateY(-50%);
-  width:26px;height:26px;border-radius:50%;border:0;cursor:pointer;
-  background:var(--hairline);color:var(--white);
+  position:absolute;right:0.5rem;top:50%;transform:translateY(-50%);
+  width:26px;height:26px;border:2px solid var(--line);cursor:pointer;
+  background:var(--rose);color:var(--paper);z-index:2;
   display:none;align-items:center;justify-content:center;
 }
 .search__clear.is-visible{display:flex;}
-.search__clear svg{width:11px;height:11px;}
+.search__clear svg{width:12px;height:12px;}
 
-.filters{display:flex;flex-wrap:wrap;justify-content:center;gap:0.45rem;}
+.filters{display:flex;flex-wrap:wrap;justify-content:center;gap:0.55rem;}
 .chip{
-  font-size:0.82rem;cursor:pointer;
-  background:var(--surface);color:var(--silver);
-  border:1px solid var(--hairline);border-radius:100px;
-  padding:0.45rem 1rem;
-  transition:color 200ms ease,border-color 200ms ease,background 200ms ease;
+  font-family:var(--comic);font-size:1rem;letter-spacing:0.04em;cursor:pointer;
+  background:var(--panel);color:var(--text);
+  border:3px solid var(--line);padding:0.22rem 0.85rem 0.12rem;
+  box-shadow:3px 3px 0 var(--line);
+  transition:transform 100ms var(--snap),box-shadow 100ms var(--snap),background 100ms var(--snap);
 }
-.chip:hover{color:var(--white);border-color:var(--hairline-strong);}
+.chip:hover{background:var(--panel-lift);}
 .chip[aria-pressed="true"]{
-  color:var(--canvas);background:var(--white);border-color:var(--white);font-weight:500;
+  background:var(--mauve);color:var(--deep);transform:translate(2px,2px);box-shadow:1px 1px 0 var(--line);
 }
 
-.sort{
-  display:flex;justify-content:center;align-items:center;gap:0.5rem;
-  font-size:0.8rem;color:var(--silver-dim);
-}
-.sort__group{
-  display:flex;gap:0.25rem;padding:0.25rem;
-  background:var(--surface);border:1px solid var(--hairline);border-radius:100px;
-}
+.sort{display:flex;justify-content:center;align-items:center;gap:0.6rem;flex-wrap:wrap;}
+.sort > span{font-family:var(--comic);font-size:1rem;color:var(--text-dim);letter-spacing:0.05em;}
+.sort__group{display:flex;border:3px solid var(--line);box-shadow:3px 3px 0 var(--line);background:var(--panel);}
 .sort__btn{
-  font-size:0.8rem;cursor:pointer;border:0;border-radius:100px;
-  background:transparent;color:var(--silver);padding:0.35rem 0.85rem;
-  transition:color 200ms ease,background 200ms ease;
+  font-family:var(--comic);font-size:0.95rem;letter-spacing:0.04em;cursor:pointer;
+  border:0;border-right:3px solid var(--line);background:transparent;color:var(--text-dim);
+  padding:0.3rem 0.85rem 0.2rem;transition:background 100ms var(--snap),color 100ms var(--snap);
 }
-.sort__btn:hover{color:var(--white);}
-.sort__btn[aria-pressed="true"]{background:var(--surface-lift);color:var(--white);}
+.sort__btn:last-child{border-right:0;}
+.sort__btn:hover{color:var(--paper);}
+.sort__btn[aria-pressed="true"]{background:var(--coral);color:var(--deep);}
 
-.count{text-align:center;font-size:0.78rem;color:var(--silver-dim);margin:1.5rem 0 0;}
+.count{
+  text-align:center;font-family:var(--comic);font-size:1rem;letter-spacing:0.05em;
+  color:var(--text-dim);margin:1.6rem 0 0;
+}
 
 /* ============================================================
-   LIBRARY GRID
+   LIBRARY GRID — panels pasted onto the page
    ============================================================ */
 .grid{
-  display:grid;grid-template-columns:1fr;gap:1rem;
-  margin-top:1.4rem;padding:0;list-style:none;
+  display:grid;grid-template-columns:1fr;gap:1.6rem;
+  margin-top:1.6rem;padding:0;list-style:none;
 }
-@media(min-width:720px){.grid{grid-template-columns:repeat(2,1fr);gap:1.1rem;}}
+@media(min-width:720px){.grid{grid-template-columns:repeat(2,1fr);gap:1.9rem;}}
 
 .card{
   display:flex;flex-direction:column;height:100%;
   text-decoration:none;color:inherit;
-  background:var(--surface);border:1px solid var(--hairline);
-  border-radius:var(--radius);padding:clamp(1.4rem,3vw,2rem);
-  transition:border-color 320ms var(--ease),transform 320ms var(--ease),background 320ms var(--ease);
+  background:var(--panel);border:4px solid var(--line);
+  box-shadow:9px 9px 0 var(--line);
+  padding:clamp(1.2rem,2.8vw,1.8rem);
+  transition:transform 120ms var(--snap),box-shadow 120ms var(--snap),background 120ms var(--snap);
 }
+/* Alternating tilt so the grid reads as panels laid by hand
+   rather than a CSS grid. Kept under 1 degree — more than that
+   and the text starts to look broken rather than styled. */
+.grid li:nth-child(odd) .card{transform:rotate(-0.7deg);}
+.grid li:nth-child(even) .card{transform:rotate(0.6deg);}
 .card:hover,.card:focus-visible{
-  border-color:var(--accent-dim);background:var(--surface-lift);transform:translateY(-3px);
+  background:var(--panel-lift);
+  transform:rotate(0deg) translate(4px,4px);
+  box-shadow:5px 5px 0 var(--rose),5px 5px 0 4px var(--line);
 }
-.card__top{
-  display:flex;align-items:center;justify-content:space-between;
-  gap:0.75rem;margin-bottom:1rem;
-}
+
+.card__top{display:flex;align-items:center;justify-content:space-between;gap:0.7rem;margin-bottom:0.9rem;}
 .card__category{
-  font-size:0.73rem;color:var(--silver);
-  border:1px solid var(--hairline);border-radius:100px;padding:0.28rem 0.75rem;
+  font-family:var(--comic);font-size:0.9rem;letter-spacing:0.05em;
+  background:var(--mauve);color:var(--deep);border:2px solid var(--line);
+  padding:0.15rem 0.6rem 0.05rem;box-shadow:2px 2px 0 var(--line);
 }
-.card__date{font-size:0.73rem;color:var(--silver-dim);white-space:nowrap;}
+.card__date{font-family:var(--comic);font-size:0.9rem;color:var(--text-dim);letter-spacing:0.05em;}
 .card__title{
-  font-size:clamp(1.2rem,1.05rem + 0.7vw,1.5rem);
-  font-weight:650;letter-spacing:-0.028em;line-height:1.14;
-  margin:0 0 0.65rem;color:var(--white);
+  font-family:var(--display);font-weight:400;text-transform:uppercase;
+  font-size:clamp(1.25rem,1.05rem + 0.9vw,1.7rem);
+  line-height:0.98;letter-spacing:0.01em;margin:0 0 0.7rem;color:var(--paper);
 }
-.card__summary{
-  font-size:0.94rem;color:var(--silver);line-height:1.5;margin:0 0 1.3rem;flex:1;
-}
+.card__summary{font-size:0.94rem;color:var(--text-dim);margin:0 0 1.2rem;flex:1;line-height:1.55;}
 .card__cta{
-  font-size:0.84rem;font-weight:500;color:var(--accent);
+  font-family:var(--comic);font-size:1.05rem;letter-spacing:0.05em;color:var(--coral-lift);
   display:inline-flex;align-items:center;gap:0.35rem;
 }
-.card__cta svg{width:13px;height:13px;transition:transform 240ms var(--ease);}
-.card:hover .card__cta svg{transform:translateX(4px);}
+.card__cta svg{width:14px;height:14px;}
 
-/* Draft badge — an honest label for work that isn't finished.
-   Delete the draft entries from the data array and this never renders. */
 .badge{
-  font-size:0.68rem;font-weight:600;letter-spacing:0.02em;
-  color:var(--accent);border:1px solid var(--accent-dim);
-  border-radius:100px;padding:0.2rem 0.6rem;
+  font-family:var(--comic);font-size:0.85rem;letter-spacing:0.05em;
+  background:var(--berry);color:var(--paper);border:2px solid var(--line);
+  padding:0.15rem 0.6rem 0.05rem;box-shadow:2px 2px 0 var(--line);
 }
-.card--draft{opacity:0.62;}
+.card--draft{opacity:0.6;}
 .card--draft:hover{opacity:1;}
 
-/* Empty state — say what happened, and give a way out. */
 .empty{
-  text-align:center;padding:clamp(2.5rem,7vw,4.5rem) 1rem;
-  border:1px dashed var(--hairline);border-radius:var(--radius);margin-top:1.4rem;
+  text-align:center;padding:clamp(2.2rem,6vw,4rem) 1rem;margin-top:1.6rem;
+  border:4px dashed var(--line);background:var(--panel);
 }
-.empty p{color:var(--silver);margin:0 0 1.2rem;}
+.empty p{font-family:var(--comic);font-size:1.35rem;letter-spacing:0.04em;color:var(--paper);margin:0 0 1.2rem;}
 .empty button{
-  font-size:0.86rem;cursor:pointer;color:var(--white);
-  background:transparent;border:1px solid var(--hairline-strong);
-  border-radius:100px;padding:0.55rem 1.3rem;
-  transition:border-color 200ms ease,background 200ms ease;
+  font-family:var(--comic);font-size:1.05rem;letter-spacing:0.05em;cursor:pointer;
+  background:var(--coral);color:var(--deep);border:3px solid var(--line);
+  padding:0.3rem 1rem 0.2rem;box-shadow:4px 4px 0 var(--line);
+  transition:transform 100ms var(--snap),box-shadow 100ms var(--snap);
 }
-.empty button:hover{border-color:var(--accent);background:var(--surface);}
+.empty button:hover{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--line);}
 
 /* ============================================================
    ABOUT
    ============================================================ */
-.about{
-  display:grid;grid-template-columns:1fr;
-  gap:clamp(1.8rem,4vw,3rem);align-items:start;
-  margin-top:clamp(2rem,5vw,3rem);
-}
+.about{display:grid;grid-template-columns:1fr;gap:clamp(1.6rem,4vw,2.6rem);align-items:start;margin-top:clamp(1.6rem,4vw,2.4rem);}
 @media(min-width:880px){.about{grid-template-columns:1.5fr 1fr;}}
 
-.about__body{max-width:var(--measure);}
-.about__body p{color:var(--body-text);line-height:1.62;margin:0 0 1.2rem;}
-.about__body p:last-child{margin-bottom:0;}
-.about__body strong{color:var(--white);font-weight:600;}
-.about__body a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--accent-dim);}
-.about__body a:hover{border-bottom-color:var(--accent);}
-
-/* Spec-sheet sidecar */
-.specs{
-  background:var(--surface);border:1px solid var(--hairline);
-  border-radius:var(--radius);padding:clamp(1.3rem,2.6vw,1.8rem);
-  position:sticky;top:5rem;
+.about__body{
+  max-width:var(--measure);
+  background:var(--panel);border:4px solid var(--line);
+  box-shadow:9px 9px 0 var(--line);
+  padding:clamp(1.3rem,3vw,2rem);
 }
-.specs h3{font-size:0.76rem;font-weight:600;color:var(--silver);margin:0 0 1rem;}
+.about__body p{color:var(--text-dim);margin:0 0 1.1rem;line-height:1.65;}
+.about__body p:last-child{margin-bottom:0;}
+.about__body strong{color:var(--paper);font-weight:600;}
+.about__body a{color:var(--peri);font-weight:600;text-decoration:none;border-bottom:2px solid var(--peri);}
+.about__body a:hover{color:var(--coral);border-bottom-color:var(--coral);}
+
+.specs{
+  background:var(--paper);color:var(--deep);
+  border:4px solid var(--line);box-shadow:9px 9px 0 var(--rose),9px 9px 0 4px var(--line);
+  padding:clamp(1.1rem,2.4vw,1.6rem);
+  position:sticky;top:5.5rem;transform:rotate(0.8deg);
+}
+.specs h3{
+  font-family:var(--comic);font-size:1.35rem;letter-spacing:0.05em;
+  margin:0 0 0.9rem;color:var(--deep);
+}
 .specs dl{margin:0;}
-.specs div{padding-block:0.75rem;border-bottom:1px solid var(--hairline);}
+.specs div{padding-block:0.6rem;border-bottom:2px solid rgba(79,9,20,0.22);}
 .specs div:last-child{border-bottom:0;padding-bottom:0;}
-.specs dt{font-size:0.74rem;color:var(--silver-dim);margin-bottom:0.2rem;}
-.specs dd{margin:0;font-size:0.92rem;color:var(--white);line-height:1.4;}
+.specs dt{font-family:var(--comic);font-size:0.92rem;letter-spacing:0.05em;color:#7A5560;margin-bottom:0.1rem;}
+.specs dd{margin:0;font-size:0.93rem;font-weight:500;line-height:1.4;color:#2A1420;}
 
 /* ============================================================
    CONTACT
    ============================================================ */
-.contact{border-top:1px solid var(--hairline);}
-.pills{display:flex;flex-wrap:wrap;justify-content:center;gap:0.65rem;margin-top:2.2rem;}
+.contact{border-top:5px solid var(--line);}
+.pills{display:flex;flex-wrap:wrap;justify-content:center;gap:0.8rem;margin-top:2rem;}
 .pill{
-  font-size:0.92rem;text-decoration:none;color:var(--white);
-  border:1px solid var(--hairline);border-radius:100px;padding:0.7rem 1.5rem;
-  transition:border-color 240ms ease,background 240ms ease;
+  font-family:var(--comic);font-size:1.2rem;letter-spacing:0.05em;text-decoration:none;
+  background:var(--panel);color:var(--paper);
+  border:3px solid var(--line);padding:0.4rem 1.2rem 0.28rem;
+  box-shadow:5px 5px 0 var(--line);
+  transition:transform 100ms var(--snap),box-shadow 100ms var(--snap),background 100ms var(--snap);
 }
-.pill:hover{border-color:var(--hairline-strong);background:var(--surface);}
-.pill--primary{
-  background:var(--accent);border-color:var(--accent);color:#fff;font-weight:500;
-  box-shadow:0 0 28px var(--accent-glow);
-}
-.pill--primary:hover{background:#1c88f5;border-color:#1c88f5;color:#fff;}
+.pill:hover{transform:translate(3px,3px);box-shadow:2px 2px 0 var(--line);background:var(--panel-lift);}
+.pill--primary{background:var(--rose);color:var(--paper);box-shadow:5px 5px 0 var(--line);}
+.pill--primary:hover{background:var(--coral);color:var(--deep);}
 
 .colophon{
-  text-align:center;font-size:0.75rem;color:var(--silver-dim);
-  padding-block:1.8rem 2.8rem;border-top:1px solid var(--hairline);
+  text-align:center;font-family:var(--comic);font-size:0.95rem;letter-spacing:0.08em;
+  color:var(--text-dim);padding-block:1.6rem 2.6rem;border-top:3px solid var(--line);
 }
 
 /* ============================================================
    MOTION
-   .reveal is applied by JS, then .is-visible toggles on scroll.
+   Reveals snap in over four frames rather than fading smoothly.
    ============================================================ */
-.reveal{
-  opacity:0;transform:translateY(26px);
-  transition:opacity 900ms var(--ease),transform 900ms var(--ease);
-}
-.reveal.is-visible{opacity:1;transform:none;}
+.reveal{opacity:0;transform:translateY(22px);}
+.reveal.is-visible{animation:snapIn 280ms var(--snap) forwards;}
+@keyframes snapIn{to{opacity:1;transform:none;}}
 
-/* Cards fade in staggered on every re-render of the library.
-   --i is set inline per card so the delay follows result order. */
-@keyframes cardIn{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
-.grid li{animation:cardIn 520ms var(--ease) both;animation-delay:calc(var(--i,0) * 45ms);}
+.grid li{animation:snapIn 240ms var(--snap) both;animation-delay:calc(var(--i,0) * 70ms);opacity:0;}
 
 @media(prefers-reduced-motion:reduce){
   html{scroll-behavior:auto;}
-  *{animation:none!important;transition-duration:1ms!important;}
-  .reveal{opacity:1!important;transform:none!important;}
-  .slide{transform:none!important;}
+  *{animation:none!important;transition:none!important;}
+  .reveal,.grid li{opacity:1!important;transform:none!important;}
+  .hero__title{text-shadow:5px 0 0 var(--peri),-5px 0 0 var(--rose);}
 }
 </style>
 </head>
@@ -522,66 +597,126 @@ body > *{position:relative;z-index:1;}
 
   <!-- ===================== HERO ===================== -->
   <section class="wrap hero" id="top">
-    <h1 class="hero__title">I make complicated systems feel like <em>nothing at all.</em></h1>
+    <div class="hero__burst" aria-hidden="true"></div>
+    <h1 class="hero__title">I make complicated systems feel like <span>nothing at all</span></h1>
     <p class="hero__sub">Embedded systems engineer working on product, in Los Angeles.</p>
     <div class="hero__meta">
       <span>Guest experience</span>
       <span>Consumer platforms</span>
       <span>Real-time systems</span>
     </div>
+
     <div class="trace-stage" aria-hidden="true">
       <svg class="trace" viewBox="0 0 1200 160" preserveAspectRatio="none">
         <path class="trace__ghost" d="M0,80 L1200,80"></path>
-        <path id="traceLine" d=""></path>
+        <!-- three passes of the same curve, offset — misregistered ink -->
+        <path class="trace__c" id="traceC" d=""></path>
+        <path class="trace__m" id="traceM" d=""></path>
+        <path class="trace__k" id="traceK" d=""></path>
       </svg>
 
-      <!-- The robot. Drawn once here; positioned every frame by JS. -->
+      <div class="krackle" id="krackle"></div>
+
       <div class="surfer" id="surfer">
         <svg viewBox="0 0 64 78">
-          <!-- board -->
-          <ellipse class="bot-board" cx="32" cy="70" rx="27" ry="4"/>
-          <line class="bot-board-stripe" x1="12" y1="70" x2="52" y2="70" stroke-width="1"/>
+          <defs>
+            <pattern id="htDots" width="3.6" height="3.6" patternUnits="userSpaceOnUse">
+              <circle cx="1" cy="1" r="1" fill="#121426"/>
+            </pattern>
+          </defs>
 
-          <!-- legs, slightly splayed for a surf stance -->
-          <line class="bot-limb" x1="28" y1="54" x2="24" y2="66" stroke-width="5"/>
-          <line class="bot-limb" x1="36" y1="54" x2="41" y2="66" stroke-width="5"/>
+          <g class="bot-speed">
+            <line x1="-30" y1="24" x2="-8" y2="24" stroke-width="2"/>
+            <line x1="-38" y1="36" x2="-6" y2="36" stroke-width="2.6"/>
+            <line x1="-26" y1="48" x2="-9" y2="48" stroke-width="2"/>
+            <line x1="-34" y1="60" x2="-4" y2="60" stroke-width="2.4"/>
+          </g>
 
-          <!-- arms: one out for balance, one trailing back -->
-          <line class="bot-limb" x1="23" y1="38" x2="8"  y2="28" stroke-width="4.5"/>
-          <line class="bot-limb" x1="41" y1="38" x2="55" y2="46" stroke-width="4.5"/>
+          <ellipse class="bot-shadow" cx="32" cy="74" rx="24" ry="3"/>
+          <ellipse class="bot-board" cx="32" cy="70" rx="27" ry="4.5"/>
+          <path class="bot-weight" d="M7 71.5 Q32 77 57 71.5" stroke-width="2.6"/>
 
-          <!-- torso -->
-          <rect class="bot-shell" x="22" y="32" width="20" height="24" rx="7"/>
-          <circle class="bot-lit" cx="32" cy="42" r="2.6"/>
+          <g class="pose is-on" id="poseRide">
+            <path class="bot-limb" d="M28 54 L24 66" stroke-width="7"/>
+            <path class="bot-limb" d="M36 54 L41 66" stroke-width="7"/>
+            <path class="bot-limb-fill" d="M27.4 53.2 L23.4 65.2" stroke-width="3.4"/>
+            <path class="bot-limb-fill" d="M35.4 53.2 L40.4 65.2" stroke-width="3.4"/>
+            <path class="bot-limb" d="M23 38 L8 28" stroke-width="6.5"/>
+            <path class="bot-limb" d="M41 38 L55 46" stroke-width="6.5"/>
+            <path class="bot-limb-fill" d="M22.4 37.2 L7.4 27.2" stroke-width="3"/>
+            <path class="bot-limb-fill" d="M40.4 37.2 L54.4 45.2" stroke-width="3"/>
+            <rect class="bot-shell" x="22" y="32" width="20" height="24" rx="7"/>
+            <path class="bot-weight" d="M42 44 L42 49 Q42 56 35 56 L29 56"/>
+            <circle class="bot-lit" cx="32" cy="42" r="3"/>
+            <rect class="bot-shell" x="30" y="27" width="4" height="6"/>
+            <rect class="bot-shell-light" x="23" y="12" width="18" height="17" rx="6"/>
+            <path class="bot-weight" d="M41 22 L41 23 Q41 29 35 29 L29 29"/>
+            <rect class="bot-lit" x="26" y="17" width="12" height="5" rx="2"/>
+            <path class="bot-limb" d="M32 12 L32 5" stroke-width="2.5"/>
+            <circle class="bot-lit" cx="32" cy="4" r="2.6"/>
+          </g>
 
-          <!-- neck -->
-          <rect class="bot-shell" x="30" y="28" width="4" height="5"/>
+          <g class="pose" id="poseCrouch">
+            <path class="bot-limb" d="M27 57 L19 61 L25 68" stroke-width="7"/>
+            <path class="bot-limb" d="M38 57 L46 62 L40 68" stroke-width="7"/>
+            <path class="bot-limb-fill" d="M26.4 56.2 L18.4 60.2 L24.4 67.2" stroke-width="3.4"/>
+            <path class="bot-limb-fill" d="M37.4 56.2 L45.4 61.2 L39.4 67.2" stroke-width="3.4"/>
+            <path class="bot-limb" d="M22 45 L9 51" stroke-width="6.5"/>
+            <path class="bot-limb" d="M42 45 L53 53" stroke-width="6.5"/>
+            <path class="bot-limb-fill" d="M21.4 44.2 L8.4 50.2" stroke-width="3"/>
+            <path class="bot-limb-fill" d="M41.4 44.2 L52.4 52.2" stroke-width="3"/>
+            <rect class="bot-shell" x="22" y="39" width="20" height="20" rx="7"/>
+            <path class="bot-weight" d="M42 49 L42 52 Q42 59 35 59 L29 59"/>
+            <circle class="bot-lit" cx="32" cy="47" r="3"/>
+            <rect class="bot-shell" x="29" y="34" width="4" height="6"/>
+            <rect class="bot-shell-light" x="21" y="19" width="18" height="16" rx="6"/>
+            <path class="bot-weight" d="M39 28 L39 29 Q39 35 33 35 L27 35"/>
+            <rect class="bot-lit" x="24" y="24" width="12" height="5" rx="2"/>
+            <path class="bot-limb" d="M30 19 L25 13" stroke-width="2.5"/>
+            <circle class="bot-lit" cx="24" cy="12" r="2.6"/>
+          </g>
 
-          <!-- head + visor -->
-          <rect class="bot-shell-light" x="23" y="12" width="18" height="17" rx="6"/>
-          <rect class="bot-lit" x="26" y="17" width="12" height="5" rx="2.5"/>
-
-          <!-- antenna -->
-          <line class="bot-limb" x1="32" y1="12" x2="32" y2="5" stroke-width="1.6"/>
-          <circle class="bot-lit" cx="32" cy="4" r="2.2"/>
+          <g class="pose" id="poseLean">
+            <path class="bot-limb" d="M30 53 L21 67" stroke-width="7"/>
+            <path class="bot-limb" d="M37 54 L43 67" stroke-width="7"/>
+            <path class="bot-limb-fill" d="M29.4 52.2 L20.4 66.2" stroke-width="3.4"/>
+            <path class="bot-limb-fill" d="M36.4 53.2 L42.4 66.2" stroke-width="3.4"/>
+            <g transform="rotate(-15 32 55)">
+              <path class="bot-limb" d="M23 36 L11 19" stroke-width="6.5"/>
+              <path class="bot-limb" d="M42 41 L56 51" stroke-width="6.5"/>
+              <path class="bot-limb-fill" d="M22.4 35.2 L10.4 18.2" stroke-width="3"/>
+              <path class="bot-limb-fill" d="M41.4 40.2 L55.4 50.2" stroke-width="3"/>
+              <rect class="bot-shell" x="22" y="32" width="20" height="24" rx="7"/>
+              <path class="bot-weight" d="M42 44 L42 49 Q42 56 35 56 L29 56"/>
+              <circle class="bot-lit" cx="32" cy="42" r="3"/>
+              <rect class="bot-shell" x="30" y="26" width="4" height="7"/>
+              <rect class="bot-shell-light" x="24" y="10" width="18" height="17" rx="6"/>
+              <path class="bot-weight" d="M42 20 L42 21 Q42 27 36 27 L30 27"/>
+              <rect class="bot-lit" x="27" y="15" width="12" height="5" rx="2"/>
+              <path class="bot-limb" d="M34 10 L39 4" stroke-width="2.5"/>
+              <circle class="bot-lit" cx="40" cy="3" r="2.6"/>
+            </g>
+          </g>
         </svg>
       </div>
     </div>
   </section>
 
+  <hr class="divider">
+
   <!-- ===================== CAROUSEL ===================== -->
   <section class="wrap showcase" id="showcase"
            aria-roledescription="carousel" aria-label="Featured case studies">
     <div class="showcase__frame">
-      <div class="showcase__track" id="carouselTrack"><!-- slides injected by JS --></div>
+      <div class="showcase__track" id="carouselTrack"></div>
     </div>
     <div class="showcase__controls">
       <button class="arrow" id="prevSlide" aria-label="Previous case study">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
       </button>
       <div class="showcase__dots" id="carouselDots"></div>
       <button class="arrow" id="nextSlide" aria-label="Next case study">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
       </button>
     </div>
   </section>
@@ -590,19 +725,21 @@ body > *{position:relative;z-index:1;}
 
   <!-- ===================== LIBRARY ===================== -->
   <section class="wrap section" id="work">
-    <p class="section__eyebrow">Work</p>
-    <h2 class="section__title">Case studies.</h2>
-    <p class="section__lede">Self-directed product work. Each one starts from a problem I could go observe in person, and states its assumptions instead of hiding them.</p>
+    <div class="section__head">
+      <span class="caption">The Work</span>
+      <h2 class="section__title">Case Studies</h2>
+      <p class="section__lede">Self-directed product work. Each one starts from a problem I could go observe in person, and states its assumptions instead of hiding them.</p>
+    </div>
 
     <div class="controls">
       <div class="search">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true">
           <circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>
         </svg>
         <label class="visually-hidden" for="searchInput">Search case studies</label>
         <input id="searchInput" type="search" placeholder="Search case studies" autocomplete="off">
         <button class="search__clear" id="searchClear" aria-label="Clear search">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
         </button>
       </div>
 
@@ -627,8 +764,10 @@ body > *{position:relative;z-index:1;}
 
   <!-- ===================== ABOUT ===================== -->
   <section class="wrap section" id="about">
-    <p class="section__eyebrow">About</p>
-    <h2 class="section__title">Erick Mercado</h2>
+    <div class="section__head">
+      <span class="caption caption--cyan">Origin Story</span>
+      <h2 class="section__title">Erick Mercado</h2>
+    </div>
 
     <div class="about">
       <div class="about__body">
@@ -642,7 +781,7 @@ body > *{position:relative;z-index:1;}
       </div>
 
       <aside class="specs">
-        <h3>Quick facts</h3>
+        <h3>Quick Facts</h3>
         <dl>
           <div><dt>Now</dt><dd>Embedded software engineer, electronic warfare</dd></div>
           <div><dt>Based</dt><dd>Los Angeles, California</dd></div>
@@ -660,9 +799,11 @@ body > *{position:relative;z-index:1;}
 <!-- ===================== CONTACT ===================== -->
 <footer class="contact" id="contact">
   <div class="wrap section">
-    <p class="section__eyebrow">Contact</p>
-    <h2 class="section__title">If you're building something people have to live inside, I'd like to hear about it.</h2>
-    <p class="section__lede">Currently in Los Angeles, looking for product roles in guest experience, consumer platforms, and technical products where the systems work is genuinely hard.</p>
+    <div class="section__head">
+      <span class="caption caption--magenta">Get In Touch</span>
+      <h2 class="section__title">Building something people live inside?</h2>
+      <p class="section__lede">Currently in Los Angeles, looking for product roles in guest experience, consumer platforms, and technical products where the systems work is genuinely hard.</p>
+    </div>
     <div class="pills">
       <a class="pill pill--primary" href="mailto:REPLACE@example.com">Email me</a>
       <a class="pill" href="https://linkedin.com/in/REPLACE">LinkedIn</a>
@@ -676,33 +817,18 @@ body > *{position:relative;z-index:1;}
 /* ================================================================
    ██  EDIT HERE TO ADD A CASE STUDY  ██
 
-   This array is the single source of truth. The carousel, the grid,
-   the filter chips and the result count are all generated from it.
-   Add an object here and everything updates — you never edit the
-   HTML above.
+   Same data contract as the other theme, so entries port over
+   unchanged. The carousel, grid, filter chips and count all build
+   from this array — you never edit the HTML above.
 
-   Fields:
-     id        unique string
-     title     shown on the card and the slide
-     summary   one or two sentences, no more
-     category  free text. The filter chips build themselves from
-               whatever distinct values appear across all entries
-     date      ISO "YYYY-MM-DD". Drives the Newest / Oldest sort
-     url       where the card links. Relative paths are fine
-     image     optional background image for the slide. Leave ""
-               to fall back to the tint gradient
-     imageAlt  describe the image. Required if image is set
-     tint      hex for the slide's background gradient. Give each
-               entry a different one so the rotation reads as
-               distinct pieces of work
-     featured  true = appears in the top carousel
-     status    "published" or "draft". Draft entries render with a
-               visible badge and reduced opacity — honest, and a
-               reminder to finish them
+   Fields: id, title, summary, category, date ("YYYY-MM-DD"), url,
+   image (optional), imageAlt, tint (hex used for the slide
+   background), featured (true = in the carousel), status
+   ("published" or "draft").
 
-   NOTE: the two "draft" entries below are placeholders so you can
-   see search / filter / sort working with more than one item.
-   Delete them before you point erickmercado.com at this page.
+   NOTE: the two "draft" entries are placeholders so you can see
+   search / filter / sort working against more than one item.
+   Delete them before pointing erickmercado.com at this page.
    ================================================================ */
 const CASE_STUDIES = [
   {
@@ -714,7 +840,7 @@ const CASE_STUDIES = [
     url: "work/disneyland-app.html",
     image: "",
     imageAlt: "",
-    tint: "#123049",
+    tint: "#3B2F63",
     featured: true,
     status: "published"
   },
@@ -727,7 +853,7 @@ const CASE_STUDIES = [
     url: "#work",
     image: "",
     imageAlt: "",
-    tint: "#2a1830",
+    tint: "#4F0914",
     featured: false,
     status: "draft"
   },
@@ -740,15 +866,15 @@ const CASE_STUDIES = [
     url: "#work",
     image: "",
     imageAlt: "",
-    tint: "#1b2f22",
+    tint: "#2A2E52",
     featured: false,
     status: "draft"
   }
 ];
 
 /* ================================================================
-   Everything below is machinery. You shouldn't need to touch it to
-   add or remove case studies.
+   Machinery. You shouldn't need to touch any of this to add or
+   remove case studies.
    ================================================================ */
 (function () {
   "use strict";
@@ -756,35 +882,27 @@ const CASE_STUDIES = [
   const prefersReducedMotion =
     window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  /* Escape text before putting it into innerHTML, so a stray < or &
-     in your copy can't break the markup. */
   function esc(str) {
     return String(str)
       .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
   }
 
-  /* "2026-07-20" -> "July 2026". Parsed by hand rather than with
-     new Date(), which shifts the day across timezones. */
-  const MONTHS = ["January","February","March","April","May","June",
-                  "July","August","September","October","November","December"];
+  const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun",
+                  "Jul","Aug","Sep","Oct","Nov","Dec"];
   function prettyDate(iso) {
-    const parts = String(iso).split("-");
-    const month = MONTHS[parseInt(parts[1], 10) - 1] || "";
-    return month ? month + " " + parts[0] : parts[0];
+    const p = String(iso).split("-");
+    const m = MONTHS[parseInt(p[1], 10) - 1] || "";
+    return m ? m + " " + p[0] : p[0];
   }
 
   const ARROW_SVG =
-    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
 
   document.getElementById("year").textContent = new Date().getFullYear();
 
   /* ==============================================================
      1. CAROUSEL
-     Slides sit stacked on top of each other; we crossfade by
-     toggling one class. Inactive slides are hidden from both the
-     pointer and the keyboard, so you can't tab into an invisible
-     link.
      ============================================================== */
   const carousel = {
     root: document.getElementById("showcase"),
@@ -801,11 +919,7 @@ const CASE_STUDIES = [
   function buildCarousel() {
     const { items, track, dotsBox, root } = carousel;
     root.setAttribute("data-count", items.length);
-
-    if (!items.length) {
-      root.style.display = "none";
-      return;
-    }
+    if (!items.length) { root.style.display = "none"; return; }
 
     track.innerHTML = items.map((c, i) => {
       const bg = c.image
@@ -819,18 +933,17 @@ const CASE_STUDIES = [
         ' aria-label="' + (i + 1) + " of " + items.length + '"' +
         (i === 0 ? "" : ' aria-hidden="true" tabindex="-1"') + ">" +
           bg +
-          '<p class="slide__eyebrow">' + esc(c.category) + "</p>" +
+          '<span class="caption caption--cyan">' + esc(c.category) + "</span>" +
           '<h3 class="slide__title">' + esc(c.title) + "</h3>" +
           '<p class="slide__summary">' + esc(c.summary) + "</p>" +
-          '<span class="slide__cta">View case study' + ARROW_SVG + "</span>" +
+          '<span class="slide__cta">Read it' + ARROW_SVG + "</span>" +
         "</a>"
       );
     }).join("");
 
     dotsBox.innerHTML = items.map((c, i) =>
       '<button class="dot' + (i === 0 ? " is-active" : "") + '"' +
-      ' data-index="' + i + '"' +
-      ' aria-label="Show ' + esc(c.title) + '"></button>'
+      ' data-index="' + i + '" aria-label="Show ' + esc(c.title) + '"></button>'
     ).join("");
 
     dotsBox.querySelectorAll(".dot").forEach(dot => {
@@ -851,20 +964,14 @@ const CASE_STUDIES = [
     slides.forEach((slide, i) => {
       const active = i === carousel.index;
       slide.classList.toggle("is-active", active);
-      if (active) {
-        slide.removeAttribute("aria-hidden");
-        slide.removeAttribute("tabindex");
-      } else {
-        slide.setAttribute("aria-hidden", "true");
-        slide.setAttribute("tabindex", "-1");
-      }
+      if (active) { slide.removeAttribute("aria-hidden"); slide.removeAttribute("tabindex"); }
+      else { slide.setAttribute("aria-hidden", "true"); slide.setAttribute("tabindex", "-1"); }
     });
     dots.forEach((dot, i) => dot.classList.toggle("is-active", i === carousel.index));
   }
 
   function restartAutoRotate() {
     clearInterval(carousel.timer);
-    /* Nothing to rotate through, or the visitor asked for less motion. */
     if (carousel.items.length < 2 || prefersReducedMotion) return;
     carousel.timer = setInterval(() => goToSlide(carousel.index + 1), carousel.INTERVAL);
   }
@@ -875,23 +982,18 @@ const CASE_STUDIES = [
     carousel.next.addEventListener("click", () => { goToSlide(carousel.index + 1); restartAutoRotate(); });
     carousel.prev.addEventListener("click", () => { goToSlide(carousel.index - 1); restartAutoRotate(); });
 
-    /* Don't rotate out from under someone who is reading or tabbing. */
     carousel.root.addEventListener("mouseenter", () => clearInterval(carousel.timer));
     carousel.root.addEventListener("mouseleave", restartAutoRotate);
     carousel.root.addEventListener("focusin", () => clearInterval(carousel.timer));
     carousel.root.addEventListener("focusout", restartAutoRotate);
 
-    /* Arrow keys when anything in the carousel has focus. */
     carousel.root.addEventListener("keydown", e => {
       if (e.key === "ArrowRight") { goToSlide(carousel.index + 1); restartAutoRotate(); }
       if (e.key === "ArrowLeft")  { goToSlide(carousel.index - 1); restartAutoRotate(); }
     });
 
-    /* Swipe. 40px of horizontal travel counts as intent. */
     let touchStartX = null;
-    carousel.root.addEventListener("touchstart", e => {
-      touchStartX = e.touches[0].clientX;
-    }, { passive: true });
+    carousel.root.addEventListener("touchstart", e => { touchStartX = e.touches[0].clientX; }, { passive: true });
     carousel.root.addEventListener("touchend", e => {
       if (touchStartX === null) return;
       const dx = e.changedTouches[0].clientX - touchStartX;
@@ -899,7 +1001,6 @@ const CASE_STUDIES = [
       touchStartX = null;
     }, { passive: true });
 
-    /* Stop the timer when the tab is in the background. */
     document.addEventListener("visibilitychange", () => {
       if (document.hidden) clearInterval(carousel.timer);
       else restartAutoRotate();
@@ -910,8 +1011,6 @@ const CASE_STUDIES = [
 
   /* ==============================================================
      2. LIBRARY — search, filter, sort
-     One `state` object holds what the visitor has chosen. Any change
-     writes to state and calls render(). There is no other path.
      ============================================================== */
   const state = { query: "", category: "All", sort: "newest" };
 
@@ -922,7 +1021,6 @@ const CASE_STUDIES = [
   const searchEl = document.getElementById("searchInput");
   const clearEl = document.getElementById("searchClear");
 
-  /* Build the chips from whatever categories exist in the data. */
   const categories = ["All"].concat(
     CASE_STUDIES.map(c => c.category)
       .filter((cat, i, arr) => arr.indexOf(cat) === i)
@@ -938,8 +1036,7 @@ const CASE_STUDIES = [
     chip.addEventListener("click", () => {
       state.category = chip.dataset.category;
       chipsEl.querySelectorAll(".chip").forEach(c =>
-        c.setAttribute("aria-pressed", String(c === chip))
-      );
+        c.setAttribute("aria-pressed", String(c === chip)));
       render();
     });
   });
@@ -948,8 +1045,7 @@ const CASE_STUDIES = [
     btn.addEventListener("click", () => {
       state.sort = btn.dataset.sort;
       document.querySelectorAll(".sort__btn").forEach(b =>
-        b.setAttribute("aria-pressed", String(b === btn))
-      );
+        b.setAttribute("aria-pressed", String(b === btn)));
       render();
     });
   });
@@ -961,48 +1057,37 @@ const CASE_STUDIES = [
   });
 
   clearEl.addEventListener("click", () => {
-    searchEl.value = "";
-    state.query = "";
+    searchEl.value = ""; state.query = "";
     clearEl.classList.remove("is-visible");
-    searchEl.focus();
-    render();
+    searchEl.focus(); render();
   });
 
   function resetAll() {
-    state.query = "";
-    state.category = "All";
+    state.query = ""; state.category = "All";
     searchEl.value = "";
     clearEl.classList.remove("is-visible");
     chipsEl.querySelectorAll(".chip").forEach(c =>
-      c.setAttribute("aria-pressed", String(c.dataset.category === "All"))
-    );
+      c.setAttribute("aria-pressed", String(c.dataset.category === "All")));
     render();
   }
 
   function getVisible() {
     let list = CASE_STUDIES.slice();
 
-    if (state.category !== "All") {
-      list = list.filter(c => c.category === state.category);
-    }
+    if (state.category !== "All") list = list.filter(c => c.category === state.category);
 
     if (state.query) {
       list = list.filter(c =>
-        (c.title + " " + c.summary + " " + c.category).toLowerCase().includes(state.query)
-      );
+        (c.title + " " + c.summary + " " + c.category).toLowerCase().includes(state.query));
     }
 
     if (state.sort === "alpha") {
-      /* Ignore a leading quote so '"Killing the..."' sorts under K. */
       list.sort((a, b) =>
-        a.title.replace(/^["']/, "").localeCompare(b.title.replace(/^["']/, ""))
-      );
+        a.title.replace(/^["']/, "").localeCompare(b.title.replace(/^["']/, "")));
     } else {
       list.sort((a, b) =>
-        state.sort === "oldest" ? a.date.localeCompare(b.date) : b.date.localeCompare(a.date)
-      );
+        state.sort === "oldest" ? a.date.localeCompare(b.date) : b.date.localeCompare(a.date));
     }
-
     return list;
   }
 
@@ -1020,9 +1105,8 @@ const CASE_STUDIES = [
           '<a class="card' + (draft ? " card--draft" : "") + '" href="' + esc(c.url) + '">' +
             '<div class="card__top">' +
               '<span class="card__category">' + esc(c.category) + "</span>" +
-              (draft
-                ? '<span class="badge">Draft</span>'
-                : '<span class="card__date">' + esc(prettyDate(c.date)) + "</span>") +
+              (draft ? '<span class="badge">Draft</span>'
+                     : '<span class="card__date">' + esc(prettyDate(c.date)) + "</span>") +
             "</div>" +
             '<h3 class="card__title">' + esc(c.title) + "</h3>" +
             '<p class="card__summary">' + esc(c.summary) + "</p>" +
@@ -1032,13 +1116,10 @@ const CASE_STUDIES = [
       );
     }).join("");
 
-    /* Empty state: say what happened, and give a way out. */
     if (!list.length) {
       emptyEl.innerHTML =
-        '<div class="empty">' +
-          "<p>No case studies match that search.</p>" +
-          '<button type="button" id="resetFilters">Show everything</button>' +
-        "</div>";
+        '<div class="empty"><p>Nothing matches that.</p>' +
+        '<button type="button" id="resetFilters">Show everything</button></div>';
       document.getElementById("resetFilters").addEventListener("click", resetAll);
     } else {
       emptyEl.innerHTML = "";
@@ -1049,13 +1130,10 @@ const CASE_STUDIES = [
 
   /* ==============================================================
      3. SCROLL REVEALS
-     Tagged by selector so new sections animate without extra markup.
-     Purely decorative — content is readable without it.
      ============================================================== */
   if (!prefersReducedMotion && "IntersectionObserver" in window) {
     const targets = document.querySelectorAll(
-      ".section__eyebrow, .section__title, .section__lede, .controls, .about__body, .specs, .pills"
-    );
+      ".section__head, .controls, .about__body, .specs, .pills");
     targets.forEach(el => el.classList.add("reveal"));
 
     const io = new IntersectionObserver(entries => {
@@ -1071,60 +1149,102 @@ const CASE_STUDIES = [
   }
 
   /* ==============================================================
-     4. THE TRACE, AND THE ROBOT RIDING IT
+     4. THE SIGNAL, AND THE ROBOT RIDING IT
 
-     The hero signature: a signal that starts as noise on the left
-     and resolves into a clean waveform on the right, with a small
-     robot surfing the resolved end of it.
+     Two things make this read as Spider-Verse rather than as a
+     generic animated line:
 
-     Two layers, because they need different scaling:
-       - the wave is one SVG <path>, stretched to full width
-         (preserveAspectRatio="none"), redrawn each frame
-       - the robot is a separate element positioned in real pixels,
-         so it keeps its proportions at any viewport width
+     a) The curve is stroked three times — cyan, magenta, then a
+        light key line — each at a slightly different vertical
+        offset. That is misregistered four-colour printing, the
+        same trick used on the headline.
 
-     waveY() is the single source of truth for the curve. The path
-     builder samples it 240 times; the robot samples it three times
-     to find its footing and its tilt.
+     b) It runs at 12fps, not 60. The films animate characters on
+        2s and 3s (a new drawing every second or third frame)
+        instead of on 1s, and that judder is the single most
+        recognisable thing about them. Throttling here costs
+        nothing and is dramatically cheaper on battery.
      ============================================================== */
-  const traceLine = document.getElementById("traceLine");
+  const pathC = document.getElementById("traceC");
+  const pathM = document.getElementById("traceM");
+  const pathK = document.getElementById("traceK");
   const surfer = document.getElementById("surfer");
   const stage = document.querySelector(".trace-stage");
 
-  if (traceLine) {
+  /* ---- Kirby Krackle -------------------------------------------
+     Scattered once at load over the left third of the stage, where
+     the signal is still noise. Fixed offsets rather than random
+     ones, so the cluster reads as drawn rather than sprayed. */
+  const krackle = document.getElementById("krackle");
+  if (krackle) {
+    const specks = [
+      [4, 30, 7], [9, 62, 5], [13, 22, 9], [7, 78, 4], [17, 55, 6],
+      [21, 34, 8], [12, 44, 4], [25, 68, 5], [19, 14, 5], [28, 44, 6],
+      [3, 52, 5], [23, 82, 4], [31, 24, 5], [15, 88, 6]
+    ];
+    krackle.innerHTML = specks.map(([x, y, d], i) =>
+      '<i style="left:' + x + '%;top:' + y + '%;width:' + d + 'px;height:' + d +
+      'px;animation-delay:' + (i * 83) + 'ms"></i>'
+    ).join("");
+  }
+
+  /* ---- the three drawings ---------------------------------------
+     Not a tween. Three separate poses, one visible at a time,
+     swapped on the same 12fps beat as everything else. */
+  const POSES = {
+    ride: document.getElementById("poseRide"),
+    crouch: document.getElementById("poseCrouch"),
+    lean: document.getElementById("poseLean")
+  };
+  let activePose = "ride";
+  let poseHeld = 0;
+
+  /* A drawing has to stay up for at least three beats (250ms) before
+     another can replace it. Without this the terrain occasionally
+     flips the pose for a single frame, which reads as a glitch
+     rather than as animation. Real animators hold too. */
+  const MIN_HOLD = 3;
+
+  function setPose(name) {
+    poseHeld++;
+    if (name === activePose || !POSES[name] || poseHeld < MIN_HOLD) return;
+    POSES[activePose].classList.remove("is-on");
+    POSES[name].classList.add("is-on");
+    activePose = name;
+    poseHeld = 0;
+  }
+
+  if (pathK) {
     const VB_W = 1200, VB_H = 160, MID = 80, SEGMENTS = 240;
+    const FPS = 12;                       // animate "on 5s" at 60Hz
+    const FRAME_MS = 1000 / FPS;
 
-    /* Height of the wave at sample i (0..SEGMENTS), in viewBox units.
-       i may be fractional — the robot uses that to sample between
-       the points the path is actually drawn from. */
     function waveY(i, time) {
-      const settled = i / SEGMENTS;        // 0 = noisy, 1 = resolved
+      const settled = i / SEGMENTS;       // 0 = noisy, 1 = resolved
       const noise = 1 - settled;
-
       const carrier = Math.sin(i * 0.11 + time) * 26 * (0.35 + settled * 0.65);
       const jitter = (Math.sin(i * 1.7 + time * 2.3) + Math.sin(i * 3.1 - time * 1.4))
                      * 13 * noise * noise;
       const drift = Math.sin(i * 0.02 - time * 0.4) * 9 * noise;
-
       return MID + carrier + jitter + drift;
     }
 
-    function buildPath(time) {
-      const points = [];
+    /* offsetY shifts the whole curve, which is how the three ink
+       passes get knocked out of register. */
+    function buildPath(time, offsetY) {
+      const pts = [];
       for (let i = 0; i <= SEGMENTS; i++) {
-        points.push(((i / SEGMENTS) * VB_W).toFixed(1) + "," + waveY(i, time).toFixed(1));
+        pts.push(((i / SEGMENTS) * VB_W).toFixed(1) + "," +
+                 (waveY(i, time) + offsetY).toFixed(1));
       }
-      return "M" + points.join(" L");
+      return "M" + pts.join(" L");
     }
 
-    /* Pixel size of the stage. Cached, because reading it every
-       frame would force a layout on each tick. */
     let stageW = 0, stageH = 0;
     function measure() {
       if (!stage) return;
-      const rect = stage.getBoundingClientRect();
-      stageW = rect.width;
-      stageH = rect.height;
+      const r = stage.getBoundingClientRect();
+      stageW = r.width; stageH = r.height;
     }
     measure();
     window.addEventListener("resize", measure);
@@ -1132,23 +1252,16 @@ const CASE_STUDIES = [
     function placeSurfer(time) {
       if (!surfer || !stageW) return;
 
-      /* Ride the resolved end of the signal, drifting slowly between
-         about 58% and 74% of the width so it reads as alive rather
-         than pinned. */
       const ride = SEGMENTS * (0.66 + Math.sin(time * 0.22) * 0.08);
 
       /* The board has length, so it rests on the chord across its own
-         footprint rather than on the slope at a single point. Sampling
-         wide also averages out the high-frequency jitter — measuring
-         at one point produced tilts past 60 degrees. */
-      const BOARD_HALF = 5;                       // half a board, in samples
+         footprint rather than the slope at a single point. Sampling
+         wide also averages out the high-frequency jitter. */
+      const BOARD_HALF = 5;
       const yHere = waveY(ride, time);
       const yBack = waveY(ride - BOARD_HALF, time);
-      const yFwd = waveY(ride + BOARD_HALF, time);
+      const yFwd  = waveY(ride + BOARD_HALF, time);
 
-      /* Convert viewBox units to pixels. The two axes scale by
-         different amounts, so the slope has to be converted too —
-         otherwise the tilt is wrong on wide screens. */
       const sx = stageW / VB_W;
       const sy = stageH / VB_H;
 
@@ -1158,35 +1271,44 @@ const CASE_STUDIES = [
       const slopeVb = (yFwd - yBack) / (2 * BOARD_HALF * (VB_W / SEGMENTS));
 
       /* A narrow viewport squashes the wave horizontally, which makes
-         the true tangent absurdly steep — on a phone it pegged at the
-         limit two frames out of three. Damping keeps the lean readable
-         at every width; the eye doesn't audit the tangent. */
+         the true tangent absurdly steep. Damping keeps the lean
+         readable at every width. */
       const TILT_DAMP = 0.45;
       let deg = Math.atan2(slopeVb * sy * TILT_DAMP, sx) * (180 / Math.PI);
-
-      /* Cap the lean. A surfer leans; a surfer does not go vertical. */
       deg = Math.max(-26, Math.min(26, deg));
 
-      /* translate(-50%,-100%) parks the board's underside on the
-         line; transform-origin (set in CSS) pivots there too. */
+      /* Pick the drawing from the terrain. Positive tilt is nose-down,
+         so the board is dropping — tuck. Negative is climbing the
+         face — lean back. In between, ride it out. The 7-degree gate
+         is wide enough that it doesn't chatter between two poses. */
+      setPose(deg > 7 ? "crouch" : deg < -7 ? "lean" : "ride");
+
       surfer.style.transform =
         "translate(" + px.toFixed(1) + "px," + py.toFixed(1) + "px)" +
-        " translate(-50%,-100%)" +
-        " rotate(" + deg.toFixed(2) + "deg)";
+        " translate(-50%,-100%) rotate(" + deg.toFixed(2) + "deg)";
     }
 
-    /* First frame, so the hero is never empty. */
-    traceLine.setAttribute("d", buildPath(0));
-    placeSurfer(0);
+    function draw(time) {
+      pathC.setAttribute("d", buildPath(time, -4));   // cyan, high
+      pathM.setAttribute("d", buildPath(time,  4));   // magenta, low
+      pathK.setAttribute("d", buildPath(time,  0));   // key line
+      placeSurfer(time);
+    }
+
+    draw(0);
 
     if (!prefersReducedMotion) {
-      let t = 0, running = true;
+      let t = 0, last = 0, running = true;
 
-      const frame = () => {
+      const frame = now => {
         if (!running) return;
-        t += 0.016;
-        traceLine.setAttribute("d", buildPath(t));
-        placeSurfer(t);
+        /* Only redraw when a 12fps slot has elapsed. Everything in
+           between is deliberately held on the previous drawing. */
+        if (now - last >= FRAME_MS) {
+          last = now;
+          t += 0.08;                       // bigger step, fewer frames
+          draw(t);
+        }
         requestAnimationFrame(frame);
       };
 
