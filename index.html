@@ -4,140 +4,1056 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Erick Mercado — Product</title>
-<meta name="description" content="Erick Mercado. Embedded systems engineer working on product. I make complicated systems feel like nothing at all.">
+<meta name="description" content="Erick Mercado. Embedded systems engineer working on product. Case studies on guest experience and consumer systems.">
 <link rel="canonical" href="https://erickmercado.com/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Erick Mercado — Product">
-<meta property="og:description" content="Embedded systems engineer working on product. I make complicated systems feel like nothing at all.">
+<meta property="og:description" content="Embedded systems engineer working on product. Case studies on guest experience and consumer systems.">
 <meta property="og:url" content="https://erickmercado.com/">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230a0a0c'/><path d='M4 16 Q8 6 12 16 T20 16 T28 16' stroke='%232997ff' stroke-width='2.5' fill='none'/></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/site.css">
+
+<style>
+/* ============================================================
+   DESIGN TOKENS
+   Every colour and size on this page resolves to a variable
+   below. To re-theme the whole site, edit here only — you should
+   never need to hunt through the rules underneath.
+   ============================================================ */
+:root{
+  /* 60% — the canvas everything sits on */
+  --canvas:#0a0a0c;
+
+  /* 30% — structure and text */
+  --surface:#131316;
+  --surface-lift:#1a1a1f;
+  --hairline:rgba(255,255,255,0.09);
+  --hairline-strong:rgba(255,255,255,0.16);
+  --white:#f5f5f7;
+  --silver:#86868b;
+  --silver-dim:#5e5e63;
+  --body-text:#c8c9ce;
+
+  /* 10% — the accent. Focus points and CTAs only. If it starts
+     showing up everywhere, the hierarchy is broken. */
+  --accent:#2997ff;
+  --accent-dim:rgba(41,151,255,0.55);
+  --accent-glow:rgba(41,151,255,0.22);
+
+  /* type */
+  --sans:-apple-system,BlinkMacSystemFont,"SF Pro Display","Inter",system-ui,"Segoe UI",sans-serif;
+
+  /* layout */
+  --gut:clamp(1.25rem,5vw,3rem);   /* page side padding */
+  --max:70rem;                      /* content max width */
+  --measure:42rem;                  /* comfortable reading width */
+  --radius:22px;
+
+  /* motion — one easing curve for the whole page, so nothing
+     feels like it came from a different site */
+  --ease:cubic-bezier(0.16,1,0.3,1);
+}
+
+/* ============================================================
+   BASE
+   ============================================================ */
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
+
+body{
+  margin:0;
+  background:var(--canvas);
+  color:var(--white);
+  font-family:var(--sans);
+  font-size:clamp(1rem,0.96rem + 0.2vw,1.09rem);
+  line-height:1.55;
+  letter-spacing:-0.01em;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  overflow-x:hidden;
+}
+
+a{color:inherit;}
+img{max-width:100%;height:auto;display:block;}
+button{font:inherit;color:inherit;}
+
+.wrap{max-width:var(--max);margin:0 auto;padding-inline:var(--gut);}
+
+.visually-hidden{
+  position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;
+}
+
+.skip{
+  position:absolute;left:-9999px;top:0;background:var(--white);color:var(--canvas);
+  padding:0.7rem 1.1rem;font-size:0.85rem;font-weight:600;z-index:300;border-radius:0 0 8px 0;
+}
+.skip:focus{left:0;}
+
+:focus-visible{outline:2px solid var(--accent);outline-offset:4px;border-radius:6px;}
+::selection{background:var(--accent);color:#fff;}
+
+/* Ambient glow bleeding down from the top of the viewport.
+   Fixed, so it stays put while content scrolls over it. */
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(60rem 40rem at 50% -10%,var(--accent-glow),transparent 65%);
+  opacity:0.7;
+}
+body > *{position:relative;z-index:1;}
+
+/* ============================================================
+   NAV — sticky, frosted glass
+   ============================================================ */
+.nav{
+  position:sticky;top:0;z-index:200;
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;
+  padding:0.85rem clamp(1.25rem,5vw,3rem);
+  background:rgba(10,10,12,0.72);
+  -webkit-backdrop-filter:saturate(180%) blur(20px);
+  backdrop-filter:saturate(180%) blur(20px);
+  border-bottom:1px solid var(--hairline);
+  font-size:0.82rem;
+}
+.nav__mark{
+  color:var(--white);font-weight:600;letter-spacing:0.04em;
+  font-size:0.9rem;text-decoration:none;
+}
+.nav__links{display:flex;gap:clamp(1rem,3.5vw,2rem);}
+.nav__links a{color:var(--silver);text-decoration:none;transition:color 200ms ease;}
+.nav__links a:hover{color:var(--white);}
+
+/* ============================================================
+   HERO
+   The signature element is the trace: a signal that starts as
+   noise on the left and resolves into a clean waveform on the
+   right. Drawn by JS at the bottom of this file.
+   ============================================================ */
+.hero{
+  text-align:center;
+  padding-block:clamp(4rem,13vw,9rem) clamp(1rem,3vw,2rem);
+}
+.hero__title{
+  font-size:clamp(2.5rem,1.2rem + 6.8vw,6rem);
+  font-weight:700;line-height:1.03;letter-spacing:-0.035em;
+  margin:0 auto 1.5rem;max-width:16ch;
+  background:linear-gradient(180deg,#ffffff 0%,#b9bcc4 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.hero__title em{
+  font-style:normal;
+  background:linear-gradient(120deg,var(--accent) 0%,#7fc4ff 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.hero__sub{
+  font-size:clamp(1.05rem,1rem + 0.6vw,1.4rem);
+  line-height:1.42;letter-spacing:-0.015em;color:var(--silver);
+  max-width:34ch;margin:0 auto 2.4rem;
+}
+.hero__meta{
+  display:flex;flex-wrap:wrap;justify-content:center;gap:0.55rem;
+  font-size:0.78rem;color:var(--silver);
+}
+.hero__meta span{
+  border:1px solid var(--hairline);border-radius:100px;
+  padding:0.4rem 0.95rem;background:rgba(255,255,255,0.02);
+}
+.trace{
+  width:100%;height:clamp(90px,13vw,160px);display:block;
+  margin-top:clamp(2.5rem,6vw,4rem);
+  filter:drop-shadow(0 0 14px var(--accent-glow));
+}
+.trace path{fill:none;stroke:var(--accent);stroke-width:1.4;vector-effect:non-scaling-stroke;}
+.trace .trace__ghost{stroke:rgba(255,255,255,0.07);stroke-width:1;}
+
+/* ============================================================
+   SECTION SCAFFOLDING
+   ============================================================ */
+.section{padding-block:clamp(3.5rem,9vw,7rem);}
+.section__eyebrow{
+  font-size:0.75rem;font-weight:600;color:var(--accent);
+  margin:0 0 0.9rem;text-align:center;
+}
+.section__title{
+  font-size:clamp(1.8rem,1.2rem + 2.4vw,3.2rem);
+  font-weight:700;letter-spacing:-0.03em;line-height:1.07;
+  margin:0 auto 1rem;max-width:20ch;text-align:center;
+  background:linear-gradient(180deg,#ffffff 0%,#c4c7cd 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.section__lede{
+  color:var(--silver);max-width:44ch;margin:0 auto;
+  text-align:center;font-size:1.03rem;
+}
+.divider{height:1px;background:var(--hairline);border:0;margin:0;}
+
+/* ============================================================
+   CAROUSEL
+   Slides are stacked in the same box and crossfaded. Only the
+   active slide receives pointer and keyboard events.
+   ============================================================ */
+.showcase{padding-block:clamp(1.5rem,4vw,3rem) clamp(3rem,7vw,5rem);}
+
+.showcase__frame{
+  position:relative;border-radius:28px;overflow:hidden;
+  border:1px solid var(--hairline);background:var(--surface);
+  aspect-ratio:4/5;min-height:340px;
+}
+@media(min-width:640px){.showcase__frame{aspect-ratio:16/9;}}
+@media(min-width:1000px){.showcase__frame{aspect-ratio:21/9;}}
+
+.slide{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding:clamp(1.5rem,4vw,3.2rem);
+  text-decoration:none;color:inherit;
+  opacity:0;transform:scale(1.04);pointer-events:none;
+  transition:opacity 900ms var(--ease),transform 1400ms var(--ease);
+}
+.slide::before{
+  /* tint layer — the colour comes from the data array */
+  content:"";position:absolute;inset:0;
+  background:
+    linear-gradient(0deg,rgba(0,0,0,0.82) 0%,rgba(0,0,0,0.25) 55%,rgba(0,0,0,0.1) 100%),
+    radial-gradient(120% 140% at 15% 0%,var(--tint,#1c2b3a) 0%,var(--canvas) 70%);
+}
+.slide__bg{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.55;
+}
+.slide.is-active{opacity:1;transform:scale(1);pointer-events:auto;}
+.slide > *{position:relative;}
+
+.slide__eyebrow{
+  font-size:0.76rem;font-weight:600;color:var(--accent);margin:0 0 0.55rem;
+}
+.slide__title{
+  font-size:clamp(1.45rem,1.1rem + 2.2vw,2.5rem);
+  font-weight:700;letter-spacing:-0.03em;line-height:1.08;
+  margin:0 0 0.6rem;max-width:22ch;color:#fff;
+}
+.slide__summary{
+  font-size:clamp(0.94rem,0.9rem + 0.3vw,1.06rem);
+  color:rgba(255,255,255,0.74);max-width:44ch;margin:0 0 1.2rem;line-height:1.5;
+}
+.slide__cta{
+  font-size:0.86rem;font-weight:500;color:#fff;
+  display:inline-flex;align-items:center;gap:0.4rem;width:fit-content;
+}
+.slide__cta svg{width:14px;height:14px;transition:transform 240ms var(--ease);}
+.slide:hover .slide__cta svg,
+.slide:focus-visible .slide__cta svg{transform:translateX(4px);}
+
+.showcase__controls{
+  display:flex;align-items:center;justify-content:center;gap:0.9rem;margin-top:1.3rem;
+}
+.showcase__dots{display:flex;gap:0.5rem;}
+.dot{
+  width:8px;height:8px;border-radius:50%;padding:0;cursor:pointer;
+  background:var(--hairline-strong);border:0;
+  transition:background 240ms ease,transform 240ms var(--ease);
+}
+.dot:hover{background:var(--silver);}
+.dot.is-active{background:var(--accent);transform:scale(1.35);}
+
+.arrow{
+  width:36px;height:36px;border-radius:50%;cursor:pointer;
+  border:1px solid var(--hairline);background:var(--surface);color:var(--white);
+  display:flex;align-items:center;justify-content:center;
+  transition:border-color 200ms ease,background 200ms ease;
+}
+.arrow:hover{border-color:var(--hairline-strong);background:var(--surface-lift);}
+.arrow svg{width:15px;height:15px;}
+
+/* One featured item means nothing to navigate between — hide the
+   controls rather than showing buttons that do nothing. */
+.showcase[data-count="1"] .showcase__controls,
+.showcase[data-count="0"] .showcase__controls{display:none;}
+
+/* ============================================================
+   LIBRARY CONTROLS — search, category chips, sort
+   ============================================================ */
+.controls{
+  display:flex;flex-direction:column;gap:1rem;
+  margin-top:clamp(2rem,5vw,3rem);
+}
+
+.search{position:relative;max-width:26rem;width:100%;margin-inline:auto;}
+.search > svg{
+  position:absolute;left:1rem;top:50%;transform:translateY(-50%);
+  width:15px;height:15px;color:var(--silver-dim);pointer-events:none;
+}
+.search input{
+  width:100%;font-family:inherit;font-size:0.95rem;color:var(--white);
+  background:var(--surface);border:1px solid var(--hairline);
+  border-radius:100px;padding:0.75rem 2.6rem;
+  transition:border-color 200ms ease,background 200ms ease;
+}
+.search input::placeholder{color:var(--silver-dim);}
+.search input:focus{outline:none;border-color:var(--accent-dim);background:var(--surface-lift);}
+.search input:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+.search__clear{
+  position:absolute;right:0.55rem;top:50%;transform:translateY(-50%);
+  width:26px;height:26px;border-radius:50%;border:0;cursor:pointer;
+  background:var(--hairline);color:var(--white);
+  display:none;align-items:center;justify-content:center;
+}
+.search__clear.is-visible{display:flex;}
+.search__clear svg{width:11px;height:11px;}
+
+.filters{display:flex;flex-wrap:wrap;justify-content:center;gap:0.45rem;}
+.chip{
+  font-size:0.82rem;cursor:pointer;
+  background:var(--surface);color:var(--silver);
+  border:1px solid var(--hairline);border-radius:100px;
+  padding:0.45rem 1rem;
+  transition:color 200ms ease,border-color 200ms ease,background 200ms ease;
+}
+.chip:hover{color:var(--white);border-color:var(--hairline-strong);}
+.chip[aria-pressed="true"]{
+  color:var(--canvas);background:var(--white);border-color:var(--white);font-weight:500;
+}
+
+.sort{
+  display:flex;justify-content:center;align-items:center;gap:0.5rem;
+  font-size:0.8rem;color:var(--silver-dim);
+}
+.sort__group{
+  display:flex;gap:0.25rem;padding:0.25rem;
+  background:var(--surface);border:1px solid var(--hairline);border-radius:100px;
+}
+.sort__btn{
+  font-size:0.8rem;cursor:pointer;border:0;border-radius:100px;
+  background:transparent;color:var(--silver);padding:0.35rem 0.85rem;
+  transition:color 200ms ease,background 200ms ease;
+}
+.sort__btn:hover{color:var(--white);}
+.sort__btn[aria-pressed="true"]{background:var(--surface-lift);color:var(--white);}
+
+.count{text-align:center;font-size:0.78rem;color:var(--silver-dim);margin:1.5rem 0 0;}
+
+/* ============================================================
+   LIBRARY GRID
+   ============================================================ */
+.grid{
+  display:grid;grid-template-columns:1fr;gap:1rem;
+  margin-top:1.4rem;padding:0;list-style:none;
+}
+@media(min-width:720px){.grid{grid-template-columns:repeat(2,1fr);gap:1.1rem;}}
+
+.card{
+  display:flex;flex-direction:column;height:100%;
+  text-decoration:none;color:inherit;
+  background:var(--surface);border:1px solid var(--hairline);
+  border-radius:var(--radius);padding:clamp(1.4rem,3vw,2rem);
+  transition:border-color 320ms var(--ease),transform 320ms var(--ease),background 320ms var(--ease);
+}
+.card:hover,.card:focus-visible{
+  border-color:var(--accent-dim);background:var(--surface-lift);transform:translateY(-3px);
+}
+.card__top{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:0.75rem;margin-bottom:1rem;
+}
+.card__category{
+  font-size:0.73rem;color:var(--silver);
+  border:1px solid var(--hairline);border-radius:100px;padding:0.28rem 0.75rem;
+}
+.card__date{font-size:0.73rem;color:var(--silver-dim);white-space:nowrap;}
+.card__title{
+  font-size:clamp(1.2rem,1.05rem + 0.7vw,1.5rem);
+  font-weight:650;letter-spacing:-0.028em;line-height:1.14;
+  margin:0 0 0.65rem;color:var(--white);
+}
+.card__summary{
+  font-size:0.94rem;color:var(--silver);line-height:1.5;margin:0 0 1.3rem;flex:1;
+}
+.card__cta{
+  font-size:0.84rem;font-weight:500;color:var(--accent);
+  display:inline-flex;align-items:center;gap:0.35rem;
+}
+.card__cta svg{width:13px;height:13px;transition:transform 240ms var(--ease);}
+.card:hover .card__cta svg{transform:translateX(4px);}
+
+/* Draft badge — an honest label for work that isn't finished.
+   Delete the draft entries from the data array and this never renders. */
+.badge{
+  font-size:0.68rem;font-weight:600;letter-spacing:0.02em;
+  color:var(--accent);border:1px solid var(--accent-dim);
+  border-radius:100px;padding:0.2rem 0.6rem;
+}
+.card--draft{opacity:0.62;}
+.card--draft:hover{opacity:1;}
+
+/* Empty state — say what happened, and give a way out. */
+.empty{
+  text-align:center;padding:clamp(2.5rem,7vw,4.5rem) 1rem;
+  border:1px dashed var(--hairline);border-radius:var(--radius);margin-top:1.4rem;
+}
+.empty p{color:var(--silver);margin:0 0 1.2rem;}
+.empty button{
+  font-size:0.86rem;cursor:pointer;color:var(--white);
+  background:transparent;border:1px solid var(--hairline-strong);
+  border-radius:100px;padding:0.55rem 1.3rem;
+  transition:border-color 200ms ease,background 200ms ease;
+}
+.empty button:hover{border-color:var(--accent);background:var(--surface);}
+
+/* ============================================================
+   ABOUT
+   ============================================================ */
+.about{
+  display:grid;grid-template-columns:1fr;
+  gap:clamp(1.8rem,4vw,3rem);align-items:start;
+  margin-top:clamp(2rem,5vw,3rem);
+}
+@media(min-width:880px){.about{grid-template-columns:1.5fr 1fr;}}
+
+.about__body{max-width:var(--measure);}
+.about__body p{color:var(--body-text);line-height:1.62;margin:0 0 1.2rem;}
+.about__body p:last-child{margin-bottom:0;}
+.about__body strong{color:var(--white);font-weight:600;}
+.about__body a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--accent-dim);}
+.about__body a:hover{border-bottom-color:var(--accent);}
+
+/* Spec-sheet sidecar */
+.specs{
+  background:var(--surface);border:1px solid var(--hairline);
+  border-radius:var(--radius);padding:clamp(1.3rem,2.6vw,1.8rem);
+  position:sticky;top:5rem;
+}
+.specs h3{font-size:0.76rem;font-weight:600;color:var(--silver);margin:0 0 1rem;}
+.specs dl{margin:0;}
+.specs div{padding-block:0.75rem;border-bottom:1px solid var(--hairline);}
+.specs div:last-child{border-bottom:0;padding-bottom:0;}
+.specs dt{font-size:0.74rem;color:var(--silver-dim);margin-bottom:0.2rem;}
+.specs dd{margin:0;font-size:0.92rem;color:var(--white);line-height:1.4;}
+
+/* ============================================================
+   CONTACT
+   ============================================================ */
+.contact{border-top:1px solid var(--hairline);}
+.pills{display:flex;flex-wrap:wrap;justify-content:center;gap:0.65rem;margin-top:2.2rem;}
+.pill{
+  font-size:0.92rem;text-decoration:none;color:var(--white);
+  border:1px solid var(--hairline);border-radius:100px;padding:0.7rem 1.5rem;
+  transition:border-color 240ms ease,background 240ms ease;
+}
+.pill:hover{border-color:var(--hairline-strong);background:var(--surface);}
+.pill--primary{
+  background:var(--accent);border-color:var(--accent);color:#fff;font-weight:500;
+  box-shadow:0 0 28px var(--accent-glow);
+}
+.pill--primary:hover{background:#1c88f5;border-color:#1c88f5;color:#fff;}
+
+.colophon{
+  text-align:center;font-size:0.75rem;color:var(--silver-dim);
+  padding-block:1.8rem 2.8rem;border-top:1px solid var(--hairline);
+}
+
+/* ============================================================
+   MOTION
+   .reveal is applied by JS, then .is-visible toggles on scroll.
+   ============================================================ */
+.reveal{
+  opacity:0;transform:translateY(26px);
+  transition:opacity 900ms var(--ease),transform 900ms var(--ease);
+}
+.reveal.is-visible{opacity:1;transform:none;}
+
+/* Cards fade in staggered on every re-render of the library.
+   --i is set inline per card so the delay follows result order. */
+@keyframes cardIn{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
+.grid li{animation:cardIn 520ms var(--ease) both;animation-delay:calc(var(--i,0) * 45ms);}
+
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto;}
+  *{animation:none!important;transition-duration:1ms!important;}
+  .reveal{opacity:1!important;transform:none!important;}
+  .slide{transform:none!important;}
+}
+</style>
 </head>
-<body data-page="home">
+
+<body>
 
 <a class="skip" href="#main">Skip to content</a>
 
-<!-- ===== HEADER (identical on every page — update all pages together) ===== -->
-<header class="wrap masthead">
-  <a class="mark" href="index.html">EM</a>
-  <nav>
-    <a href="work.html" data-nav="work">Work</a>
-    <a href="writing.html" data-nav="writing">Writing</a>
-    <a href="about.html" data-nav="about">About</a>
+<header class="nav">
+  <a class="nav__mark" href="#top">EM</a>
+  <nav class="nav__links" aria-label="Primary">
+    <a href="#work">Work</a>
+    <a href="#about">About</a>
     <a href="#contact">Contact</a>
   </nav>
 </header>
-<!-- ===== /HEADER ===== -->
 
 <main id="main">
 
-  <section class="wrap hero">
-    <h1>I make complicated systems feel like <em>nothing at all.</em></h1>
-    <p class="lede">Embedded systems engineer moving into product. I spend my days on software where the user should never have to think about what's underneath — <strong>and that's the same job as product.</strong></p>
-    <div class="meta">
-      <span>Los Angeles, CA</span>
-      <span>Embedded / EW → Product</span>
-      <span>Open to PM roles</span>
+  <!-- ===================== HERO ===================== -->
+  <section class="wrap hero" id="top">
+    <h1 class="hero__title">I make complicated systems feel like <em>nothing at all.</em></h1>
+    <p class="hero__sub">Embedded systems engineer working on product, in Los Angeles.</p>
+    <div class="hero__meta">
+      <span>Guest experience</span>
+      <span>Consumer platforms</span>
+      <span>Real-time systems</span>
     </div>
     <svg class="trace" viewBox="0 0 1200 160" preserveAspectRatio="none" aria-hidden="true">
-      <path class="ghost" d="M0,80 L1200,80"></path>
-      <path id="sig" d=""></path>
+      <path class="trace__ghost" d="M0,80 L1200,80"></path>
+      <path id="traceLine" d=""></path>
     </svg>
   </section>
 
-  <hr class="rule">
-
-  <section class="wrap band">
-    <p class="eyebrow">The intersection</p>
-    <h2>Two things that don't usually show up on the same résumé.</h2>
-    <div class="pair">
-      <div class="pane">
-        <h3>What I do now</h3>
-        <p>Firmware and real-time systems in electronic warfare. Constrained resources, hard timing requirements, no room for a system that degrades badly. The user never sees any of it, and that's the point.</p>
-      </div>
-      <div class="pane right">
-        <h3>What I'm building toward</h3>
-        <p>Consumer and guest experience products. The kind where thousands of people hit a shared, contested system at once and it either feels effortless or it ruins their day.</p>
-      </div>
+  <!-- ===================== CAROUSEL ===================== -->
+  <section class="wrap showcase" id="showcase"
+           aria-roledescription="carousel" aria-label="Featured case studies">
+    <div class="showcase__frame">
+      <div class="showcase__track" id="carouselTrack"><!-- slides injected by JS --></div>
     </div>
-    <p class="bridge">Both are the same problem: <span>a system under load that has to disappear</span> for the person using it.</p>
+    <div class="showcase__controls">
+      <button class="arrow" id="prevSlide" aria-label="Previous case study">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
+      </button>
+      <div class="showcase__dots" id="carouselDots"></div>
+      <button class="arrow" id="nextSlide" aria-label="Next case study">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+      </button>
+    </div>
   </section>
 
-  <hr class="rule">
+  <hr class="divider">
 
-  <section class="wrap band">
-    <p class="eyebrow">Selected work</p>
-    <h2>Case studies.</h2>
-    <p>Self-directed product work. Each one starts from a problem I could go observe in person, and states its assumptions instead of hiding them.</p>
+  <!-- ===================== LIBRARY ===================== -->
+  <section class="wrap section" id="work">
+    <p class="section__eyebrow">Work</p>
+    <h2 class="section__title">Case studies.</h2>
+    <p class="section__lede">Self-directed product work. Each one starts from a problem I could go observe in person, and states its assumptions instead of hiding them.</p>
 
-    <div style="margin-top:clamp(1.6rem,4vw,3rem)">
+    <div class="controls">
+      <div class="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>
+        </svg>
+        <label class="visually-hidden" for="searchInput">Search case studies</label>
+        <input id="searchInput" type="search" placeholder="Search case studies" autocomplete="off">
+        <button class="search__clear" id="searchClear" aria-label="Clear search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+      </div>
 
-      <!-- Newest case study first. Copy this whole <a> block to add another. -->
-      <a class="entry" href="work/disneyland-app.html">
-        <div class="entry-head">
-          <h3>Killing the "designated scroller"</h3>
-          <span class="tag">Disneyland app · 2026</span>
+      <div class="filters" id="filterChips" role="group" aria-label="Filter by category"></div>
+
+      <div class="sort">
+        <span id="sortLabel">Sort</span>
+        <div class="sort__group" role="group" aria-labelledby="sortLabel">
+          <button class="sort__btn" data-sort="newest" aria-pressed="true">Newest</button>
+          <button class="sort__btn" data-sort="oldest" aria-pressed="false">Oldest</button>
+          <button class="sort__btn" data-sort="alpha" aria-pressed="false">A–Z</button>
         </div>
-        <p>Every party at Disneyland has one person who spends the day refreshing an app instead of being on vacation. Why the line-skipping system produces that behavior, and what it would take to deliver the outcome without the operation.</p>
-        <dl class="readout">
-          <div><dt>Problem</dt><dd>Attention tax</dd></div>
-          <div><dt>Proposal</dt><dd>Park Autopilot</dd></div>
-          <div><dt>North star</dt><dd>Rides ÷ taps</dd></div>
-          <div><dt>Method</dt><dd>Field study</dd></div>
-        </dl>
-        <span class="more">Read the case study →</span>
-      </a>
-
+      </div>
     </div>
 
-    <p style="margin-top:2.4rem"><a class="more" href="work.html" style="margin-top:0">All work →</a></p>
+    <p class="count" id="resultCount" aria-live="polite"></p>
+    <ul class="grid" id="libraryGrid"></ul>
+    <div id="emptyState"></div>
   </section>
 
-  <hr class="rule">
+  <hr class="divider">
 
-  <section class="wrap band">
-    <p class="eyebrow">How I work</p>
-    <h2>Three things I believe about product.</h2>
-    <div class="principles">
-      <div>
-        <h3>Go see it yourself</h3>
-        <p>Secondhand problems produce secondhand solutions. If I can stand where the user stands and count what actually happens, I do that before I write anything down.</p>
+  <!-- ===================== ABOUT ===================== -->
+  <section class="wrap section" id="about">
+    <p class="section__eyebrow">About</p>
+    <h2 class="section__title">Erick Mercado</h2>
+
+    <div class="about">
+      <div class="about__body">
+        <p>I write embedded software for electronic warfare systems in Southern California. Fixed memory, fixed power, deadlines measured in microseconds. The best possible outcome is that the person relying on it never once has to think about the thing I built — <strong>which is also the job in product.</strong></p>
+
+        <p>I'm moving into product because the decisions I found most interesting were happening upstream of me: which problem we picked, who we picked it for, and what we were willing to trade away. I've spent the last stretch of my career pushing toward those conversations — writing internal proposals, taking them to chief engineers and program leadership, and learning that the technical argument is rarely the one that decides anything.</p>
+
+        <p>What I'm looking for: products where a lot of people use a shared, constrained system at the same time, and the experience either holds up or falls apart in public. Theme parks and live venues are the clearest version of that. Consumer platforms with hard systems underneath are the same shape of problem.</p>
+
+        <p>The <a href="#work">case studies</a> are the fastest way to see how I think.</p>
       </div>
-      <div>
-        <h3>Name what you won't build</h3>
-        <p>Anyone can add features. The judgment is in the refusals — and in saying out loud which metric would prove the idea wrong.</p>
-      </div>
-      <div>
-        <h3>Label the guesses</h3>
-        <p>Every proposal rests on assumptions. Writing them down as assumptions is the difference between a plan you can test and a plan you can only defend.</p>
-      </div>
+
+      <aside class="specs">
+        <h3>Quick facts</h3>
+        <dl>
+          <div><dt>Now</dt><dd>Embedded software engineer, electronic warfare</dd></div>
+          <div><dt>Based</dt><dd>Los Angeles, California</dd></div>
+          <div><dt>Education</dt><dd>B.S. Computer Engineering, UC Irvine</dd></div>
+          <div><dt>Working in</dt><dd>C / C++, real-time systems, signal processing</dd></div>
+          <div><dt>Learning</dt><dd>SQL, experiment design, behavioral economics</dd></div>
+          <div><dt>Outside work</dt><dd>REPLACE — one or two real specifics</dd></div>
+        </dl>
+      </aside>
     </div>
   </section>
 
 </main>
 
-<!-- ===== FOOTER (identical on every page — update all pages together) ===== -->
+<!-- ===================== CONTACT ===================== -->
 <footer class="contact" id="contact">
-  <div class="wrap band">
-    <p class="eyebrow">Contact</p>
-    <h2>If you're building something people have to live inside, I'd like to hear about it.</h2>
-    <p class="narrow">Currently in Los Angeles, looking for product roles in guest experience, consumer platforms, or technical products where the systems work is genuinely hard.</p>
-    <div class="links">
-      <a href="mailto:erick.mercado2016@gmail.com">erick.mercado2016@gmail.com</a>
-      <a href="https://www.linkedin.com/in/erick-mercado/">LinkedIn</a>
-      <a href="resume.pdf">Résumé (PDF)</a>
+  <div class="wrap section">
+    <p class="section__eyebrow">Contact</p>
+    <h2 class="section__title">If you're building something people have to live inside, I'd like to hear about it.</h2>
+    <p class="section__lede">Currently in Los Angeles, looking for product roles in guest experience, consumer platforms, and technical products where the systems work is genuinely hard.</p>
+    <div class="pills">
+      <a class="pill pill--primary" href="mailto:REPLACE@example.com">Email me</a>
+      <a class="pill" href="https://linkedin.com/in/REPLACE">LinkedIn</a>
+      <a class="pill" href="resume.pdf">Résumé</a>
     </div>
   </div>
-  <div class="wrap colophon">
-    <span>ERICK MERCADO · LOS ANGELES · <span id="yr">2026</span></span>
-  </div>
+  <div class="colophon">ERICK MERCADO · LOS ANGELES · <span id="year">2026</span></div>
 </footer>
-<!-- ===== /FOOTER ===== -->
 
-<script src="assets/site.js"></script>
+<script>
+/* ================================================================
+   ██  EDIT HERE TO ADD A CASE STUDY  ██
+
+   This array is the single source of truth. The carousel, the grid,
+   the filter chips and the result count are all generated from it.
+   Add an object here and everything updates — you never edit the
+   HTML above.
+
+   Fields:
+     id        unique string
+     title     shown on the card and the slide
+     summary   one or two sentences, no more
+     category  free text. The filter chips build themselves from
+               whatever distinct values appear across all entries
+     date      ISO "YYYY-MM-DD". Drives the Newest / Oldest sort
+     url       where the card links. Relative paths are fine
+     image     optional background image for the slide. Leave ""
+               to fall back to the tint gradient
+     imageAlt  describe the image. Required if image is set
+     tint      hex for the slide's background gradient. Give each
+               entry a different one so the rotation reads as
+               distinct pieces of work
+     featured  true = appears in the top carousel
+     status    "published" or "draft". Draft entries render with a
+               visible badge and reduced opacity — honest, and a
+               reminder to finish them
+
+   NOTE: the two "draft" entries below are placeholders so you can
+   see search / filter / sort working with more than one item.
+   Delete them before you point erickmercado.com at this page.
+   ================================================================ */
+const CASE_STUDIES = [
+  {
+    id: "disneyland-app",
+    title: 'Killing the "designated scroller"',
+    summary: "Every party at Disneyland has one person who spends the day refreshing an app instead of being on vacation. Why paid line-skipping produces that behaviour, and what it would take to deliver the outcome without the operation.",
+    category: "Guest Experience",
+    date: "2026-07-20",
+    url: "work/disneyland-app.html",
+    image: "",
+    imageAlt: "",
+    tint: "#123049",
+    featured: true,
+    status: "published"
+  },
+  {
+    id: "placeholder-two",
+    title: "Placeholder — your second case study",
+    summary: "Delete this entry once you have a real second piece. It exists so you can see the search, filter and sort controls working against more than one item.",
+    category: "Consumer Platforms",
+    date: "2026-05-02",
+    url: "#work",
+    image: "",
+    imageAlt: "",
+    tint: "#2a1830",
+    featured: false,
+    status: "draft"
+  },
+  {
+    id: "placeholder-three",
+    title: "Placeholder — your third case study",
+    summary: "Same as above. Two strong case studies beat five thin ones, so don't rush to fill every slot.",
+    category: "Internal Tools",
+    date: "2026-02-14",
+    url: "#work",
+    image: "",
+    imageAlt: "",
+    tint: "#1b2f22",
+    featured: false,
+    status: "draft"
+  }
+];
+
+/* ================================================================
+   Everything below is machinery. You shouldn't need to touch it to
+   add or remove case studies.
+   ================================================================ */
+(function () {
+  "use strict";
+
+  const prefersReducedMotion =
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* Escape text before putting it into innerHTML, so a stray < or &
+     in your copy can't break the markup. */
+  function esc(str) {
+    return String(str)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  }
+
+  /* "2026-07-20" -> "July 2026". Parsed by hand rather than with
+     new Date(), which shifts the day across timezones. */
+  const MONTHS = ["January","February","March","April","May","June",
+                  "July","August","September","October","November","December"];
+  function prettyDate(iso) {
+    const parts = String(iso).split("-");
+    const month = MONTHS[parseInt(parts[1], 10) - 1] || "";
+    return month ? month + " " + parts[0] : parts[0];
+  }
+
+  const ARROW_SVG =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+
+  document.getElementById("year").textContent = new Date().getFullYear();
+
+  /* ==============================================================
+     1. CAROUSEL
+     Slides sit stacked on top of each other; we crossfade by
+     toggling one class. Inactive slides are hidden from both the
+     pointer and the keyboard, so you can't tab into an invisible
+     link.
+     ============================================================== */
+  const carousel = {
+    root: document.getElementById("showcase"),
+    track: document.getElementById("carouselTrack"),
+    dotsBox: document.getElementById("carouselDots"),
+    prev: document.getElementById("prevSlide"),
+    next: document.getElementById("nextSlide"),
+    items: CASE_STUDIES.filter(c => c.featured && c.status === "published"),
+    index: 0,
+    timer: null,
+    INTERVAL: 5500
+  };
+
+  function buildCarousel() {
+    const { items, track, dotsBox, root } = carousel;
+    root.setAttribute("data-count", items.length);
+
+    if (!items.length) {
+      root.style.display = "none";
+      return;
+    }
+
+    track.innerHTML = items.map((c, i) => {
+      const bg = c.image
+        ? '<img class="slide__bg" src="' + esc(c.image) + '" alt="' + esc(c.imageAlt || "") + '">'
+        : "";
+      return (
+        '<a class="slide' + (i === 0 ? " is-active" : "") + '"' +
+        ' href="' + esc(c.url) + '"' +
+        ' style="--tint:' + esc(c.tint) + '"' +
+        ' aria-roledescription="slide"' +
+        ' aria-label="' + (i + 1) + " of " + items.length + '"' +
+        (i === 0 ? "" : ' aria-hidden="true" tabindex="-1"') + ">" +
+          bg +
+          '<p class="slide__eyebrow">' + esc(c.category) + "</p>" +
+          '<h3 class="slide__title">' + esc(c.title) + "</h3>" +
+          '<p class="slide__summary">' + esc(c.summary) + "</p>" +
+          '<span class="slide__cta">View case study' + ARROW_SVG + "</span>" +
+        "</a>"
+      );
+    }).join("");
+
+    dotsBox.innerHTML = items.map((c, i) =>
+      '<button class="dot' + (i === 0 ? " is-active" : "") + '"' +
+      ' data-index="' + i + '"' +
+      ' aria-label="Show ' + esc(c.title) + '"></button>'
+    ).join("");
+
+    dotsBox.querySelectorAll(".dot").forEach(dot => {
+      dot.addEventListener("click", () => {
+        goToSlide(parseInt(dot.dataset.index, 10));
+        restartAutoRotate();
+      });
+    });
+  }
+
+  function goToSlide(next) {
+    const slides = carousel.track.querySelectorAll(".slide");
+    const dots = carousel.dotsBox.querySelectorAll(".dot");
+    if (!slides.length) return;
+
+    carousel.index = (next + slides.length) % slides.length;
+
+    slides.forEach((slide, i) => {
+      const active = i === carousel.index;
+      slide.classList.toggle("is-active", active);
+      if (active) {
+        slide.removeAttribute("aria-hidden");
+        slide.removeAttribute("tabindex");
+      } else {
+        slide.setAttribute("aria-hidden", "true");
+        slide.setAttribute("tabindex", "-1");
+      }
+    });
+    dots.forEach((dot, i) => dot.classList.toggle("is-active", i === carousel.index));
+  }
+
+  function restartAutoRotate() {
+    clearInterval(carousel.timer);
+    /* Nothing to rotate through, or the visitor asked for less motion. */
+    if (carousel.items.length < 2 || prefersReducedMotion) return;
+    carousel.timer = setInterval(() => goToSlide(carousel.index + 1), carousel.INTERVAL);
+  }
+
+  buildCarousel();
+
+  if (carousel.items.length) {
+    carousel.next.addEventListener("click", () => { goToSlide(carousel.index + 1); restartAutoRotate(); });
+    carousel.prev.addEventListener("click", () => { goToSlide(carousel.index - 1); restartAutoRotate(); });
+
+    /* Don't rotate out from under someone who is reading or tabbing. */
+    carousel.root.addEventListener("mouseenter", () => clearInterval(carousel.timer));
+    carousel.root.addEventListener("mouseleave", restartAutoRotate);
+    carousel.root.addEventListener("focusin", () => clearInterval(carousel.timer));
+    carousel.root.addEventListener("focusout", restartAutoRotate);
+
+    /* Arrow keys when anything in the carousel has focus. */
+    carousel.root.addEventListener("keydown", e => {
+      if (e.key === "ArrowRight") { goToSlide(carousel.index + 1); restartAutoRotate(); }
+      if (e.key === "ArrowLeft")  { goToSlide(carousel.index - 1); restartAutoRotate(); }
+    });
+
+    /* Swipe. 40px of horizontal travel counts as intent. */
+    let touchStartX = null;
+    carousel.root.addEventListener("touchstart", e => {
+      touchStartX = e.touches[0].clientX;
+    }, { passive: true });
+    carousel.root.addEventListener("touchend", e => {
+      if (touchStartX === null) return;
+      const dx = e.changedTouches[0].clientX - touchStartX;
+      if (Math.abs(dx) > 40) { goToSlide(carousel.index + (dx < 0 ? 1 : -1)); restartAutoRotate(); }
+      touchStartX = null;
+    }, { passive: true });
+
+    /* Stop the timer when the tab is in the background. */
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) clearInterval(carousel.timer);
+      else restartAutoRotate();
+    });
+
+    restartAutoRotate();
+  }
+
+  /* ==============================================================
+     2. LIBRARY — search, filter, sort
+     One `state` object holds what the visitor has chosen. Any change
+     writes to state and calls render(). There is no other path.
+     ============================================================== */
+  const state = { query: "", category: "All", sort: "newest" };
+
+  const gridEl = document.getElementById("libraryGrid");
+  const emptyEl = document.getElementById("emptyState");
+  const countEl = document.getElementById("resultCount");
+  const chipsEl = document.getElementById("filterChips");
+  const searchEl = document.getElementById("searchInput");
+  const clearEl = document.getElementById("searchClear");
+
+  /* Build the chips from whatever categories exist in the data. */
+  const categories = ["All"].concat(
+    CASE_STUDIES.map(c => c.category)
+      .filter((cat, i, arr) => arr.indexOf(cat) === i)
+      .sort()
+  );
+
+  chipsEl.innerHTML = categories.map(cat =>
+    '<button class="chip" data-category="' + esc(cat) + '"' +
+    ' aria-pressed="' + (cat === "All") + '">' + esc(cat) + "</button>"
+  ).join("");
+
+  chipsEl.querySelectorAll(".chip").forEach(chip => {
+    chip.addEventListener("click", () => {
+      state.category = chip.dataset.category;
+      chipsEl.querySelectorAll(".chip").forEach(c =>
+        c.setAttribute("aria-pressed", String(c === chip))
+      );
+      render();
+    });
+  });
+
+  document.querySelectorAll(".sort__btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      state.sort = btn.dataset.sort;
+      document.querySelectorAll(".sort__btn").forEach(b =>
+        b.setAttribute("aria-pressed", String(b === btn))
+      );
+      render();
+    });
+  });
+
+  searchEl.addEventListener("input", () => {
+    state.query = searchEl.value.trim().toLowerCase();
+    clearEl.classList.toggle("is-visible", searchEl.value.length > 0);
+    render();
+  });
+
+  clearEl.addEventListener("click", () => {
+    searchEl.value = "";
+    state.query = "";
+    clearEl.classList.remove("is-visible");
+    searchEl.focus();
+    render();
+  });
+
+  function resetAll() {
+    state.query = "";
+    state.category = "All";
+    searchEl.value = "";
+    clearEl.classList.remove("is-visible");
+    chipsEl.querySelectorAll(".chip").forEach(c =>
+      c.setAttribute("aria-pressed", String(c.dataset.category === "All"))
+    );
+    render();
+  }
+
+  function getVisible() {
+    let list = CASE_STUDIES.slice();
+
+    if (state.category !== "All") {
+      list = list.filter(c => c.category === state.category);
+    }
+
+    if (state.query) {
+      list = list.filter(c =>
+        (c.title + " " + c.summary + " " + c.category).toLowerCase().includes(state.query)
+      );
+    }
+
+    if (state.sort === "alpha") {
+      /* Ignore a leading quote so '"Killing the..."' sorts under K. */
+      list.sort((a, b) =>
+        a.title.replace(/^["']/, "").localeCompare(b.title.replace(/^["']/, ""))
+      );
+    } else {
+      list.sort((a, b) =>
+        state.sort === "oldest" ? a.date.localeCompare(b.date) : b.date.localeCompare(a.date)
+      );
+    }
+
+    return list;
+  }
+
+  function render() {
+    const list = getVisible();
+
+    countEl.textContent = list.length
+      ? list.length + (list.length === 1 ? " case study" : " case studies")
+      : "";
+
+    gridEl.innerHTML = list.map((c, i) => {
+      const draft = c.status === "draft";
+      return (
+        '<li style="--i:' + i + '">' +
+          '<a class="card' + (draft ? " card--draft" : "") + '" href="' + esc(c.url) + '">' +
+            '<div class="card__top">' +
+              '<span class="card__category">' + esc(c.category) + "</span>" +
+              (draft
+                ? '<span class="badge">Draft</span>'
+                : '<span class="card__date">' + esc(prettyDate(c.date)) + "</span>") +
+            "</div>" +
+            '<h3 class="card__title">' + esc(c.title) + "</h3>" +
+            '<p class="card__summary">' + esc(c.summary) + "</p>" +
+            '<span class="card__cta">' + (draft ? "In progress" : "Read the case study") + ARROW_SVG + "</span>" +
+          "</a>" +
+        "</li>"
+      );
+    }).join("");
+
+    /* Empty state: say what happened, and give a way out. */
+    if (!list.length) {
+      emptyEl.innerHTML =
+        '<div class="empty">' +
+          "<p>No case studies match that search.</p>" +
+          '<button type="button" id="resetFilters">Show everything</button>' +
+        "</div>";
+      document.getElementById("resetFilters").addEventListener("click", resetAll);
+    } else {
+      emptyEl.innerHTML = "";
+    }
+  }
+
+  render();
+
+  /* ==============================================================
+     3. SCROLL REVEALS
+     Tagged by selector so new sections animate without extra markup.
+     Purely decorative — content is readable without it.
+     ============================================================== */
+  if (!prefersReducedMotion && "IntersectionObserver" in window) {
+    const targets = document.querySelectorAll(
+      ".section__eyebrow, .section__title, .section__lede, .controls, .about__body, .specs, .pills"
+    );
+    targets.forEach(el => el.classList.add("reveal"));
+
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: "0px 0px -8% 0px" });
+
+    targets.forEach(el => io.observe(el));
+  }
+
+  /* ==============================================================
+     4. THE TRACE
+     The hero signature: noise on the left that resolves into a clean
+     waveform on the right. Redrawn each frame by rewriting one SVG
+     path's "d" attribute — cheap, and no library needed.
+     ============================================================== */
+  const traceLine = document.getElementById("traceLine");
+  if (traceLine) {
+    const WIDTH = 1200, MID = 80, SEGMENTS = 240;
+    let t = 0, running = true;
+
+    function buildPath(time) {
+      const points = [];
+      for (let i = 0; i <= SEGMENTS; i++) {
+        const x = (i / SEGMENTS) * WIDTH;
+        const settled = i / SEGMENTS;      // 0 = noisy, 1 = resolved
+        const noise = 1 - settled;
+
+        const carrier = Math.sin(i * 0.11 + time) * 26 * (0.35 + settled * 0.65);
+        const jitter = (Math.sin(i * 1.7 + time * 2.3) + Math.sin(i * 3.1 - time * 1.4))
+                       * 13 * noise * noise;
+        const drift = Math.sin(i * 0.02 - time * 0.4) * 9 * noise;
+
+        points.push(x.toFixed(1) + "," + (MID + carrier + jitter + drift).toFixed(1));
+      }
+      return "M" + points.join(" L");
+    }
+
+    traceLine.setAttribute("d", buildPath(0));
+
+    if (!prefersReducedMotion) {
+      const frame = () => {
+        if (!running) return;
+        t += 0.016;
+        traceLine.setAttribute("d", buildPath(t));
+        requestAnimationFrame(frame);
+      };
+      document.addEventListener("visibilitychange", () => {
+        running = !document.hidden;
+        if (running) requestAnimationFrame(frame);
+      });
+      requestAnimationFrame(frame);
+    }
+  }
+})();
+</script>
+
 </body>
 </html>
