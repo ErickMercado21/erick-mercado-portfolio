@@ -161,13 +161,41 @@ body > *{position:relative;z-index:1;}
   border:1px solid var(--hairline);border-radius:100px;
   padding:0.4rem 0.95rem;background:rgba(255,255,255,0.02);
 }
-.trace{
-  width:100%;height:clamp(90px,13vw,160px);display:block;
+/* The stage holds two layers: the stretched waveform, and the
+   surfer sitting on top of it at its own true aspect ratio. */
+.trace-stage{
+  position:relative;
   margin-top:clamp(2.5rem,6vw,4rem);
+  height:clamp(110px,15vw,180px);
+}
+.trace{
+  width:100%;height:100%;display:block;
   filter:drop-shadow(0 0 14px var(--accent-glow));
 }
 .trace path{fill:none;stroke:var(--accent);stroke-width:1.4;vector-effect:non-scaling-stroke;}
 .trace .trace__ghost{stroke:rgba(255,255,255,0.07);stroke-width:1;}
+
+/* The surfer is a separate element so it never gets stretched by
+   the waveform's preserveAspectRatio="none". JS parks its bottom
+   edge on the wave and tilts it to match the local slope. */
+.surfer{
+  position:absolute;left:0;top:0;
+  width:clamp(38px,5.2vw,62px);
+  transform-origin:50% 100%;   /* pivot at the board, not the head */
+  pointer-events:none;
+  will-change:transform;
+  filter:drop-shadow(0 3px 10px rgba(0,0,0,0.5));
+}
+.surfer svg{width:100%;height:auto;display:block;overflow:visible;}
+
+/* Robot palette — kept separate from the site tokens so the bot
+   can be recoloured without touching anything else. */
+.bot-shell{fill:#d7d9de;}
+.bot-shell-light{fill:var(--white);}
+.bot-limb{stroke:#b9bcc4;stroke-linecap:round;fill:none;}
+.bot-lit{fill:var(--accent);}
+.bot-board{fill:var(--accent);}
+.bot-board-stripe{stroke:rgba(255,255,255,0.55);stroke-linecap:round;}
 
 /* ============================================================
    SECTION SCAFFOLDING
@@ -501,10 +529,44 @@ body > *{position:relative;z-index:1;}
       <span>Consumer platforms</span>
       <span>Real-time systems</span>
     </div>
-    <svg class="trace" viewBox="0 0 1200 160" preserveAspectRatio="none" aria-hidden="true">
-      <path class="trace__ghost" d="M0,80 L1200,80"></path>
-      <path id="traceLine" d=""></path>
-    </svg>
+    <div class="trace-stage" aria-hidden="true">
+      <svg class="trace" viewBox="0 0 1200 160" preserveAspectRatio="none">
+        <path class="trace__ghost" d="M0,80 L1200,80"></path>
+        <path id="traceLine" d=""></path>
+      </svg>
+
+      <!-- The robot. Drawn once here; positioned every frame by JS. -->
+      <div class="surfer" id="surfer">
+        <svg viewBox="0 0 64 78">
+          <!-- board -->
+          <ellipse class="bot-board" cx="32" cy="70" rx="27" ry="4"/>
+          <line class="bot-board-stripe" x1="12" y1="70" x2="52" y2="70" stroke-width="1"/>
+
+          <!-- legs, slightly splayed for a surf stance -->
+          <line class="bot-limb" x1="28" y1="54" x2="24" y2="66" stroke-width="5"/>
+          <line class="bot-limb" x1="36" y1="54" x2="41" y2="66" stroke-width="5"/>
+
+          <!-- arms: one out for balance, one trailing back -->
+          <line class="bot-limb" x1="23" y1="38" x2="8"  y2="28" stroke-width="4.5"/>
+          <line class="bot-limb" x1="41" y1="38" x2="55" y2="46" stroke-width="4.5"/>
+
+          <!-- torso -->
+          <rect class="bot-shell" x="22" y="32" width="20" height="24" rx="7"/>
+          <circle class="bot-lit" cx="32" cy="42" r="2.6"/>
+
+          <!-- neck -->
+          <rect class="bot-shell" x="30" y="28" width="4" height="5"/>
+
+          <!-- head + visor -->
+          <rect class="bot-shell-light" x="23" y="12" width="18" height="17" rx="6"/>
+          <rect class="bot-lit" x="26" y="17" width="12" height="5" rx="2.5"/>
+
+          <!-- antenna -->
+          <line class="bot-limb" x1="32" y1="12" x2="32" y2="5" stroke-width="1.6"/>
+          <circle class="bot-lit" cx="32" cy="4" r="2.2"/>
+        </svg>
+      </div>
+    </div>
   </section>
 
   <!-- ===================== CAROUSEL ===================== -->
@@ -1009,46 +1071,130 @@ const CASE_STUDIES = [
   }
 
   /* ==============================================================
-     4. THE TRACE
-     The hero signature: noise on the left that resolves into a clean
-     waveform on the right. Redrawn each frame by rewriting one SVG
-     path's "d" attribute — cheap, and no library needed.
+     4. THE TRACE, AND THE ROBOT RIDING IT
+
+     The hero signature: a signal that starts as noise on the left
+     and resolves into a clean waveform on the right, with a small
+     robot surfing the resolved end of it.
+
+     Two layers, because they need different scaling:
+       - the wave is one SVG <path>, stretched to full width
+         (preserveAspectRatio="none"), redrawn each frame
+       - the robot is a separate element positioned in real pixels,
+         so it keeps its proportions at any viewport width
+
+     waveY() is the single source of truth for the curve. The path
+     builder samples it 240 times; the robot samples it three times
+     to find its footing and its tilt.
      ============================================================== */
   const traceLine = document.getElementById("traceLine");
+  const surfer = document.getElementById("surfer");
+  const stage = document.querySelector(".trace-stage");
+
   if (traceLine) {
-    const WIDTH = 1200, MID = 80, SEGMENTS = 240;
-    let t = 0, running = true;
+    const VB_W = 1200, VB_H = 160, MID = 80, SEGMENTS = 240;
+
+    /* Height of the wave at sample i (0..SEGMENTS), in viewBox units.
+       i may be fractional — the robot uses that to sample between
+       the points the path is actually drawn from. */
+    function waveY(i, time) {
+      const settled = i / SEGMENTS;        // 0 = noisy, 1 = resolved
+      const noise = 1 - settled;
+
+      const carrier = Math.sin(i * 0.11 + time) * 26 * (0.35 + settled * 0.65);
+      const jitter = (Math.sin(i * 1.7 + time * 2.3) + Math.sin(i * 3.1 - time * 1.4))
+                     * 13 * noise * noise;
+      const drift = Math.sin(i * 0.02 - time * 0.4) * 9 * noise;
+
+      return MID + carrier + jitter + drift;
+    }
 
     function buildPath(time) {
       const points = [];
       for (let i = 0; i <= SEGMENTS; i++) {
-        const x = (i / SEGMENTS) * WIDTH;
-        const settled = i / SEGMENTS;      // 0 = noisy, 1 = resolved
-        const noise = 1 - settled;
-
-        const carrier = Math.sin(i * 0.11 + time) * 26 * (0.35 + settled * 0.65);
-        const jitter = (Math.sin(i * 1.7 + time * 2.3) + Math.sin(i * 3.1 - time * 1.4))
-                       * 13 * noise * noise;
-        const drift = Math.sin(i * 0.02 - time * 0.4) * 9 * noise;
-
-        points.push(x.toFixed(1) + "," + (MID + carrier + jitter + drift).toFixed(1));
+        points.push(((i / SEGMENTS) * VB_W).toFixed(1) + "," + waveY(i, time).toFixed(1));
       }
       return "M" + points.join(" L");
     }
 
+    /* Pixel size of the stage. Cached, because reading it every
+       frame would force a layout on each tick. */
+    let stageW = 0, stageH = 0;
+    function measure() {
+      if (!stage) return;
+      const rect = stage.getBoundingClientRect();
+      stageW = rect.width;
+      stageH = rect.height;
+    }
+    measure();
+    window.addEventListener("resize", measure);
+
+    function placeSurfer(time) {
+      if (!surfer || !stageW) return;
+
+      /* Ride the resolved end of the signal, drifting slowly between
+         about 58% and 74% of the width so it reads as alive rather
+         than pinned. */
+      const ride = SEGMENTS * (0.66 + Math.sin(time * 0.22) * 0.08);
+
+      /* The board has length, so it rests on the chord across its own
+         footprint rather than on the slope at a single point. Sampling
+         wide also averages out the high-frequency jitter — measuring
+         at one point produced tilts past 60 degrees. */
+      const BOARD_HALF = 5;                       // half a board, in samples
+      const yHere = waveY(ride, time);
+      const yBack = waveY(ride - BOARD_HALF, time);
+      const yFwd = waveY(ride + BOARD_HALF, time);
+
+      /* Convert viewBox units to pixels. The two axes scale by
+         different amounts, so the slope has to be converted too —
+         otherwise the tilt is wrong on wide screens. */
+      const sx = stageW / VB_W;
+      const sy = stageH / VB_H;
+
+      const px = (ride / SEGMENTS) * VB_W * sx;
+      const py = yHere * sy;
+
+      const slopeVb = (yFwd - yBack) / (2 * BOARD_HALF * (VB_W / SEGMENTS));
+
+      /* A narrow viewport squashes the wave horizontally, which makes
+         the true tangent absurdly steep — on a phone it pegged at the
+         limit two frames out of three. Damping keeps the lean readable
+         at every width; the eye doesn't audit the tangent. */
+      const TILT_DAMP = 0.45;
+      let deg = Math.atan2(slopeVb * sy * TILT_DAMP, sx) * (180 / Math.PI);
+
+      /* Cap the lean. A surfer leans; a surfer does not go vertical. */
+      deg = Math.max(-26, Math.min(26, deg));
+
+      /* translate(-50%,-100%) parks the board's underside on the
+         line; transform-origin (set in CSS) pivots there too. */
+      surfer.style.transform =
+        "translate(" + px.toFixed(1) + "px," + py.toFixed(1) + "px)" +
+        " translate(-50%,-100%)" +
+        " rotate(" + deg.toFixed(2) + "deg)";
+    }
+
+    /* First frame, so the hero is never empty. */
     traceLine.setAttribute("d", buildPath(0));
+    placeSurfer(0);
 
     if (!prefersReducedMotion) {
+      let t = 0, running = true;
+
       const frame = () => {
         if (!running) return;
         t += 0.016;
         traceLine.setAttribute("d", buildPath(t));
+        placeSurfer(t);
         requestAnimationFrame(frame);
       };
+
       document.addEventListener("visibilitychange", () => {
         running = !document.hidden;
         if (running) requestAnimationFrame(frame);
       });
+
       requestAnimationFrame(frame);
     }
   }
