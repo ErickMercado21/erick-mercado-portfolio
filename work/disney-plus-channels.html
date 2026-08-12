@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Programming for One — Erick Mercado</title>
+<meta name="description" content="An executive case study on Disney+: why streaming lost the one thing linear television was good at, and what it would cost Disney to get it back.">
+<link rel="canonical" href="https://erickmercado.com/work/disney-plus-channels.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Programming for One">
+<meta property="og:description" content="Why streaming lost the one thing linear television was good at, and what it would cost Disney to get it back.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%231E223B'/><path d='M4 16 Q8 6 12 16 T20 16 T28 16' stroke='%23ED7F6E' stroke-width='3' fill='none'/><path d='M4 18 Q8 8 12 18 T20 18 T28 18' stroke='%2371649C' stroke-width='3' fill='none' opacity='.8'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bangers&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* Self-contained. Palette mirrors index.html — if you change the
+   eight colours there, paste the same values here. */
+:root{
+  --ink:#1E223B; --panel:#404272; --panel-lift:#4E5089; --paper:#F4EAE6;
+  --coral:#ED7F6E; --coral-lift:#F5A79A; --rose:#DB5266; --berry:#A64863;
+  --mauve:#C97CA4; --peri:#71649C; --deep:#4F0914;
+  --line:#121426; --text:#EFE6E9; --text-dim:#C2BAD6;
+  --display:"Anton",Impact,sans-serif;
+  --comic:"Bangers",cursive;
+  --body:"Inter",-apple-system,system-ui,sans-serif;
+  --gut:clamp(1.25rem,5vw,3rem); --measure:40rem; --snap:steps(4,end);
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
+body{margin:0;background:var(--ink);color:var(--text);font-family:var(--body);
+  font-size:clamp(1rem,0.96rem + 0.2vw,1.08rem);line-height:1.65;overflow-x:hidden;}
+a{color:inherit;}
+.wrap{max-width:72rem;margin:0 auto;padding-inline:var(--gut);}
+.skip{position:absolute;left:-9999px;top:0;background:var(--coral);color:var(--deep);
+  padding:0.7rem 1.1rem;font-weight:600;z-index:400;border:3px solid var(--line);}
+.skip:focus{left:0;}
+:focus-visible{outline:3px solid var(--coral);outline-offset:3px;}
+::selection{background:var(--rose);color:var(--paper);}
+
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:60;
+  background-image:radial-gradient(circle at center,rgba(237,127,110,0.18) 1px,transparent 1.3px);
+  background-size:5px 5px;mix-blend-mode:screen;opacity:0.55;}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(40rem 30rem at 12% 0%,rgba(64,66,114,0.55),transparent 62%),
+             radial-gradient(38rem 28rem at 88% 8%,rgba(166,72,99,0.34),transparent 62%);}
+body > *{position:relative;z-index:1;}
+
+.nav{position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-content:space-between;
+  gap:1rem;padding:0.7rem clamp(1.25rem,5vw,3rem);background:rgba(30,34,59,0.86);
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom:3px solid var(--line);}
+.nav__mark{font-family:var(--display);font-size:1.4rem;letter-spacing:0.04em;text-decoration:none;
+  color:var(--paper);text-shadow:2px 0 0 var(--peri),-2px 0 0 var(--coral);}
+.nav__links{display:flex;gap:clamp(0.9rem,3vw,1.9rem);}
+.nav__links a{font-family:var(--comic);font-size:1.05rem;letter-spacing:0.04em;
+  color:var(--text-dim);text-decoration:none;transition:color 120ms var(--snap);}
+.nav__links a:hover{color:var(--coral-lift);}
+
+.caption{display:inline-block;font-family:var(--comic);font-size:1.05rem;letter-spacing:0.05em;
+  background:var(--coral);color:var(--deep);border:3px solid var(--line);
+  padding:0.25rem 0.85rem 0.15rem;box-shadow:4px 4px 0 var(--line);transform:rotate(-1.4deg);}
+.caption--mauve{background:var(--mauve);}
+.backlink{display:inline-block;font-family:var(--comic);font-size:1rem;letter-spacing:0.05em;
+  color:var(--text-dim);text-decoration:none;margin-bottom:1.4rem;}
+.backlink:hover{color:var(--coral-lift);}
+
+.head{padding-block:clamp(2rem,6vw,4rem) clamp(1.2rem,3vw,2rem);text-align:center;}
+.head h1{font-family:var(--display);font-weight:400;text-transform:uppercase;
+  font-size:clamp(2rem,1.2rem + 3.6vw,4.2rem);line-height:0.92;letter-spacing:0.01em;
+  margin:1rem auto 1rem;max-width:17ch;color:var(--paper);
+  text-shadow:4px 0 0 var(--peri),-4px 0 0 var(--coral);}
+.standfirst{color:var(--text-dim);max-width:46ch;margin:0 auto;font-size:clamp(1rem,0.96rem + 0.4vw,1.2rem);}
+.byline{display:flex;flex-wrap:wrap;justify-content:center;gap:0.55rem;margin:0 auto clamp(2rem,5vw,3rem);}
+.byline span{font-family:var(--comic);font-size:0.95rem;letter-spacing:0.04em;border:3px solid var(--line);
+  background:var(--panel);padding:0.2rem 0.8rem 0.1rem;box-shadow:3px 3px 0 var(--line);}
+.divider{height:5px;border:0;margin:0;background:repeating-linear-gradient(90deg,
+  var(--line) 0 14px,var(--rose) 14px 28px,var(--line) 28px 42px,var(--peri) 42px 56px);}
+
+.prose{max-width:var(--measure);margin:0 auto;padding-block:clamp(2rem,5vw,3.5rem) clamp(3rem,7vw,5rem);}
+.prose h2{font-family:var(--display);font-weight:400;text-transform:uppercase;
+  font-size:clamp(1.5rem,1.2rem + 1.5vw,2.2rem);line-height:0.98;letter-spacing:0.01em;
+  margin:clamp(2.6rem,6vw,4rem) 0 1rem;color:var(--paper);}
+.prose h2:first-child{margin-top:0;}
+.prose h3{font-family:var(--comic);font-size:1.3rem;letter-spacing:0.05em;
+  margin:2.2rem 0 0.6rem;color:var(--coral-lift);}
+.prose p{margin:0 0 1.2rem;color:var(--text-dim);}
+.prose ul,.prose ol{margin:0 0 1.5rem;padding-left:1.3rem;color:var(--text-dim);}
+.prose li{margin-bottom:0.6rem;}
+.prose li::marker{color:var(--coral);}
+.prose strong{color:var(--paper);font-weight:600;}
+.prose em{color:var(--paper);font-style:italic;}
+.prose a{color:var(--coral-lift);text-decoration:none;border-bottom:2px solid var(--coral-lift);}
+.prose hr{border:0;height:3px;background:var(--line);margin:clamp(2.6rem,6vw,3.6rem) 0;}
+.prose blockquote{margin:2rem 0;padding:1.3rem 1.5rem;background:var(--panel);
+  border:4px solid var(--line);box-shadow:8px 8px 0 var(--berry),8px 8px 0 4px var(--line);}
+.prose blockquote p{color:var(--paper);margin:0;font-size:1.06rem;}
+.note{background:var(--panel);border:4px solid var(--line);box-shadow:7px 7px 0 var(--line);
+  padding:1.2rem 1.4rem;margin:2rem 0;}
+.note p{margin:0;color:var(--text-dim);}
+.note p + p{margin-top:0.9rem;}
+.note .note-label{font-family:var(--comic);font-size:1.05rem;letter-spacing:0.05em;
+  color:var(--coral-lift);display:block;margin-bottom:0.5rem;}
+.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.8rem 0 2.2rem;}
+table{width:100%;border-collapse:collapse;font-size:0.92rem;min-width:30rem;}
+th,td{text-align:left;padding:0.75rem 0.9rem;vertical-align:top;
+  border-bottom:2px solid rgba(244,234,230,0.14);color:var(--text-dim);}
+th{font-family:var(--comic);font-size:0.95rem;letter-spacing:0.05em;color:var(--paper);
+  border-bottom:3px solid var(--line);background:var(--panel);}
+td strong{color:var(--paper);}
+
+.contact{border-top:5px solid var(--line);}
+.contact .inner{padding-block:clamp(2.6rem,7vw,4.5rem);text-align:center;}
+.contact h2{font-family:var(--display);font-weight:400;text-transform:uppercase;
+  font-size:clamp(1.6rem,1.2rem + 2vw,2.8rem);line-height:0.96;margin:1rem auto 1rem;max-width:20ch;
+  color:var(--paper);text-shadow:3px 0 0 var(--peri),-3px 0 0 var(--coral);}
+.contact p{color:var(--text-dim);max-width:44ch;margin:0 auto;}
+.pills{display:flex;flex-wrap:wrap;justify-content:center;gap:0.8rem;margin-top:2rem;}
+.pill{font-family:var(--comic);font-size:1.2rem;letter-spacing:0.05em;text-decoration:none;
+  background:var(--panel);color:var(--paper);border:3px solid var(--line);
+  padding:0.4rem 1.2rem 0.28rem;box-shadow:5px 5px 0 var(--line);
+  transition:transform 100ms var(--snap),box-shadow 100ms var(--snap),background 100ms var(--snap);}
+.pill:hover{transform:translate(3px,3px);box-shadow:2px 2px 0 var(--line);background:var(--panel-lift);}
+.pill--primary{background:var(--rose);color:var(--paper);}
+.pill--primary:hover{background:var(--coral);color:var(--deep);}
+.colophon{text-align:center;font-family:var(--comic);font-size:0.95rem;letter-spacing:0.08em;
+  color:var(--text-dim);padding-block:1.6rem 2.6rem;border-top:3px solid var(--line);}
+
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto;}*{animation:none!important;transition:none!important;}}
+@media print{body::before,body::after,.nav,.contact,.backlink{display:none;}
+  body{background:#fff;color:#000;font-size:11pt;}
+  .prose p,.prose li,td{color:#000;}
+  .prose h2,.prose h3,.head h1{color:#000;text-shadow:none;}
+  .prose{max-width:none;}}
+</style>
+</head>
+
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="nav">
+  <a class="nav__mark" href="../index.html">EM</a>
+  <nav class="nav__links" aria-label="Primary">
+    <a href="../index.html#work">Work</a>
+    <a href="../index.html#about">About</a>
+    <a href="#contact">Contact</a>
+  </nav>
+</header>
+
+<main id="main">
+
+  <section class="wrap head">
+    <a class="backlink" href="../index.html#work">&larr; All work</a>
+    <div><span class="caption caption--mauve">Case Study &middot; Disney+</span></div>
+    <h1>Programming for one</h1>
+    <p class="standfirst">Disney+ holds roughly 2,500 titles and lacks the one thing linear television was actually good at: knowing when to stop asking.</p>
+  </section>
+
+  <div class="wrap">
+    <div class="byline">
+      <span>Self-directed</span>
+      <span>2026</span>
+      <span>Executive brief</span>
+      <span>~18 min read</span>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="wrap">
+    <article class="prose">
+
+      <div class="note">
+        <span class="note-label">Note on method</span>
+        <p>Independent work. I have no access to Disney's internal analytics, content costs, or rights positions. Every figure is externally sourced and dated, or explicitly labelled as an assumption with a stated way to test it.</p>
+        <p>Written as a brief to the CEO. Disney named Josh D'Amaro to the role effective March&nbsp;18,&nbsp;2026; he came from Disney Experiences. That background is load-bearing for the argument below.</p>
+      </div>
+
+      <h2>The ask</h2>
+
+      <p>Fund a single <strong>Channel Engine</strong> on top of the Streams infrastructure Disney+ already shipped in September 2024, delivered in three phases over roughly eighteen months.</p>
+
+      <p>Phase one requires <strong>no new content rights, no new metadata, and no new playback infrastructure.</strong> It is a queue-generation service sitting on a platform that already works. Phases two and three are gated on a metadata backfill and a rights-clearance program that can run in parallel rather than blocking anything.</p>
+
+      <p><strong>What it returns:</strong> ambient viewing hours. On the ad tier &mdash; roughly 30% of subscribers globally and 37% in the US &mdash; every incremental ambient hour is inventory against content that is already paid for. On the ad-free tier it is the habit that makes a service survive a cancellation review.</p>
+
+      <hr>
+
+      <h2>The frame: Disney already knows this</h2>
+
+      <p>A Disney park is a programmed sequence. Nobody hands a guest the map of the Haunted Mansion and asks which room they would like first. The order is the product &mdash; pacing, the queue as prologue, the deliberate placement of a rest between two intense things. Disney Experiences is a $36&nbsp;billion demonstration that <em>sequencing is a craft and people will pay for it.</em></p>
+
+      <p>Disney+ is the only major Disney property where the guest is handed the catalog and told to sort it out.</p>
+
+      <blockquote>
+        <p>The company's core competency is deciding what happens next so the guest doesn't have to. Streaming is the one place we stopped doing it.</p>
+      </blockquote>
+
+      <hr>
+
+      <h2>Why this lands now</h2>
+
+      <p><strong>The strategy already says so.</strong> On the fiscal Q3 2026 earnings call, the CEO described a Disney+ that offers increased personalization in order to deepen engagement, lower churn, and increase lifetime fan value. This proposal is the most direct available expression of that sentence. It is not a new direction; it is the mechanism.</p>
+
+      <p><strong>The hard part is built.</strong> Disney+ launched continuous playlists &mdash; branded Streams &mdash; on September&nbsp;4,&nbsp;2024, starting with ABC News Live and a preschool channel, then adding Hallowstream, Hits&nbsp;&amp;&nbsp;Heroes, Throwbacks and Real Life, with Pixar and Disney Princess channels since. The first two channels alone logged more than ten million streaming hours in their opening month. Continuous playback, session state, queue delivery and ad insertion in a linear context are solved problems inside the building.</p>
+
+      <p><strong>The competitive clock is running.</strong> In March 2025 Netflix replaced hundreds of specialized recommendation models with a single foundation model, and has been reported to be building conversational discovery. Netflix's own causal work found that switching to random recommendations would cost roughly 16% of engagement &mdash; they have quantified what ranking is worth to them. Personalized programming is the next rung, and it is the rung where Disney's advantage is largest, because Disney owns the deepest nostalgic catalog in the industry and Netflix does not.</p>
+
+      <p><strong>There is a second use for the same engine.</strong> Disney has publicly said it is exploring a free ad-supported product. A Channel Engine built once serves both the subscription service and anything free that follows.</p>
+
+      <hr>
+
+      <h2>The problem</h2>
+
+      <h3>What linear television was actually for</h3>
+
+      <p>The dominant mode of television was never attention. It was company. The set was on while dinner was made, homework was done, a room was cleaned. In that mode the medium's defining feature was that <em>it made the decision.</em></p>
+
+      <p>Streaming replaced a zero-decision medium with a high-decision one, then spent fifteen years optimizing the decision surface &mdash; better artwork, better rows, better ranking &mdash; instead of removing the decision.</p>
+
+      <h3>The measurement gap</h3>
+
+      <p>The industry counts hours viewed. That metric cannot see this problem, because the failure mode is a session that <em>ends</em> at a decision point. I would introduce a second number:</p>
+
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Mode</th><th>Decision points per viewing hour</th></tr></thead>
+          <tbody>
+            <tr><td>Linear television</td><td>0</td></tr>
+            <tr><td>Disney+ on-demand, series</td><td>~0.5 &mdash; autoplay carries you until the season ends, then a wall</td></tr>
+            <tr><td>Disney+ on-demand, film</td><td>~0.5 &mdash; one hard stop per title</td></tr>
+            <tr><td>Disney+ Streams</td><td>0, if one of the available channels happens to fit</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>The catalog compounds the problem. Every title Disney adds increases the library's value on the balance sheet and increases the cost of choosing in the interface. <strong>The catalog is an asset that the UI taxes.</strong></p>
+
+      <h3>Why the current Streams only half-solve it</h3>
+
+      <p>Streams prove the demand &mdash; ten million hours in a month is not a rounding error. But they are a fixed editorial lineup of roughly half a dozen channels serving a base of over 130 million subscribers. That is radio with six stations. It works if your taste happens to coincide with one of six programmers' choices, and the user has no way to say <em>more of this, less of that.</em></p>
+
+      <hr>
+
+      <h2>The proposal: one engine, three doors</h2>
+
+      <p>These are not three products. They are one system &mdash; a Channel object and a queue generator &mdash; with three ways of populating the queue, at three levels of user control. Presenting them separately would obscure the fact that the expensive part is built once.</p>
+
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Door</th><th>Who fills the queue</th><th>New dependencies</th></tr></thead>
+          <tbody>
+            <tr><td><strong>1. Your Channel</strong><br>personalized, always-on</td><td>The system, from viewing history</td><td>None</td></tr>
+            <tr><td><strong>2. Channel Builder</strong><br>era, network, rating, genre filters</td><td>The user, via constraints</td><td>Metadata backfill</td></tr>
+            <tr><td><strong>3. Time Machine</strong><br>"Disney Channel, 2010"</td><td>A preset, with period bumpers and promos</td><td>Metadata + archival rights</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Door 1 &mdash; Your Channel</h3>
+
+      <p>A personalized channel that behaves like a channel: press play, it runs, it never asks. Thumbs up and down adjust it. Later, split into a small number of named channels the user recognises as theirs &mdash; something comfortable, something new, something for the kids &mdash; rather than an unbounded set they have to manage.</p>
+
+      <p>This ships first because it needs nothing that does not already exist. It is a ranking service writing into a queue the player already knows how to consume.</p>
+
+      <h3>Door 2 &mdash; Channel Builder</h3>
+
+      <p>Constraint-based: titles that originally aired 2010&ndash;2012, tagged Disney Channel. Films that aired on ABC in 2009, rated PG-13, action.</p>
+
+      <p><strong>I have moved this ahead of the nostalgia feature deliberately.</strong> It is the cheaper of the two and it is the forcing function for the metadata that the nostalgia feature cannot exist without. Build the filters, and the catalog acquires original-network and original-air-date fields as a side effect of shipping something.</p>
+
+      <h3>Door 3 &mdash; Time Machine</h3>
+
+      <p>Not a filter but a reconstruction: a channel that plays like Disney Channel did in a chosen year, including the connective tissue &mdash; idents, "you're watching" bumpers, in-house promos, the music videos that ran between episodes. The programming block, not just the programs.</p>
+
+      <p>This is the highest brand payoff and the longest lead time, because its blocking constraint is legal, not technical. It ships last so that clearance work runs alongside two shipping phases instead of holding everything up.</p>
+
+      <hr>
+
+      <h2>The business case</h2>
+
+      <h3>Advertising: the strongest single argument</h3>
+
+      <p>Disney+ carries roughly four to five minutes of advertising per hour, against fifteen to twenty on traditional television. Around 30% of subscribers globally are on the ad tier, and above half of new US sign-ups have been choosing it.</p>
+
+      <p>Ambient viewing multiplies impressions per subscriber against content whose cost is already sunk. A subscriber who leaves a channel running for three hours generates roughly double the inventory of one who watches a feature and closes the app &mdash; at a marginal cost of delivery only.</p>
+
+      <div class="note">
+        <span class="note-label">The item worth circling</span>
+        <p>Door 3 is the only context in streaming where a <em>heavier</em> ad load would increase satisfaction rather than reduce it, because period-accurate breaks are the product. A nostalgia channel could plausibly carry a linear-era ad load as a feature.</p>
+        <p>That is inventory expansion without the usual satisfaction penalty, and I am not aware of anyone else who can do it, because it requires owning both the catalog and the archive of interstitials.</p>
+      </div>
+
+      <h3>Retention</h3>
+
+      <p>Reported six-month retention for standalone Disney+ has run around 62%, against roughly 72% for Netflix. Churn in streaming follows lapsed engagement more than dissatisfaction &mdash; people cancel what they stopped opening. Cable's durability was never quality; it was ambient presence. A service that is on in the background is not a service anyone remembers to review.</p>
+
+      <h3>Catalog yield</h3>
+
+      <p>Search only surfaces titles people can name. The long tail of the Disney and Fox catalogs generates close to nothing because nobody searches for a show they have forgotten exists. Programming reaches it; querying never will. This is the argument that a library which cost billions to assemble is currently under-earning for interface reasons.</p>
+
+      <hr>
+
+      <h2>Technical feasibility</h2>
+
+      <h3>Already solved</h3>
+      <ul>
+        <li>Continuous playback and the Streams UI surface</li>
+        <li>Session state and resume within a continuous queue</li>
+        <li>Server-side ad insertion in a linear context</li>
+        <li>Delivery: a personalized queue is ordinary VOD asset playback. Popular assets stay cached at the edge. <strong>This is not FAST's single-stream economics, but it is not a new cost model either</strong> &mdash; it is the delivery Disney+ already operates, and incremental cost scales with incremental hours, which the ad tier funds.</li>
+      </ul>
+
+      <h3>Genuinely hard</h3>
+
+      <p><strong>Sequence-aware ranking.</strong> Existing recommenders score titles independently. A channel needs <em>order</em>: tonal adjacency, runtime packing, not stacking three bleak episodes, not running the same lead actor four times in a row. The objective function is a session, not a click. This is the real research problem in the proposal and I would not understate it.</p>
+
+      <p><strong>Metadata.</strong> Disney's catalog metadata was built for search, rights administration and merchandising &mdash; not for programming. Original network, original air date, era and tone are inconsistently populated across a library assembled from Disney, ABC, Fox, Pixar, Marvel, Lucasfilm and National Geographic. This is the true cost driver, and most of it is not engineering work.</p>
+
+      <p><strong>Ad-break markers.</strong> Titles of linear origin often carry act breaks. Disney+ originals were produced without them. Door 3 needs defensible break points to place period advertising, which means marker authoring for a meaningful slice of the catalog.</p>
+
+      <hr>
+
+      <h2>Cost to scale</h2>
+
+      <p>Unusually for a proposal of this shape, the cost curve is front-loaded and mostly <em>not</em> engineering:</p>
+
+      <ul>
+        <li><strong>Queue generation</strong> is batch, not real-time. Regenerate at session start and on a cadence. Cheap and predictable.</li>
+        <li><strong>Metadata backfill</strong> is a one-time program plus ongoing ingest discipline. Human and vendor hours, highly parallelizable, and the schedule risk is coordination rather than difficulty.</li>
+        <li><strong>Rights clearance</strong> for Door 3 is legal hours on a long lead with almost no compute attached.</li>
+        <li><strong>Delivery</strong> scales linearly with hours watched and is covered by ad revenue on the tier that generates the hours.</li>
+      </ul>
+
+      <hr>
+
+      <h2>Technical debt</h2>
+
+      <ul>
+        <li><strong>One Channel object, non-negotiable.</strong> If the three doors fork into three pipelines, Disney owns three products forever and every future change is paid for three times. This is the single most important architectural constraint in the proposal.</li>
+        <li><strong>Silent rights decay.</strong> A channel defined as "Disney Channel, 2010" degrades as titles leave the catalog. Requires a rights-aware queue validator and a stated policy for what a channel does when its defining titles expire &mdash; substitute, shrink, or retire honestly.</li>
+        <li><strong>The feedback dataset</strong> becomes governed data the moment thumbs exist, with retention and privacy obligations, and materially stricter ones on children's profiles.</li>
+        <li><strong>Archival assets</strong> are a permanent maintenance line: restoration, format migration, periodic rights renewal. Door 3 is not a project that ends.</li>
+      </ul>
+
+      <hr>
+
+      <h2>Cost to educate the consumer</h2>
+
+      <p>This inverts in a useful way. The most technically ambitious door needs the least explanation, and the simplest one needs the most.</p>
+
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Door</th><th>Education cost</th><th>Why</th></tr></thead>
+          <tbody>
+            <tr><td>1. Your Channel</td><td>Near zero</td><td>It is a play button on a row that already exists</td></tr>
+            <tr><td>3. Time Machine</td><td>Near zero</td><td>"Disney Channel, 2010" explains itself and is the most shareable thing on this list</td></tr>
+            <tr><td>2. Channel Builder</td><td>Highest</td><td>Filter builders have historically low adoption in consumer video</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>I would expect Door 2 to see single-digit adoption and I would ship it anyway, because <strong>its return is the metadata, not the usage.</strong> It should never sit on the critical path or carry a mass-adoption target.</p>
+
+      <hr>
+
+      <h2>Risk</h2>
+
+      <h3>Brand safety, which is the real one</h3>
+
+      <p>When an algorithm sequences content, Disney is programming a channel. The applicable standard is broadcast standards, not recommender standards. A recommender that surfaces a poor suggestion gets ignored. <strong>A channel that plays it has aired it.</strong></p>
+
+      <ul>
+        <li><strong>Rating ceilings as hard constraints</strong> at queue construction, not filters applied at playback.</li>
+        <li><strong>Titles carrying content advisories are opt-in only and never auto-programmed.</strong> Ambient autoplay of a title with an advisory card, into a household that did not choose it, is a headline and a legitimate grievance.</li>
+        <li><strong>Adjacency rules</strong> — no tonal whiplash, nothing bleak landing behind something light without a transition.</li>
+        <li><strong>Children's profiles</strong> draw from human-curated pools only. No open-catalog generative sequencing for under-13. Zero tolerance, no exceptions for measurement.</li>
+      </ul>
+
+      <p>Organizationally: this content-policy layer should report into Standards and Practices, not into the recommendation team. The team that owns engagement should not also own the constraint on engagement.</p>
+
+      <h3>Cannibalizing the content slate</h3>
+
+      <p>The question a CEO asks second: if ambient channels route attention to cheap library titles, does an expensive originals slate look worse? Possibly. That is why first-14-day reach and completion for new originals is a hard guardrail below, and why a regression there should stop the program regardless of advertising lift.</p>
+
+      <hr>
+
+      <h2>What I am not proposing</h2>
+
+      <ul>
+        <li><strong>Not replacing the editorial Streams.</strong> They serve a different job — seasonal moments, marketing beats, a merchandising surface. Keep them.</li>
+        <li><strong>Not generative AI creating content.</strong> Sequencing licensed material only. No synthesis, no alteration.</li>
+        <li><strong>Not a separate tab, destination or app.</strong> If this needs its own front door, it has failed. It belongs on the home screen as a row.</li>
+        <li><strong>Not recreating third-party advertising Disney never owned.</strong> Door 3 uses Disney-owned promos, idents, bumpers and music videos, and nothing else.</li>
+      </ul>
+
+      <hr>
+
+      <h2>Metrics and stop conditions</h2>
+
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Type</th><th>Metric</th><th>Condition</th></tr></thead>
+          <tbody>
+            <tr><td>North star</td><td>Ambient hours per subscriber-month &mdash; hours delivered in sessions with zero title selections after the first</td><td>Primary success measure</td></tr>
+            <tr><td>Primary</td><td>Decision points per viewing hour</td><td>Down</td></tr>
+            <tr><td>Primary</td><td>Weekly active days</td><td>Up — the habit metric that predicts churn</td></tr>
+            <tr><td><strong>Guardrail</strong></td><td>New originals: 14-day reach and completion</td><td><strong>No regression. Stops the program.</strong></td></tr>
+            <tr><td><strong>Guardrail</strong></td><td>Children's-profile safety incidents</td><td><strong>Zero. Stops the program.</strong></td></tr>
+            <tr><td>Guardrail</td><td>Ad-tier satisfaction and ad-load complaints</td><td>Flat or better</td></tr>
+            <tr><td>Door 3</td><td>Ad tolerance at elevated load; share rate</td><td>Tests the nostalgia-inventory thesis directly</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <hr>
+
+      <h2>Assumptions, and what I would validate</h2>
+
+      <ol>
+        <li><strong>Assumed:</strong> ambient viewing correlates with retention. <strong>Validate:</strong> cohort analysis of existing Streams users against matched non-users. Streams shipped in September 2024, so <em>this data already exists.</em> It is the cheapest and highest-value test available and it can be run before a line of code is written. If the correlation is not there, the proposal should not be funded.</li>
+        <li><strong>Assumed:</strong> metadata gaps are backfillable at reasonable cost. <strong>Validate:</strong> audit a 500-title sample for original-network, original-air-date and era completeness before committing to Doors 2 and 3.</li>
+        <li><strong>Assumed:</strong> period interstitials are clearable. <strong>Validate:</strong> legal pre-clearance on a sample of fifty bumpers, promos and music videos before Door 3 is funded at all.</li>
+        <li><strong>Assumed:</strong> sequence-aware ranking measurably beats independent ranking. <strong>Validate:</strong> offline replay against existing Streams logs.</li>
+        <li><strong>Unknown:</strong> whether ambient viewing is additive to intentional viewing or substitutive. If it substitutes, the advertising case weakens sharply and the retention case has to carry the proposal alone. <strong>This is the largest gap between this brief and an implementable plan.</strong></li>
+      </ol>
+
+      <hr>
+
+      <h2>Sources</h2>
+      <ul>
+        <li>The Walt Disney Company, Streams explainer and launch announcements, 2024&ndash;2025; Deadline and Variety coverage of the September 2024 continuous-playlist launch and expansion</li>
+        <li>Disney fiscal 2025 and fiscal 2026 quarterly disclosures; Disney ceased reporting subscriber counts in August 2025 in favour of SVOD revenue and operating income</li>
+        <li>Media Play News coverage of the fiscal Q3 2026 earnings call and stated streaming strategy</li>
+        <li>The Walt Disney Company CEO succession announcement, February 2026; transition effective March&nbsp;18,&nbsp;2026</li>
+        <li>Published Disney+ subscriber, ARPU, ad-tier and retention estimates, 2025&ndash;2026 (Backlinko, Business Stats, eMarketer, Antenna)</li>
+        <li>Reporting on Netflix's March 2025 consolidation onto a single recommendation foundation model, and Netflix's published causal work on recommendation value</li>
+      </ul>
+
+    </article>
+  </div>
+
+</main>
+
+<footer class="contact" id="contact">
+  <div class="wrap inner">
+    <span class="caption">Get In Touch</span>
+    <h2>Building something people live inside?</h2>
+    <p>Currently in Los Angeles, looking for product roles in guest experience, consumer platforms, and technical products where the systems work is genuinely hard.</p>
+    <div class="pills">
+      <a class="pill pill--primary" href="mailto:REPLACE@example.com">Email me</a>
+      <a class="pill" href="https://linkedin.com/in/REPLACE">LinkedIn</a>
+      <a class="pill" href="../resume.pdf">R&eacute;sum&eacute;</a>
+    </div>
+  </div>
+  <div class="colophon">ERICK MERCADO &middot; LOS ANGELES &middot; <span id="year">2026</span></div>
+</footer>
+
+<script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+
+</body>
+</html>
