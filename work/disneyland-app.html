@@ -246,7 +246,7 @@ td strong{color:var(--paper);}
     <a class="backlink" href="../index.html#work">&larr; All work</a>
     <div><span class="caption caption--mauve">Case Study &middot; Disneyland App</span></div>
     <h1>Killing the "designated scroller"</h1>
-    <p class="standfirst">Disney's paid line-skipping system works. It also created a job nobody wanted: one person per party spends the day operating an app instead of being on vacation.</p>
+    <p class="standfirst">Disney's paid line-skipping system works. It also created a job nobody wanted: one person per party spends the day operating an app instead of being on vacation which taints their overall experience of the parks.</p>
   </section>
 
   <div class="wrap">
@@ -264,22 +264,22 @@ td strong{color:var(--paper);}
 
       <div class="note">
         <span class="note-label">Note on method</span>
-        <p>This is independent work. I have no access to Disney's internal analytics. Every number below is either externally sourced or explicitly labelled as an assumption I would test.</p>
+        <p>This is independent work. I have no access to Disney's internal analytics. Every number below is either externally sourced or explicitly labelled as an assumption.</p>
       </div>
 
       <h2>The bet</h2>
 
-      <p>Disney can separate <em>getting a good ride schedule</em> from <em>manually operating the app all day</em>. I propose <strong>Park Autopilot</strong>: an opt-in, preference-driven booking agent inside the Disneyland app that reserves and re-books Lightning Lane selections on the guest's behalf, and simply tells them where to walk next.</p>
+      <p>Disney can separate <em>getting a good ride schedule</em> from <em>manually operating the app all day</em>. I propose <strong>Genie 2.0</strong>: an opt-in, preference-driven booking agent inside the Disneyland app that reserves and re-books Lightning Lane selections on the guest's behalf, and simply tells them where to walk next <em>like magic...</em></p>
 
-      <p><strong>North star metric:</strong> attractions experienced per guest-day, per app interaction. Today's system improves the numerator by inflating the denominator. The goal is to hold or raise attractions experienced while cutting app interactions per park hour by half.</p>
+      <p><strong>North star metric:</strong> Attractions experienced per guest-day, per app interaction. Today's system improves the numerator by inflating the denominator. The goal is to hold or raise attractions experienced while cutting app interactions per park hour by half.</p>
 
-      <p><strong>Why now:</strong> in July 2026, Disney Experiences Chair Thomas Mazloum publicly acknowledged the complexity of the Lightning Lane system and said simplifying the guest experience was under consideration. This proposal targets a problem leadership has already named.</p>
+      <p><strong>Why now:</strong> in July 2026, Disney Experiences Chair Thomas Mazloum publicly acknowledged the complexity of the Lightning Lane system and said simplifying the guest experience was under consideration. This proposal targets a problem leadership wants solved.</p>
 
       <hr>
 
       <h2>Strategic context</h2>
 
-      <p>Disney Parks monetizes two scarce resources: <strong>guest time in park</strong> and <strong>guest attention</strong>. The current digital layer optimizes the first while quietly destroying the second.</p>
+      <p>Disney Parks monetizes two scarce resources: <strong>guest time in park</strong> and <strong>guest experience </strong>. The current digital layer optimizes the first while quietly destroying the second over time.</p>
 
       <div class="table-scroll">
         <table>
@@ -292,7 +292,7 @@ td strong{color:var(--paper);}
         </table>
       </div>
 
-      <p>The company is caught between these. The strategic insight: <strong>complexity is not the product — outcomes are.</strong> Guests don't want to operate a reservation system well. They want to ride more rides and walk less. A feature that delivers the outcome without the operation captures the revenue <em>and</em> the satisfaction.</p>
+      <p>The focus on Lightning Lane should be the <strong>experience</strong>. Guests don't want to operate a reservation system. They want to ride more rides, relax more, and walk less. A feature that delivers the outcome without the operation captures the revenue <em>and</em> the satisfaction leading to repeat visits. A <strong>happier</strong> guest is a more <strong>valuable</strong> guest.</p>
 
       <hr>
 
@@ -300,7 +300,7 @@ td strong{color:var(--paper);}
 
       <h3>What guests actually do</h3>
 
-      <p>At Disneyland, Lightning Lane Multi Pass requires scanning into the park before booking a first selection. A guest then holds up to three selections at a time and can book another only after redeeming one, plus a limited number of Single Passes for headliner attractions. Selections can be modified before the arrival window opens — subject to availability.</p>
+      <p>At Disneyland, Lightning Lane Multi Pass requires scanning into the park before booking a first selection. A guest then holds up to three selections at a time and can book another only after redeeming one, plus a limited number of Single Passes for headliner attractions. <strong>Selections can be modified before the arrival window opens and are subject to availability.</strong></p>
 
       <p>That last clause is where the damage happens. Because thousands of guests are constantly modifying and cancelling, desirable return times surface unpredictably. The only winning strategy is to refresh continuously. Guests have nicknamed this "playing the Disney slots."</p>
 
@@ -310,7 +310,7 @@ td strong{color:var(--paper);}
         <table>
           <thead><tr><th>#</th><th>Failure mode</th><th>Evidence</th></tr></thead>
           <tbody>
-            <tr><td>P1</td><td><strong>Attention tax.</strong> One party member is effectively removed from the vacation to operate the app.</td><td>WSJ reporting; the community's own term for it</td></tr>
+            <tr><td>P1</td><td><strong>Attention tax.</strong> One party member is effectively removed from the vacation to operate the app.</td><td>WSJ: Social Media and Forums</td></tr>
             <tr><td>P2</td><td><strong>Anxiety and regret.</strong> Optimization pressure turns a leisure purchase into a performance test with a visible scoreboard.</td><td>App reviews; fan forums</td></tr>
             <tr><td>P3</td><td><strong>Battery as a single point of failure.</strong> The app holds entry, tickets, passes and orders. A dead phone ends the day.</td><td>App reviews; standard advice to carry a battery pack</td></tr>
             <tr><td>P4</td><td><strong>Reliability at the gate.</strong> Recurring reports of pass screens failing at entry, plus resort-wide outages during third-party cloud incidents.</td><td>Google Play reviews; outage coverage</td></tr>
@@ -324,11 +324,11 @@ td strong{color:var(--paper);}
       <ul>
         <li>P3 and P4 are reliability problems with known owners. They need investment, not product invention.</li>
         <li>P5 is a <em>consequence</em> of P1. Remove the skill requirement and the equity gap narrows on its own.</li>
-        <li>P1 is the problem the Chair of Disney Experiences publicly flagged. Solving it comes with executive air cover.</li>
+        <li>P1 is the problem the Chair of Disney Experiences publicly flagged. Solving it solves a core issue.</li>
       </ul>
 
       <blockquote>
-        <p>Guests who pay for Lightning Lane must continuously operate the app to get the value they paid for. This converts a premium leisure purchase into an unpaid logistics job, degrading satisfaction for the whole party while producing no additional revenue for Disney.</p>
+        <p>Guests who pay for Lightning Lane must continuously operate the app to get the value they paid for. This converts a premium leisure purchase into an unpaid logistics job, degrading satisfaction for the whole party while producing no additional revenue for Disney. If anything, a negative experience increases the likelihood of reduced in park purchases (Merchandise and Dining) and future visits.</p>
       </blockquote>
 
       <hr>
@@ -340,7 +340,7 @@ td strong{color:var(--paper);}
           <thead><tr><th>Persona</th><th>Job to be done</th><th>Current pain</th></tr></thead>
           <tbody>
             <tr><td><strong>The Operator</strong><br>adult who plans the trip</td><td>Get my family on the most rides without ruining my own day</td><td>Becomes the designated scroller; ends the trip resentful</td></tr>
-            <tr><td><strong>Once-in-a-Lifetime Family</strong><br>out of state, one visit</td><td>Don't waste the money we saved for this</td><td>No system fluency; loses hours to bad picks; highest regret risk</td></tr>
+            <tr><td><strong>Once-in-a-Lifetime Family</strong><br>out of state</td><td>Get the most out of this one visit</td><td>No system fluency; loses hours to bad picks; highest regret risk</td></tr>
             <tr><td><strong>Magic Key Local</strong><br>frequent, low stakes</td><td>A pleasant few hours after work</td><td>Over-served by a system built for full-day optimization</td></tr>
             <tr><td><strong>Park Operations</strong><br>internal</td><td>Distribute demand smoothly across the day</td><td>Refresh-driven churn creates noisy, hard-to-forecast demand</td></tr>
           </tbody>
@@ -357,29 +357,29 @@ td strong{color:var(--paper);}
 
       <h3>Core flow</h3>
 
-      <p><strong>Set intent</strong> — two minutes, before or at park entry. Rank must-ride attractions, set party composition (height and age constraints apply automatically), pick a pace, name a lunch window, and enter hard constraints like a parade time, a stroller, or mobility needs.</p>
+      <p><strong>Set intent</strong>: two minutes, before or at park entry. Rank must-ride attractions, set party composition (height and age constraints apply automatically), pick a pace, name a lunch window, and enter hard constraints like a parade time, a stroller, or mobility needs.</p>
 
-      <p><strong>Genie runs</strong> — the system holds the maximum allowed selections at all times and re-books toward better times as inventory appears. The same behaviour the designated scroller performs manually, executed server-side. Guest-facing complexity: zero.</p>
+      <p><strong>Genie runs</strong>: the system holds the maximum allowed selections at all times and re-books toward better times as inventory appears. The same behaviour the designated scroller performs manually, executed server-side. Guest-facing complexity: zero.</p>
 
-      <p><strong>The app says where to walk</strong> — one card, readable in under three seconds: next attraction, walking time, when the window opens, and what's queued after it.</p>
+      <p><strong>The app says where to walk</strong>: one card, readable in under three seconds: next attraction, walking time, when the window opens, and what's queued after it.</p>
 
-      <p><strong>Adapt without ceremony</strong> — "not feeling this one" swaps it and rebalances the day in one tap. A ride breakdown triggers an automatic re-plan and a push notification. No refreshing.</p>
+      <p><strong>Adapt without ceremony</strong>: "not feeling this one" swaps it and rebalances the day in one tap. A ride breakdown triggers an automatic re-plan and a push notification. No refreshing.</p>
 
       <h3>Supporting features</h3>
 
       <ul>
-        <li><strong>Watchlist alerts</strong> — for guests who don't want full automation: notify me if this ride drops below a 40-minute wait, or a window opens before 6pm. Converts refreshing into a passive subscription. This is the cheapest thing to build and I would ship it first.</li>
-        <li><strong>Pocket Mode</strong> — a low-power, lock-screen-first surface. Directly attacks both battery drain and screen time.</li>
-        <li><strong>Party sync</strong> — everyone sees the same plan, so the burden stops falling on one person.</li>
+        <li><strong>Watchlist alerts</strong> : For guests who don't want full automation: notify me if this ride drops below a 40-minute wait, or a window opens before 6pm. Converts refreshing into a passive subscription. This is the cheapest thing to build and I would ship it first.</li>
+        <li><strong>Pocket Mode</strong> : A low-power, lock-screen-first surface which minimizes battery drain and screen time.</li>
+        <li><strong>Party sync</strong> : Everyone sees the same plan, creating a shared experience and improving collaboration.</li>
       </ul>
 
-      <h3>What I'm deliberately not proposing</h3>
+      <h3>Explicitly Out of Scope</h3>
 
       <ul>
-        <li><strong>Not making Lightning Lane free.</strong> The revenue is structural. This makes the paid product better, not cheaper.</li>
-        <li><strong>Not a Super App merged with streaming.</strong> Adding video to an app that already struggles at the park gate increases risk in exactly the area guests complain about most.</li>
-        <li><strong>Not a fixed full-day itinerary.</strong> Rigid plans break on first contact with a closure and feel like homework.</li>
-        <li><strong>Not gamification.</strong> Streaks and badges would raise engagement metrics while making the core problem worse.</li>
+        <li><strong>Free Lightning Lane.</strong> The revenue is structural to the product. The goal is a better paid experience, not a cheaper one.</li>
+        <li><strong>A merged "super app" with streaming.</strong> Adding video to an app that already struggles at the park gate increases risk in exactly the area guests complain about most.</li>
+        <li><strong>A fixed, full-day itinerary.</strong> Rigid plans break on first contact with a closure and restricts flexibility.</li>
+        <li><strong>Gamification.</strong> Streaks and badges would raise engagement metrics while making the core problem worse over time.</li>
       </ul>
 
       <hr>
@@ -397,13 +397,14 @@ td strong{color:var(--paper);}
             <tr><td><strong>Guardrail</strong></td><td>Lightning Lane attach rate &amp; revenue per guest</td><td>Flat or up — non-negotiable</td></tr>
             <tr><td><strong>Guardrail</strong></td><td>Standby waits for non-purchasers</td><td>No degradation</td></tr>
             <tr><td><strong>Guardrail</strong></td><td>Median party phone battery at 6pm</td><td>Improved</td></tr>
-            <tr><td>Adoption</td><td>Share of purchasers enabling Autopilot</td><td>30% within two quarters</td></tr>
+            <tr><td>Adoption</td><td>Share of purchasers enabling Genie 2.0 </td><td>30% within two quarters</td></tr>
           </tbody>
         </table>
       </div>
 
-      <p>The revenue guardrail matters most politically. <strong>If Autopilot reduces the perceived need to buy Lightning Lane, it fails commercially no matter how much guests like it.</strong> My hypothesis is the opposite — that removing the operational burden expands the market to guests who currently decline because it looks like too much work — but that is a hypothesis to test, not an assumption to build on.</p>
+      <p>The revenue guardrail carries the most political weight. <strong>If Genie 2.0 reduces the perceived need to buy Lightning Lane, it fails commercially regardless of guest sentiment.</strong> The counter-hypothesis is that removing the operational burden expands the addressable market to guests who currently decline because the product looks like work.</p>
 
+      <p>A second revenue path is tracked separately and deliberately not folded into the guardrail. Time recovered from the phone is time returned to the park's physical commerce surfaces: quick-service lines, shops, sit-down dining, and guests who feel less friction are likelier to spend discretionarily. That effect is measured as a secondary metric, not as an offset. Therefore, a lift in food and merchandise spend does not excuse a decline in Lightning Lane attach. Both must hold.</p>
       <hr>
 
       <h2>Risks</h2>
@@ -415,7 +416,7 @@ td strong{color:var(--paper);}
             <tr><td><strong>Contention arms race.</strong> Automated re-booking outcompetes manual users and increases churn.</td><td>Rate-limit to human-plausible frequency; hold out a control to measure the effect on manual users before scaling.</td></tr>
             <tr><td><strong>Cannibalization.</strong> Guests decide a lower tier is now good enough.</td><td>Revenue guardrail; pilot only on existing purchasers so no new demand is diverted during measurement.</td></tr>
             <tr><td><strong>Loss of serendipity.</strong> Over-optimized days feel scripted.</td><td>Relaxed pace as default; never fill 100% of the day.</td></tr>
-            <tr><td><strong>Operational load imbalance.</strong> Autopilot herds guests into the same lands at once.</td><td>Optimize with a park-level distribution constraint, not greedily per guest. Ops gets a dial.</td></tr>
+            <tr><td><strong>Operational load imbalance.</strong> Genie 2.0 herds guests into the same lands at once.</td><td>Optimize with a park-level distribution constraint, not greedily per guest. Ops gets a dial.</td></tr>
             <tr><td><strong>Trust failure.</strong> A bad automated swap costs someone their must-ride.</td><td>Hard locks on top-ranked attractions; explicit confirmation before any change to a locked selection.</td></tr>
             <tr><td><strong>Accessibility regression.</strong> Automation obscures mobility and disability accommodations.</td><td>Constraints entered up front are hard constraints in the optimizer, not preferences. Accessibility review gates the pilot.</td></tr>
           </tbody>
@@ -426,9 +427,9 @@ td strong{color:var(--paper);}
 
       <h2>MVP and rollout</h2>
 
-      <p><strong>Phase 0 — Watchlist alerts.</strong> Low complexity, no automation risk, immediately reduces refresh behaviour, and generates the demand-signal dataset Autopilot needs.</p>
+      <p><strong>Phase 0 — Watchlist alerts.</strong> Low complexity, no automation risk, immediately reduces refresh behaviour, and generates the demand-signal dataset Genie 2.0 needs.</p>
 
-      <p><strong>Phase 1 — Autopilot pilot at Disneyland Resort.</strong> Disneyland over Walt Disney World: single resort, two parks, and a large annual-pass population that visits often and tolerates beta behaviour. Opt-in, capped cohort, existing purchasers only.</p>
+      <p><strong>Phase 1 — Genie 2.0 pilot at Disneyland Resort.</strong> Disneyland over Walt Disney World: single resort, two parks, and a large annual-pass population that visits often and tolerates beta behaviour. Opt-in, capped cohort, existing purchasers only.</p>
 
       <p><strong>Phase 2 — Measure.</strong> A/B against a matched control on every metric above, with explicit stop conditions on the revenue and standby guardrails.</p>
 
@@ -438,19 +439,23 @@ td strong{color:var(--paper);}
 
       <hr>
 
-      <h2>Assumptions, and what I'd validate</h2>
+<h2>Assumptions and Validation Plan</h2>
 
       <div class="note">
-        <span class="note-label">Stated plainly</span>
-        <p>A case study built on invented numbers is worthless. These are the load-bearing guesses.</p>
+        <span class="note-label">Summary</span>
+        <p>This proposal rests on four assumptions and one open unknown. Each is listed with the test that would confirm or kill it.</p>
       </div>
 
       <ol>
-        <li><strong>Assumed:</strong> a meaningful share of purchasers show high-frequency refresh behaviour. <strong>Validate:</strong> session-level interaction logs; distribution of taps per park hour.</li>
-        <li><strong>Assumed:</strong> high app interaction correlates negatively with post-visit satisfaction. <strong>Validate:</strong> join interaction telemetry to post-visit survey results.</li>
-        <li><strong>Assumed:</strong> some guests decline Lightning Lane because of perceived complexity. <strong>Validate:</strong> intercept survey of non-purchasers at exit.</li>
-        <li><strong>Assumed:</strong> re-booking can be rate-limited without materially reducing the benefit. <strong>Validate:</strong> simulate against historical inventory-release data before any guest-facing pilot.</li>
-        <li><strong>Unknown:</strong> the true contention model of Lightning Lane inventory. This is the biggest gap between this proposal and an implementable plan.</li>
+        <li><strong>A meaningful share of Lightning Lane purchasers refresh the app compulsively.</strong> If refresh behaviour is rare, the problem isn't worth solving. <em>Test:</em> pull session logs and look at the distribution of taps per park hour to specifically observe whether there's a heavy-usage tail, not just a high average.</li>
+
+        <li><strong>Heavy app usage correlates with worse visits, not better ones.</strong> It is equally plausible that the heaviest users are the most engaged guests, getting the most out of the product and enjoying the optimization. If satisfaction rises with usage, this proposal is solving a problem that doesn't exist. <em>Test:</em> join app interaction data to post-visit survey scores at the guest level and examine the relationship before building anything.</li>
+
+        <li><strong>Some guests skip Lightning Lane because it looks like too much work.</strong> This is what makes the feature revenue-expanding rather than revenue-neutral. <em>Test:</em> exit-intercept survey of non-purchasers, asking why they declined.</li>
+
+        <li><strong>Automated re-booking can be rate-limited without gutting the benefit.</strong> Unlimited automated booking would consume inventory faster than humans do and break the system for everyone. <em>Test:</em> simulate against historical inventory-release data before anything touches a guest.</li>
+
+        <li><strong>Open unknown: how Lightning Lane inventory actually clears.</strong> The release cadence, contention model, and reservation-holding rules are not public. This is the single largest gap between this proposal and an implementable plan, and it would be the first question asked internally on day one.</li>
       </ol>
 
       <hr>
@@ -471,11 +476,11 @@ td strong{color:var(--paper);}
 <footer class="contact" id="contact">
   <div class="wrap inner">
     <span class="caption">Get In Touch</span>
-    <h2>Building something people live inside?</h2>
-    <p>Currently in Los Angeles, looking for product roles in guest experience, consumer platforms, and technical products where the systems work is genuinely hard.</p>
+    <h2>Looking for a passionate product manager?</h2>
+    <p>Currently in Los Angeles, looking for product roles in guest experience, consumer platforms, and technical products where improving experiences is the highest priority.</p>
     <div class="pills">
-      <a class="pill pill--primary" href="mailto:REPLACE@example.com">Email me</a>
-      <a class="pill" href="https://linkedin.com/in/REPLACE">LinkedIn</a>
+      <a class="pill pill--primary" href="mailto:erick.mercado2016@gmail.com">Email me</a>
+      <a class="pill" href="https://www.linkedin.com/in/erick-mercado/">LinkedIn</a>
       <a class="pill" href="../ErickMercadoResume.pdf">R&eacute;sum&eacute;</a>
     </div>
   </div>
