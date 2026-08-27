@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MyDisney+ — Erick Mercado</title>
+<meta name="description" content="Three MyDisney+ channels that never ask what you want to watch: Mix builds from your history, Builder hands you the filters, Rewind plays like Disney Channel did in 2010.">
+<link rel="canonical" href="https://erickmercado.com/work/mydisney-plus.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MyDisney+">
+<meta property="og:description" content="Three MyDisney+ channels that never ask what you want to watch: Mix, Builder, and Rewind, which plays like Disney Channel did in 2010.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%231E223B'/><path d='M4 16 Q8 6 12 16 T20 16 T28 16' stroke='%23ED7F6E' stroke-width='3' fill='none'/><path d='M4 18 Q8 8 12 18 T20 18 T28 18' stroke='%2371649C' stroke-width='3' fill='none' opacity='.8'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bangers&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* Self-contained. Palette mirrors index.html — if you change the
+   eight colours there, paste the same values here. */
+:root{
+  --ink:#1E223B; --panel:#404272; --panel-lift:#4E5089; --paper:#F4EAE6;
+  --coral:#ED7F6E; --coral-lift:#F5A79A; --rose:#DB5266; --berry:#A64863;
+  --mauve:#C97CA4; --peri:#71649C; --deep:#4F0914;
+  --line:#121426; --text:#EFE6E9; --text-dim:#C2BAD6;
+  --display:"Anton",Impact,sans-serif;
+  --comic:"Bangers",cursive;
+  --body:"Inter",-apple-system,system-ui,sans-serif;
+  --gut:clamp(1.25rem,5vw,3rem); --measure:40rem; --snap:steps(4,end);
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
+body{margin:0;background:var(--ink);color:var(--text);font-family:var(--body);
+  font-size:clamp(1rem,0.96rem + 0.2vw,1.08rem);line-height:1.65;overflow-x:hidden;}
+a{color:inherit;}
+.wrap{max-width:72rem;margin:0 auto;padding-inline:var(--gut);}
+.skip{position:absolute;left:-9999px;top:0;background:var(--coral);color:var(--deep);
+  padding:0.7rem 1.1rem;font-weight:600;z-index:400;border:3px solid var(--line);}
+.skip:focus{left:0;}
+:focus-visible{outline:3px solid var(--coral);outline-offset:3px;}
+::selection{background:var(--rose);color:var(--paper);}
+
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:60;
+  background-image:radial-gradient(circle at center,rgba(237,127,110,0.18) 1px,transparent 1.3px);
+  background-size:5px 5px;mix-blend-mode:screen;opacity:0.55;}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(40rem 30rem at 12% 0%,rgba(64,66,114,0.55),transparent 62%),
+             radial-gradient(38rem 28rem at 88% 8%,rgba(166,72,99,0.34),transparent 62%);}
+body > *{position:relative;z-index:1;}
+
+.nav{position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-content:space-between;
+  gap:1rem;padding:0.7rem clamp(1.25rem,5vw,3rem);background:rgba(30,34,59,0.86);
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom:3px solid var(--line);}
+.nav__mark{font-family:var(--display);font-size:1.4rem;letter-spacing:0.04em;text-decoration:none;
+  color:var(--paper);text-shadow:2px 0 0 var(--peri),-2px 0 0 var(--coral);}
+.nav__links{display:flex;gap:clamp(0.9rem,3vw,1.9rem);}
+.nav__links a{font-family:var(--comic);font-size:1.05rem;letter-spacing:0.04em;
+  color:var(--text-dim);text-decoration:none;transition:color 120ms var(--snap);}
+.nav__links a:hover{color:var(--coral-lift);}
+
+.caption{display:inline-block;font-family:var(--comic);font-size:1.05rem;letter-spacing:0.05em;
+  background:var(--coral);color:var(--deep);border:3px solid var(--line);
+  padding:0.25rem 0.85rem 0.15rem;box-shadow:4px 4px 0 var(--line);transform:rotate(-1.4deg);}
+.caption--mauve{background:var(--mauve);}
+.backlink{display:inline-block;font-family:var(--comic);font-size:1rem;letter-spacing:0.05em;
+  color:var(--text-dim);text-decoration:none;margin-bottom:1.4rem;}
+.backlink:hover{color:var(--coral-lift);}
+
+.head{padding-block:clamp(2rem,6vw,4rem) clamp(1.2rem,3vw,2rem);text-align:center;}
+.head h1{font-family:var(--display);font-weight:400;text-transform:uppercase;
+  font-size:clamp(2rem,1.2rem + 3.6vw,4.2rem);line-height:0.92;letter-spacing:0.01em;
+  margin:1rem auto 1rem;max-width:17ch;color:var(--paper);
+  text-shadow:4px 0 0 var(--peri),-4px 0 0 var(--coral);}
+.standfirst{color:var(--text-dim);max-width:46ch;margin:0 auto;font-size:clamp(1rem,0.96rem + 0.4vw,1.2rem);}
+.standfirst strong{color:var(--paper);font-weight:600;}
+.byline{display:flex;flex-wrap:wrap;justify-content:center;gap:0.55rem;margin:0 auto clamp(2rem,5vw,3rem);}
+.byline span{font-family:var(--comic);font-size:0.95rem;letter-spacing:0.04em;border:3px solid var(--line);
+  background:var(--panel);padding:0.2rem 0.8rem 0.1rem;box-shadow:3px 3px 0 var(--line);}
+.divider{height:5px;border:0;margin:0;background:repeating-linear-gradient(90deg,
+  var(--line) 0 14px,var(--rose) 14px 28px,var(--line) 28px 42px,var(--peri) 42px 56px);}
+
+.prose{max-width:var(--measure);margin:0 auto;padding-block:clamp(2rem,5vw,3.5rem) clamp(3rem,7vw,5rem);}
+.prose h2{font-family:var(--display);font-weight:400;text-transform:uppercase;
+  font-size:clamp(1.5rem,1.2rem + 1.5vw,2.2rem);line-height:0.98;letter-spacing:0.01em;
+  margin:clamp(2.6rem,6vw,4rem) 0 1rem;color:var(--paper);}
+.prose h2:first-child{margin-top:0;}
+.prose h3{font-family:var(--comic);font-size:1.3rem;letter-spacing:0.05em;
+  margin:2.2rem 0 0.6rem;color:var(--coral-lift);}
+.prose h4{font-family:var(--body);font-weight:600;font-size:1.02rem;letter-spacing:0.02em;
+  margin:1.9rem 0 0.5rem;color:var(--paper);}
+.prose p{margin:0 0 1.2rem;color:var(--text-dim);}
+.prose ul,.prose ol{margin:0 0 1.5rem;padding-left:1.3rem;color:var(--text-dim);}
+.prose li{margin-bottom:0.6rem;}
+.prose li::marker{color:var(--coral);}
+.prose strong{color:var(--paper);font-weight:600;}
+.prose em{color:var(--paper);font-style:italic;}
+.prose a{color:var(--coral-lift);text-decoration:none;border-bottom:2px solid var(--coral-lift);}
+.prose hr{border:0;height:3px;background:var(--line);margin:clamp(2.6rem,6vw,3.6rem) 0;}
+.prose blockquote{margin:2rem 0;padding:1.3rem 1.5rem;background:var(--panel);
+  border:4px solid var(--line);box-shadow:8px 8px 0 var(--berry),8px 8px 0 4px var(--line);}
+.prose blockquote p{color:var(--paper);margin:0;font-size:1.06rem;}
+.note{background:var(--panel);border:4px solid var(--line);box-shadow:7px 7px 0 var(--line);
+  padding:1.2rem 1.4rem;margin:2rem 0;}
+.note p{margin:0;color:var(--text-dim);}
+.note p + p{margin-top:0.9rem;}
+.note .note-label{font-family:var(--comic);font-size:1.05rem;letter-spacing:0.05em;
+  color:var(--coral-lift);display:block;margin-bottom:0.5rem;}
+.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.8rem 0 2.2rem;}
+table{width:100%;border-collapse:collapse;font-size:0.92rem;min-width:30rem;}
+th,td{text-align:left;padding:0.75rem 0.9rem;vertical-align:top;
+  border-bottom:2px solid rgba(244,234,230,0.14);color:var(--text-dim);}
+th{font-family:var(--comic);font-size:0.95rem;letter-spacing:0.05em;color:var(--paper);
+  border-bottom:3px solid var(--line);background:var(--panel);}
+td strong{color:var(--paper);}
+
+.contact{border-top:5px solid var(--line);}
+.contact .inner{padding-block:clamp(2.6rem,7vw,4.5rem);text-align:center;}
+.contact h2{font-family:var(--display);font-weight:400;text-transform:uppercase;
+  font-size:clamp(1.6rem,1.2rem + 2vw,2.8rem);line-height:0.96;margin:1rem auto 1rem;max-width:20ch;
+  color:var(--paper);text-shadow:3px 0 0 var(--peri),-3px 0 0 var(--coral);}
+.contact p{color:var(--text-dim);max-width:44ch;margin:0 auto;}
+.pills{display:flex;flex-wrap:wrap;justify-content:center;gap:0.8rem;margin-top:2rem;}
+.pill{font-family:var(--comic);font-size:1.2rem;letter-spacing:0.05em;text-decoration:none;
+  background:var(--panel);color:var(--paper);border:3px solid var(--line);
+  padding:0.4rem 1.2rem 0.28rem;box-shadow:5px 5px 0 var(--line);
+  transition:transform 100ms var(--snap),box-shadow 100ms var(--snap),background 100ms var(--snap);}
+.pill:hover{transform:translate(3px,3px);box-shadow:2px 2px 0 var(--line);background:var(--panel-lift);}
+.pill--primary{background:var(--rose);color:var(--paper);}
+.pill--primary:hover{background:var(--coral);color:var(--deep);}
+.colophon{text-align:center;font-family:var(--comic);font-size:0.95rem;letter-spacing:0.08em;
+  color:var(--text-dim);padding-block:1.6rem 2.6rem;border-top:3px solid var(--line);}
+
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto;}*{animation:none!important;transition:none!important;}}
+@media print{body::before,body::after,.nav,.contact,.backlink{display:none;}
+  body{background:#fff;color:#000;font-size:11pt;}
+  .prose p,.prose li,td{color:#000;}
+  .prose h2,.prose h3,.head h1{color:#000;text-shadow:none;}
+  .prose{max-width:none;}}
+</style>
+</head>
+
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="nav">
+  <a class="nav__mark" href="../index.html">EM</a>
+  <nav class="nav__links" aria-label="Primary">
+    <a href="../index.html#work">Work</a>
+    <a href="../index.html#about">About</a>
+    <a href="#contact">Contact</a>
+  </nav>
+</header>
+
+<main id="main">
+
+  <section class="wrap head">
+    <a class="backlink" href="../index.html#work">&larr; All work</a>
+    <div><span class="caption caption--mauve">Case Study &middot; Disney+</span></div>
+    <h1>MyDisney+</h1>
+    <p class="standfirst">Three MyDisney+ channels. None of them ask you what you want to watch. <strong>Mix</strong> builds one from what you've already finished. <strong>Builder</strong> hands you the filters. <strong>Rewind</strong> plays like Disney Channel did in 2010, down to the bumpers and the music videos between episodes. Here's what each would cost, and the one test I'd run first.</p>
+  </section>
+
+  <div class="wrap">
+    <div class="byline">
+      <span>Self-directed</span>
+      <span>2026</span>
+      <span>Product proposal</span>
+      <span>~8 min read</span>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="wrap">
+    <article class="prose">
+
+      <div class="note">
+        <span class="note-label">Before you read this</span>
+        <p>I don't work at Disney. No access to their numbers, their content costs, or their rights positions. Everything here is public reporting or a labeled guess with a way to check it.</p>
+        <p>This started because I kept opening Disney+, scrolling, and closing it again. That happened enough times that I got curious about why.</p>
+      </div>
+
+      <h2>Where this starts</h2>
+
+      <p>It's a weeknight. You get home, drop your bag, and put the TV on because the apartment is too quiet. You're not trying to watch anything. You want the room to have something in it while you cook.</p>
+
+      <p>On cable that was one button.</p>
+
+      <p>On Disney+ it's a few minutes of scrolling, and about half the time in my house it ends with the TV going back off.</p>
+
+      <p>Most television was never really watched. It was on. Dinner got made, homework got done, someone cleaned the kitchen, and the set ran in the corner through all of it. The medium picked what came next. Streaming handed that decision back and then spent fifteen years making the screen you decide on prettier.</p>
+
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>How you're watching</th><th>Times you have to decide, per hour</th></tr></thead>
+          <tbody>
+            <tr><td>Cable</td><td>0</td></tr>
+            <tr><td>Disney+, a series</td><td>~0.5 &mdash; autoplay carries you to the end of a season, then stops dead</td></tr>
+            <tr><td>Disney+, a film</td><td>~0.5 &mdash; one hard stop per title</td></tr>
+            <tr><td>Disney+ Streams</td><td>0, if one of the six channels happens to fit you</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Those numbers are illustrative, not measured. The shape is right, though. Disney+ has already solved this for people whose taste happens to match one of six editorial channels, and six channels is not many for a global subscriber base. There's no way to tell any of them more of this, less of that.</p>
+
+      <hr>
+
+      <h2>What I'd build: MyDisney+</h2>
+
+      <p>Three channels, one engine underneath. A channel object and a queue generator, with three ways of filling the queue. I'm describing them separately because that's how someone would run into them in the app, but the costly part gets built once.</p>
+
+      <p>On the name: Disney already uses myDisney for account sign-on, and the echo is intentional. Personalization is account-scoped, and this is that account showing up in what actually plays.</p>
+
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Channel</th><th>Who fills the queue</th><th>What it needs that doesn't exist yet</th></tr></thead>
+          <tbody>
+            <tr><td><strong>MyDisney+ Mix</strong><br>personalized, always on</td><td>The system, from what you've watched</td><td>Nothing</td></tr>
+            <tr><td><strong>MyDisney+ Builder</strong><br>you set the rules</td><td>You, with filters</td><td>Metadata backfill</td></tr>
+            <tr><td><strong>MyDisney+ Rewind</strong><br>pick a network and a year</td><td>A preset, with period bumpers and promos</td><td>Metadata, plus archival rights</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>MyDisney+ Mix &mdash; ships first</h3>
+
+      <p>A row on the home screen that says MyDisney+ Mix. You press play and it runs. It doesn't ask you anything else. Thumbs up and down steer it over time.</p>
+
+      <p>Say it's eight o'clock. You press it and get a <em>Bluey</em>, then a <em>Modern Family</em>, then a Pixar short, then <em>Ratatouille</em>. Things you've finished before, or things sitting close to what you finish.</p>
+
+      <p>It ships first because it needs nothing that doesn't already exist. Disney+ knows how to play a continuous queue. This is a ranking service writing into one.</p>
+
+      <h3>MyDisney+ Builder &mdash; ships second</h3>
+
+      <p>You set the rules, the system fills the hours. Shows that originally aired on Disney Channel between 2010 and 2012. Films that aired on ABC, rated PG-13, action.</p>
+
+      <p>I put this ahead of the nostalgia channel deliberately. Building the filters forces someone to go fill in original network and original air date across the whole catalog. The nostalgia channel cannot exist without that data. So you pay for the expensive prerequisite by shipping something smaller and less risky first.</p>
+
+      <p>Adoption will probably be smaller, since filter builders have never done well in consumer video. I'd ship it anyway. The return here is the self curated metadata.</p>
+
+      <h3>MyDisney+ Rewind </h3>
+
+      <p>A channel that plays like Disney Channel did in a certain "era". Not just the shows. The idents, the bumpers where a star draws the mouse ears with a wand, the in-house promos, the music videos that filled the gaps. The whole block, including everything between the programs.</p>
+
+      <p>An hour of it might run an episode of <em>Wizards of Waverly Place</em>, a star drawing the ears, a promo for something coming that spring, a <em>Phineas and Ferb</em>, then a music video before the next show starts.</p>
+
+      <h4>Example: Disney Channel 2010</h4>
+
+      <p>I keep reaching for that year because it's mine. The actual feature is that the year and the network are parameters.</p>
+
+      <p>Disney Channel in 1997 is a different channel with a different audience. The Disney Afternoon in 1992: <em>DuckTales</em>, <em>TaleSpin</em>, <em>Darkwing Duck</em>  reaches people now in their forties. Toon Disney is another. So is ABC's Saturday morning block. Each one is a different cohort with its own memory of what television felt like, and the engine underneath doesn't care which you pick.</p>
+
+      <p>The interstitials are doing most of the work here. You can queue those four episodes up yourself right now and it feels like nothing at all. The bumpers and the promos are what make it 2010, and nobody has ever packaged those as a product. Disney is sitting on the archive.</p>
+
+      <h4>The marketing case</h4>
+
+      <p>People already do this by hand. Old Disney Channel bumpers and promos get ripped, compiled and posted constantly, by accounts with no rights to any of it and no budget, and they perform. This shows that there is public demand for these "Nostalgia" content pieces.</p>
+
+      <p>So a launch would be earned media rather than bought. The bumpers are ten seconds long and were vertical-video shaped before anyone thought to edit them that way. And the people most likely to post one are the same people who finished a show, cancelled, and never came back.</p>
+
+      <p>That's why Rewind is a different lever from the other two. Mix keeps subscribers. Rewind goes and gets them back. Lapsed subscribers are the cheapest audience Disney has. They've had an account before, the payment path is short, and most of them left because they ran out of reasons to open the app.</p>
+
+      <p>And because the year is a parameter, every era is another launch. Disney Channel 2010 now, the Disney Afternoon six months later, something for the 1997 crowd after that. Most features get one announcement and then live in a settings menu. This one has a calendar built into it.</p>
+
+      <p>One caveat, buzz is spiky and retains nobody on its own. Rewind gets someone to resubscribe; Mix is what keeps them past the second month. I'd measure the two separately, so a loud launch can't paper over a product nobody stays for.</p>
+
+      <p>This feature would be a differentiator but the last to be implemented. There are many hurdles that would need to be overcome in a rights-clearance timeline, so the sequencing isn't a judgment call about which feature matters most. Putting Rewind last ensures the legal work is properly managed.</p>
+
+
+      <hr>
+
+      <h2>Why Disney, and why now</h2>
+
+      <h3>Disney's Historical Strength in Sequencing</h3>
+
+      <p>A Disney park is a programmed sequence. Nobody hands you a map of the Haunted Mansion and asks which room you'd like to start in. The order is the thing you paid for. Pacing, the queue as prologue, a quiet stretch placed deliberately after an intense one. Disney Experiences is a roughly $36 billion segment resting on that skill.</p>
+
+      <blockquote>
+        <p>Disney sells sequencing everywhere else in the company. Streaming is the only place it hands you the catalog and wishes you luck.</p>
+      </blockquote>
+
+      <h3>The expensive part is already built</h3>
+
+      <p>Disney+ launched continuous playlists, branded Streams, in September 2024 and has added channels since. The first two reportedly passed ten million streaming hours in their opening month, so the demand is real. Continuous playback, session state, queue delivery and linear ad insertion are already solved inside the building.</p>
+
+      <h3>Netflix is moving</h3>
+
+      <p>In March 2025 Netflix consolidated hundreds of specialized recommendation models onto a single foundation model. They've also published causal work finding that random recommendations would cost them around 16% of engagement, which tells you what they think ranking is worth. Programming is the step past ranking, and it's where Disney's catalog advantage is strongest.</p>
+
+      <h3>What it's worth</h3>
+
+      <p>Advertising is the strongest argument. Disney+ runs about four to five minutes of ads an hour where broadcast ran fifteen to twenty, and a large share of new US signups take the ad tier. Three hours of a channel left on produces far more inventory than one film, against content already paid for.</p>
+
+      <p>Retention is quieter and probably matters more. People cancel what they stop opening.</p>
+
+      <p>Then there's the library. Search only finds titles you can already name, so the long tail of the Disney and Fox catalogs earns almost nothing. Nobody searches for a show they've forgotten exists. In my experience, this is where the real value lies. There has been multiple instances where I rediscover a show I would've never manually searched for and binge it for days</p>
+
+      <hr>
+
+      <h2>What it costs, and what obstacles await</h2>
+
+      <h3>Marginal Cost</h3>
+
+      <p>Leveraging existing infrastructure, the queue doesn't have to build itself the instant you press play. It can be pre-calculated ahead of time and just handed to you, the way a playlist gets made before you hit shuffle. And the shows themselves already stream off Disney servers. So the cost of this scales with hours watched, and hours watched is exactly what the ad tier turns into ad revenue. Cost and money move together.</p>
+      <h3>Ordering is crucial</h3>
+
+      <p>Recommenders score titles one at a time. A channel needs order: what follows what, runtimes that add up to something sensible, not three heavy episodes stacked together, not the same lead actor four times running. This is the difficult piece that requires time and expertise. Fortunately we are no working in the dark and can reference past programming schedules to build out a efficient ordering system.</p>
+
+      <h3>Metadata is where the real work lies</h3>
+
+      <p>Disney's catalog metadata was built for search, rights administration and merchandising. Original network, air date, era and tone are all inconsistently filled in, across a library stitched together from Disney, ABC, Fox, Pixar, Marvel, Lucasfilm and National Geographic. It's the biggest line item in the proposal and most of it isn't engineering. It's a backfill program: people, vendors, and then the discipline to keep new titles clean afterward.</p>
+
+      <p>Rewind needs act-break markers too, since shows of linear origin have them and Disney+ originals don't.</p>
+
+      <h3>Life Support and maintenance </h3>
+
+      <p>One channel object. If the three channels fork into three pipelines, Disney owns three products forever and pays for every change three times over.</p>
+
+      <p>One more to budget rather than discover: a channel defined as "Disney Channel, 2010" rots as titles leave the catalog. It needs a rights-aware check and a stated policy for what it does when its defining titles expire.</p>
+
+      <hr>
+
+      <h2>Potential Risks</h2>
+
+      <h3>Brand safety</h3>
+
+      <p>When an algorithm picks what plays next on a channel, Disney has aired it and takes responsibility for it. Nobody minds a bad suggestion they can ignore but something inappropriate or upsetting would be a different story.</p>
+
+      <ul>
+        <li>Rating ceilings enforced when the queue is built, not filtered at playback.</li>
+        <li>Nothing carrying a content advisory is ever auto-programmed. Opt-in only.</li>
+        <li>Adjacency rules, so nothing bleak lands right behind something light.</li>
+        <li>Kids' profiles pull from human-curated pools. No open-catalog sequencing under 13.</li>
+      </ul>
+
+      <p> In order to ensure brand safety, I'd want that policy layer owned by someone other than the team whose targets depend on engagement.</p>
+
+      <h3>Risk of cannibalizing new originals</h3>
+
+      <p>If ambient channels push attention toward cheap library titles, do the expensive new originals suffer? Its a definite possibility and that's why new-originals reach is a stop condition.</p>
+
+      <h3>Important Clarifications</h3>
+
+      <ul>
+        <li><strong>Not a replacement for the curated Streams.</strong> Those are hand-picked by an editorial team around real-world moments. MyDisney+ will launch as an algorithm-built set of channels sitting next to them on the home screen unless a future decision is made to integrate them.</li>
+        <li><strong>Not AI generating content.</strong> It sequences licensed material and alters nothing.</li>
+        <li><strong>Not a separate app or tab.</strong>Will serve as a native integration within the existing Disney+ interface.</li>
+        <li><strong>Not recreating ads Disney never owned.</strong> Rewind uses Disney's own material only.</li>
+      </ul>
+
+      <hr>
+
+      <h2>Success Metrics</h2>
+
+      <div class="note">
+        <span class="note-label">Test Cases to prioritize</span>
+        <p>Streams have been running since September 2024, so I'd start with a cohort analysis on data that already exists: do people who use the existing Streams retain better than people who don't? That tests the assumption underneath all three MyDisney+ channels to determine whether ambient viewing helps retention. </p>
+        <p> <strong>Note:</strong> It doesn't test personalization, since the existing Streams are editorial, not built from anyone's history. If the signal is there, the next step is an MVP of Mix, tested against the existing Streams, to see whether personalization actually beats generic curation.</p>
+
+      </div>
+
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Type</th><th>Metric</th><th>Target</th></tr></thead>
+          <tbody>
+            <tr><td>North star</td><td>Ambient hours per subscriber-month &mdash; hours in sessions with zero title selections after the first</td><td>Up.</td></tr>
+            <tr><td>Primary</td><td>Title selections per viewing hour</td><td>Down</td></tr>
+            <tr><td>Primary</td><td>Weekly active days</td><td>Up. The habit metric that predicts churn</td></tr>
+            <tr><td><strong>Stop condition</strong></td><td>New originals: 14-day reach and completion</td><td><strong>No regression. Halts the program.</strong></td></tr>
+            <tr><td><strong>Stop condition</strong></td><td>Children's-profile safety incidents</td><td><strong>Zero. Halts the program.</strong></td></tr>
+            <tr><td>Guardrail</td><td>Ad-tier satisfaction and ad-load complaints</td><td>Flat or better</td></tr>
+            <tr><td>Rewind</td><td>Resubscribes and new signups in a launch window</td><td>Up over a normal-week baseline. Tests the acquisition goal, separately from retention</td></tr>
+            <tr><td>Rewind</td><td>Ad tolerance at elevated load, share rate</td><td>Complaints flat, shares up. Tests the nostalgia-inventory idea</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Important Clarifications</h3>
+
+      <ul>
+        <li>That metadata gaps are fillable at reasonable cost. I'd audit 500 titles for original-network and air-date completeness before committing to Builder and Rewind.</li>
+        <li>That period interstitials can be cleared. I'd have legal pre-clear a workable sample for a MVP.</li>
+        <li>That sequence-aware ordering beats independent ranking. Testable offline against existing Streams logs.</li>
+        <li>That fan-upload interest converts into signups. Attention is not intent, and I'd want a small paid test against a lapsed-subscriber list before betting a launch on it.</li>
+        <li><strong>Ad Case Assumption:</strong> that ambient viewing creates new watching time, not just moves existing watching time into a different shape: someone leaving a channel running instead of deliberately picking something, for the same total hours either way. If it turns out to be the latter, total viewing doesn't grow, ad inventory doesn't grow with it, then retention and Rewind's acquisition pull would have to carry the proposal instead.</li>
+      </ul>
+
+      <hr>
+
+      <h2>Sources</h2>
+      <ul>
+        <li>Disney Streams announcements and explainer pages, 2024&ndash;2025, plus Deadline and Variety coverage of the September 2024 launch</li>
+        <li>Disney fiscal 2025 and 2026 quarterly disclosures. Disney stopped reporting subscriber counts in August 2025, which is why there are none above</li>
+        <li>Reporting on Netflix's March 2025 move to a single recommendation foundation model, and Netflix's published causal work on the value of recommendation</li>
+        <li>Public reporting on Disney+ ad load and ad-tier signup mix, 2025&ndash;2026. Kept directional, because these are third-party estimates rather than disclosures</li>
+        <li>The observation about fan-uploaded bumpers and promos is my own, from looking around YouTube and TikTok. An impression rather than a measurement, which is why there's a test for it above</li>
+      </ul>
+    </article>
+  </div>
+
+</main>
+
+<footer class="contact" id="contact">
+  <div class="wrap inner">
+    <span class="caption">Get In Touch</span>
+    <h2>Looking for a passionate product manager?</h2>
+    <p>Currently in Los Angeles, looking for product roles in guest experience, consumer platforms, and technical products where improving experiences is the highest priority.</p>
+    <div class="pills">
+      <a class="pill pill--primary" href="mailto:erick.mercado2016@gmail.com">Email me</a>
+      <a class="pill" href="https://www.linkedin.com/in/erick-mercado/">LinkedIn</a>
+      <a class="pill" href="../ErickMercadoResume.pdf">R&eacute;sum&eacute;</a>
+    </div>
+  </div>
+  <div class="colophon">ERICK MERCADO &middot; LOS ANGELES &middot; <span id="year">2026</span></div>
+</footer>
+
+<script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+
+</body>
+</html>
