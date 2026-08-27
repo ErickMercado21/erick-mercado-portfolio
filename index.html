@@ -822,9 +822,30 @@ body > *{position:relative;z-index:1;}
    background), featured (true = in the carousel), status
    ("published" or "draft").
 
-   NOTE: the two "draft" entries are placeholders so you can see
-   search / filter / sort working against more than one item.
-   Delete them before pointing erickmercado.com at this page.
+   TO ADD A CASE STUDY: copy the template below, fill it in, and
+   drop it anywhere in this array. Order in the file doesn't
+   matter — the grid sorts by date, and the filter chips build
+   themselves from whatever categories are present. Nothing else
+   on the page needs touching.
+
+     {
+       id: "short-slug",              // internal label; keep it unique
+       title: "Product Name",         // card + carousel heading
+       summary: "Two or three sentences. The problem, then what you'd build.",
+       category: "Guest Experience",  // a new value creates a new filter chip
+       date: "2026-01-31",            // YYYY-MM-DD; drives newest/oldest sort
+       url: "work/your-file.html",    // name the file after the product
+       image: "",                     // optional; blank falls back to tint
+       imageAlt: "",                  // required whenever image is set
+       tint: "#2A2E52",               // carousel slide background
+       featured: true,                // true = also appears in the carousel
+       status: "published"            // see note below
+     },
+
+   On status: "published" is the normal case. "draft" does NOT
+   hide the entry — the card still renders, with a Draft badge and
+   an "In progress" label instead of a date, and is kept out of
+   the carousel. Omit an entry entirely if you don't want it seen.
    ================================================================ */
 const CASE_STUDIES = [
   {
@@ -842,29 +863,16 @@ const CASE_STUDIES = [
   },
   {
     id: "mydisney-plus",
-  title: "MyDisney+",
-  summary: "Three channels that never ask you what you want to watch. Mix builds one from what you've already finished, Builder hands you the filters, and Rewind plays like Disney Channel did in 2010 — bumpers, promos and all. What each would cost, and the one test I'd run first.",
-  category: "Consumer Platforms",
-  date: "2026-08-11",
-  url: "work/mydisney-plus.html",
-  image: "",
-  imageAlt: "",
-  tint: "#2A2E52",
-  featured: true,
-  status: "published"
-  },
-  {
-    id: "placeholder-three",
-    title: "Placeholder — your third case study",
-    summary: "Same as above. Two strong case studies beat five thin ones, so don't rush to fill every slot.",
-    category: "Internal Tools",
-    date: "2026-02-14",
-    url: "#work",
+    title: "MyDisney+",
+    summary: "Three channels that never ask you what you want to watch. Mix builds one from what you've already finished, Builder hands you the filters, and Rewind plays like Disney Channel did in 2010 — bumpers, promos and all. What each would cost, and the one test I'd run first.",
+    category: "Consumer Platforms",
+    date: "2026-08-11",
+    url: "work/mydisney-plus.html",
     image: "",
     imageAlt: "",
     tint: "#2A2E52",
-    featured: false,
-    status: "draft"
+    featured: true,
+    status: "published"
   }
 ];
 
