@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Arrows on the Route Line &middot; Apple Maps Teardown &mdash; Erick Mercado</title>
+<meta name="description" content="A quality-of-life change to Apple Maps: show the turn arrow it already draws during navigation, so the turns that currently leave you guessing become easier to read.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%231E223B'/><path d='M4 16 Q8 6 12 16 T20 16 T28 16' stroke='%23ED7F6E' stroke-width='3' fill='none'/><path d='M4 18 Q8 8 12 18 T20 18 T28 18' stroke='%2371649C' stroke-width='3' fill='none' opacity='.8'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bangers&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   Self-contained on purpose. This page loads no external CSS or
+   JS, so it can never fall out of sync with the homepage or 404
+   on a missing assets folder. The palette below is a copy of the
+   one in index.html — if you change the colours there, paste the
+   same eight values here.
+   ============================================================ */
+:root{
+  --ink:#1E223B;
+  --panel:#404272;
+  --panel-lift:#4E5089;
+  --paper:#F4EAE6;
+
+  --coral:#ED7F6E;
+  --coral-lift:#F5A79A;
+  --rose:#DB5266;
+  --berry:#A64863;
+  --mauve:#C97CA4;
+  --peri:#71649C;
+  --deep:#4F0914;
+
+  --line:#121426;
+  --text:#EFE6E9;
+  --text-dim:#C2BAD6;
+
+  --display:"Anton",Impact,sans-serif;
+  --comic:"Bangers",cursive;
+  --body:"Inter",-apple-system,system-ui,sans-serif;
+
+  --gut:clamp(1.25rem,5vw,3rem);
+  --measure:40rem;
+  --snap:steps(4,end);
+}
+
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
+body{
+  margin:0;background:var(--ink);color:var(--text);
+  font-family:var(--body);font-size:clamp(1rem,0.96rem + 0.2vw,1.08rem);
+  line-height:1.65;overflow-x:hidden;
+}
+a{color:inherit;}
+button{font:inherit;color:inherit;}
+.wrap{max-width:72rem;margin:0 auto;padding-inline:var(--gut);}
+.skip{position:absolute;left:-9999px;top:0;background:var(--coral);color:var(--deep);padding:0.7rem 1.1rem;font-weight:600;z-index:400;border:3px solid var(--line);}
+.skip:focus{left:0;}
+:focus-visible{outline:3px solid var(--coral);outline-offset:3px;}
+::selection{background:var(--rose);color:var(--paper);}
+
+body::after{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:60;
+  background-image:radial-gradient(circle at center,rgba(237,127,110,0.18) 1px,transparent 1.3px);
+  background-size:5px 5px;mix-blend-mode:screen;opacity:0.55;
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(40rem 30rem at 12% 0%,rgba(64,66,114,0.55),transparent 62%),
+    radial-gradient(38rem 28rem at 88% 8%,rgba(166,72,99,0.34),transparent 62%);
+}
+body > *{position:relative;z-index:1;}
+
+.nav{
+  position:sticky;top:0;z-index:200;
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;
+  padding:0.7rem clamp(1.25rem,5vw,3rem);
+  background:rgba(30,34,59,0.86);
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  border-bottom:3px solid var(--line);
+}
+.nav__mark{
+  font-family:var(--display);font-size:1.4rem;letter-spacing:0.04em;
+  text-decoration:none;color:var(--paper);
+  text-shadow:2px 0 0 var(--peri),-2px 0 0 var(--coral);
+}
+.nav__links{display:flex;gap:clamp(0.9rem,3vw,1.9rem);}
+.nav__links a{
+  font-family:var(--comic);font-size:1.05rem;letter-spacing:0.04em;
+  color:var(--text-dim);text-decoration:none;transition:color 120ms var(--snap);
+}
+.nav__links a:hover{color:var(--coral-lift);}
+
+.caption{
+  display:inline-block;font-family:var(--comic);font-size:1.05rem;letter-spacing:0.05em;
+  background:var(--coral);color:var(--deep);border:3px solid var(--line);
+  padding:0.25rem 0.85rem 0.15rem;box-shadow:4px 4px 0 var(--line);transform:rotate(-1.4deg);
+}
+.caption--mauve{background:var(--mauve);}
+
+.backlink{
+  display:inline-block;font-family:var(--comic);font-size:1rem;letter-spacing:0.05em;
+  color:var(--text-dim);text-decoration:none;margin-bottom:1.4rem;
+}
+.backlink:hover{color:var(--coral-lift);}
+
+.head{padding-block:clamp(2rem,6vw,4rem) clamp(1.2rem,3vw,2rem);text-align:center;}
+.head h1{
+  font-family:var(--display);font-weight:400;text-transform:uppercase;
+  font-size:clamp(2rem,1.2rem + 3.6vw,4.2rem);
+  line-height:0.92;letter-spacing:0.01em;margin:1rem auto 1rem;max-width:17ch;
+  color:var(--paper);text-shadow:4px 0 0 var(--peri),-4px 0 0 var(--coral);
+}
+.standfirst{color:var(--text-dim);max-width:44ch;margin:0 auto;font-size:clamp(1rem,0.96rem + 0.4vw,1.2rem);}
+
+.byline{
+  display:flex;flex-wrap:wrap;justify-content:center;gap:0.55rem;
+  margin:0 auto clamp(2rem,5vw,3rem);
+}
+.byline span{
+  font-family:var(--comic);font-size:0.95rem;letter-spacing:0.04em;
+  border:3px solid var(--line);background:var(--panel);padding:0.2rem 0.8rem 0.1rem;
+  box-shadow:3px 3px 0 var(--line);
+}
+
+.divider{
+  height:5px;border:0;margin:0;
+  background:repeating-linear-gradient(90deg,
+    var(--line) 0 14px,var(--rose) 14px 28px,var(--line) 28px 42px,var(--peri) 42px 56px);
+}
+
+/* ---- long-form reading column -------------------------------- */
+.prose{max-width:var(--measure);margin:0 auto;padding-block:clamp(2rem,5vw,3.5rem) clamp(3rem,7vw,5rem);}
+.prose h2{
+  font-family:var(--display);font-weight:400;text-transform:uppercase;
+  font-size:clamp(1.5rem,1.2rem + 1.5vw,2.2rem);
+  line-height:0.98;letter-spacing:0.01em;
+  margin:clamp(2.6rem,6vw,4rem) 0 1rem;color:var(--paper);
+}
+.prose h2:first-child{margin-top:0;}
+.prose h3{
+  font-family:var(--comic);font-size:1.3rem;letter-spacing:0.05em;
+  margin:2.2rem 0 0.6rem;color:var(--coral-lift);
+}
+.prose p{margin:0 0 1.2rem;color:var(--text-dim);}
+.prose ul,.prose ol{margin:0 0 1.5rem;padding-left:1.3rem;color:var(--text-dim);}
+.prose li{margin-bottom:0.6rem;}
+.prose li::marker{color:var(--coral);}
+.prose strong{color:var(--paper);font-weight:600;}
+.prose em{color:var(--paper);font-style:italic;}
+.prose a{color:var(--coral-lift);text-decoration:none;border-bottom:2px solid var(--coral-lift);}
+.prose hr{border:0;height:3px;background:var(--line);margin:clamp(2.6rem,6vw,3.6rem) 0;}
+
+.prose blockquote{
+  margin:2rem 0;padding:1.3rem 1.5rem;
+  background:var(--panel);border:4px solid var(--line);
+  box-shadow:8px 8px 0 var(--berry),8px 8px 0 4px var(--line);
+}
+.prose blockquote p{color:var(--paper);margin:0;font-size:1.06rem;}
+
+.note{
+  background:var(--panel);border:4px solid var(--line);
+  box-shadow:7px 7px 0 var(--line);
+  padding:1.2rem 1.4rem;margin:2rem 0;
+}
+.note p{margin:0;color:var(--text-dim);}
+.note .note-label{
+  font-family:var(--comic);font-size:1.05rem;letter-spacing:0.05em;
+  color:var(--coral-lift);display:block;margin-bottom:0.5rem;
+}
+
+.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1.8rem 0 2.2rem;}
+table{width:100%;border-collapse:collapse;font-size:0.92rem;min-width:30rem;}
+th,td{
+  text-align:left;padding:0.75rem 0.9rem;vertical-align:top;
+  border-bottom:2px solid rgba(244,234,230,0.14);color:var(--text-dim);
+}
+th{
+  font-family:var(--comic);font-size:0.95rem;letter-spacing:0.05em;
+  color:var(--paper);border-bottom:3px solid var(--line);background:var(--panel);
+}
+td strong{color:var(--paper);}
+
+/* ---- footer --------------------------------------------------- */
+.contact{border-top:5px solid var(--line);}
+.contact .inner{padding-block:clamp(2.6rem,7vw,4.5rem);text-align:center;}
+.contact h2{
+  font-family:var(--display);font-weight:400;text-transform:uppercase;
+  font-size:clamp(1.6rem,1.2rem + 2vw,2.8rem);line-height:0.96;
+  margin:1rem auto 1rem;max-width:20ch;color:var(--paper);
+  text-shadow:3px 0 0 var(--peri),-3px 0 0 var(--coral);
+}
+.contact p{color:var(--text-dim);max-width:44ch;margin:0 auto;}
+.pills{display:flex;flex-wrap:wrap;justify-content:center;gap:0.8rem;margin-top:2rem;}
+.pill{
+  font-family:var(--comic);font-size:1.2rem;letter-spacing:0.05em;text-decoration:none;
+  background:var(--panel);color:var(--paper);border:3px solid var(--line);
+  padding:0.4rem 1.2rem 0.28rem;box-shadow:5px 5px 0 var(--line);
+  transition:transform 100ms var(--snap),box-shadow 100ms var(--snap),background 100ms var(--snap);
+}
+.pill:hover{transform:translate(3px,3px);box-shadow:2px 2px 0 var(--line);background:var(--panel-lift);}
+.pill--primary{background:var(--rose);color:var(--paper);}
+.pill--primary:hover{background:var(--coral);color:var(--deep);}
+.colophon{
+  text-align:center;font-family:var(--comic);font-size:0.95rem;letter-spacing:0.08em;
+  color:var(--text-dim);padding-block:1.6rem 2.6rem;border-top:3px solid var(--line);
+}
+
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto;}
+  *{animation:none!important;transition:none!important;}
+}
+
+@media print{
+  body::before,body::after,.nav,.contact,.backlink{display:none;}
+  body{background:#fff;color:#000;font-size:11pt;}
+  .prose p,.prose li,td{color:#000;}
+  .prose h2,.prose h3,.head h1{color:#000;text-shadow:none;}
+  .prose{max-width:none;}
+}
+
+/* ---- screenshot / photo figures ------------------------------- */
+.shot{margin:2rem 0 2.4rem;}
+.shot img{display:block;width:100%;height:auto;border:4px solid var(--line);box-shadow:8px 8px 0 var(--peri),8px 8px 0 4px var(--line);}
+.shot__slot{
+  display:flex;align-items:center;justify-content:center;text-align:center;
+  min-height:11rem;padding:1.5rem;
+  border:3px dashed var(--coral);background:rgba(113,100,156,0.20);
+  font-family:var(--comic);font-size:1rem;letter-spacing:0.04em;color:var(--text-dim);
+}
+.shot figcaption{margin-top:0.85rem;font-size:0.9rem;color:var(--text-dim);}
+.shot figcaption b{font-family:var(--comic);letter-spacing:0.05em;color:var(--coral-lift);font-weight:400;}
+.shot--pair{display:grid;gap:1.1rem;grid-template-columns:1fr;align-items:start;}
+@media(min-width:38rem){
+  .shot--pair{grid-template-columns:1fr 1fr;}
+  .shot--pair img{aspect-ratio:4/3;object-fit:cover;object-position:center;}
+}
+.shot--pair figcaption{grid-column:1/-1;margin-top:0;}
+.shot--phone img{max-width:20rem;margin-inline:auto;}
+.shot--phone figcaption{max-width:32rem;margin-inline:auto;}
+</style>
+</head>
+
+<body>
+
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="nav">
+  <a class="nav__mark" href="../index.html">EM</a>
+  <nav class="nav__links" aria-label="Primary">
+    <a href="../index.html#work">Work</a>
+    <a href="../index.html#about">About</a>
+    <a href="#contact">Contact</a>
+  </nav>
+</header>
+
+<main id="main">
+
+  <section class="wrap head">
+    <a class="backlink" href="../index.html#work">&larr; All work</a>
+    <div><span class="caption caption--mauve">Improvement &middot; Apple Maps</span></div>
+    <h1>Arrows on the Route Line</h1>
+    <p class="standfirst">Sometimes a turn instruction is correct and still leaves you guessing. Apple Maps already draws an arrow that settles it, but only before you start driving. Showing it during guidance would make the unclear turns easier without changing anything else on screen.</p>
+  </section>
+
+  <div class="wrap">
+    <div class="byline">
+      <span>Self-directed</span>
+      <span>2026</span>
+      <span>~5 min read</span>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="wrap">
+    <article class="prose">
+
+      <h2>1. The Goal</h2>
+
+      <p>This is a small quality-of-life addition to Apple Maps. The change is one existing visual element rendered on one surface where it currently does not appear, even though Apple already has everything needed to draw it there.</p>
+
+      <p>Everything below comes from my own device, verified on September 2, 2026, on an iPhone 16 running iOS 26.6.1.</p>
+
+      <hr>
+
+      <h2>2. The finding</h2>
+
+      <p>Apple Maps gives every upcoming maneuver two simultaneous representations. The banner at the top carries a text instruction and an arrow glyph chosen from a fixed set. The map below it draws the route, and in the step view it draws an arrow through the junction at the maneuver's actual angle.</p>
+
+      <p>However, there are many scenarios where an arrow drawn on the route can provide much-needed context. For example, at shallow-angle junctions those two representations disagree, and the disagreement is visible inside a single frame.</p>
+
+      <figure class="shot shot--phone">
+        <img src="img/StepsAppleMapsUI_4254.png" alt="Apple Maps Steps view. The banner reads 350 feet, turn left onto Manhattan Ave, beside a sharply hooked left-turn glyph. On the map below, the route arrow through the same junction bends only slightly left, close to straight ahead.">
+        <figcaption><b>The disagreement, in one frame.</b> The banner reads &ldquo;Turn left onto Manhattan Ave&rdquo; beside a glyph hooked to roughly ninety degrees. The arrow drawn on the route through the same junction bends only slightly. <em>Source: my screenshot of the Steps view.</em></figcaption>
+      </figure>
+
+      <p>That frame is the Steps view, reached before navigation starts. It matters that the two representations sit together here, because this is the one surface where a driver can quickly see additional route context, and it is the clarity they lose when they press Go.</p>
+
+      <p>The word <em>left</em> and a ninety-degree glyph both tell a driver to look for a road peeling off sharply. The road they actually want continues nearly straight ahead. That mismatch is cheap to recover from on an empty two-way street. It is not cheap at a junction like this one, which is why providing additional context through a route arrow can be valuable.</p>
+
+      <h3>Why this junction is a bad place to be wrong</h3>
+
+      <p>15th Street crosses North Valley Drive and North Ardmore Avenue in Manhattan Beach. Valley and Ardmore run as a parallel pair on either side of a landscaped strip, which makes this a compound junction: two signalized crossings roughly 40 feet apart.</p>
+
+      <figure class="shot">
+        <img src="img/junction-overhead.png" alt="Overhead map of 15th Street crossing North Valley Drive and North Ardmore Avenue, showing four separate traffic signals, two crossings either side of a landscaped strip, painted lane arrows, and a small triangular median island between them.">
+        <figcaption><b>Overhead view.</b> Four signals govern this crossing, arranged around a triangular median island. A driver on 15th Street passes two of them within a few car lengths.</figcaption>
+      </figure>
+
+      <figure class="shot shot--pair">
+        <img src="img/approach-15th.png" alt="Street-level view approaching the junction on 15th Street, with traffic signal heads for the near and far crossings both visible in the same field of view at different distances.">
+        <img src="img/lane-markings-island.png" alt="Street-level view at the median island showing a curving left-turn arrow painted in the left lane immediately beside a straight-ahead arrow in the adjacent lane.">
+        <figcaption><b>Driver POV.</b> On the left, signal heads for the near and far crossings sitting in one field of view at different distances. On the right, a curving left-turn arrow painted immediately beside a through arrow. <em>Source: Google Street View.</em></figcaption>
+      </figure>
+
+      <p>Three things happen at once on this approach. Signals for the near and far crossings appear together in one field of view. The through path bends slightly, so continuing straight already feels like a small turn. And a dedicated left-turn lane sits immediately beside the lane that continues through, so &ldquo;left&rdquo; has two plausible readings before the instruction is even considered.</p>
+
+      <p>The banner announces the maneuver at 350 feet, but the lane has to be chosen well before that distance runs out. At 30 to 35 mph, the last hundred feet is about two seconds to read the instruction, pick a lane, and identify which signal applies.</p>
+
+      <hr>
+
+      <h2>3. The current implementation</h2>
+
+      <ul>
+        <li><strong>Apple has junction geometry good enough to draw a correct path through a complex junction.</strong> The step detail view renders a directional arrow at the maneuver's real angle.</li>
+        <li><strong>Apple has already designed the visual answer to &ldquo;which way through this junction,&rdquo; and it is an arrow.</strong></li>
+        <li><strong>That arrow lives in the planning surface.</strong> It is reached by tapping the route card anywhere except Go and opening the list of turns.</li>
+        <li><strong>During active guidance the instruction is carried by the banner and, on some roads, the lane guidance bar.</strong></li>
+      </ul>
+
+      <figure class="shot shot--pair">
+        <img src="img/apple-maps-junction.png" alt="Apple Maps rendering of the same junction with no route active: two dark road strips crossing a green strip, with no lane detail, no signals and no median island shown.">
+        <img src="img/apple-maps-route.png" alt="The same Apple Maps view with a route active: a single blue line sweeping through the junction as one continuous curve.">
+        <figcaption><b>The same junction, as Apple Maps currently draws it.</b> Without a route the crossing is two road strips over a green strip. With a route it is one continuous blue curve. Neither rendering distinguishes the two crossings, the island, or the lane a driver needs.</figcaption>
+      </figure>
+
+      <p>Google renders a similar overhead junction diagram on some maneuvers during navigation. I am not proposing that, and the difference matters to the argument below: Apple would be moving an asset it already computes rather than building a new one.</p>
+
+      <h3>Why Apple made this design choice</h3>
+
+      <p>The most likely reason is division of labor. During guidance the banner and lane bar carry instruction while the map carries position, and mixing those two roles has a real cost in attention. The planning surface has no such constraint, because nobody is driving while they read it. Assuming that reasoning, my own confusion at this junction is an example of where the current design needs improvement.</p>
+
+      <hr>
+
+      <h2>4. The addition</h2>
+
+      <p><strong>Draw the maneuver arrow directly onto the route line during active guidance, at the same angle the step view already uses, whenever a maneuver is within announcement range.</strong></p>
+
+      <p>The arrow is always rendered. The addition is aimed at the case where the banner has already failed.</p>
+
+      <p>That case is worth naming precisely. A driver who finds the banner insufficient is already looking at the map. That glance is being spent today, and today it returns nothing useful, because the arrow that would answer the question sits on a screen they left when they pressed Go. This does not add an attention demand so much as put something worth finding where a driver is already looking.</p>
+
+      <p>During guidance the map is heading-locked and tilted, so the arrow is already registered to what the driver sees through the windshield, and it sits just ahead of the position puck rather than somewhere they have to hunt for.</p>
+
+      <h3>Why not just fix the banner glyph</h3>
+
+      <p>If Apple's icon set includes a shallow-left arrow, then the data and the correct output both already exist and this maneuver was simply put in the wrong angle bucket. Fixing the classification would be the pure answer. In practice I would still draw the arrow first. It gives the driver the surrounding context the glyph cannot, and it can ship without touching classification thresholds that affect every junction Apple routes through.</p>
+
+      <p>Rendering an arrow Apple already computes, on a surface where it already draws the route, is bounded and reversible. The classification cleanup is a longer track that can run behind it.</p>
+
+      <h3>Smallest version</h3>
+
+      <ul>
+        <li>Only maneuvers Apple already classifies as a turn, on surface streets.</li>
+        <li>Only where the step view would already draw an arrow, so no new geometry work.</li>
+        <li>Appears with the banner announcement and clears once the maneuver completes.</li>
+        <li>No new setting, no onboarding, nothing to discover and enable.</li>
+      </ul>
+
+      <hr>
+
+      <h2>5. The Disclaimer</h2>
+
+      <ul>
+        <li><strong>This does not tell you which signal head is yours.</strong> That was a real part of my confusion at this junction and the arrow does not address it. No navigation app does, and proposing one would be a far larger and more consequential feature than this.</li>
+        <li><strong>This is not a safety claim.</strong> I have not measured eyes-off-road time and I am not asserting a collision reduction. The claim is narrower: less time spent uncertain at a junction where the banner is ambiguous.</li>
+        <li><strong>Two surfaces can disagree, and this change makes the disagreement visible.</strong> When the glyph and the arrow conflict, the arrow is the geometry and the glyph is the label, so the arrow should win. That means shipping a visible inconsistency on purpose until the classification work lands.</li>
+      </ul>
+
+      <hr>
+
+      <h2>6. The Pre-Validation</h2>
+
+      <ol>
+        <li><strong>Does the arrow actually help, in a still frame?</strong> Show drivers one frame with the banner alone and one with the banner plus arrow, ask which way they would go and how confident they are, and record response time.</li>
+        <li><strong>How often does the lane guidance bar already cover this?</strong> If the lane bar reliably fires at the junctions I care about, the gap is smaller than I think and the scope should shrink.</li>
+        <li><strong>Does it add clutter that costs more than it returns?</strong> The arrow is always drawn, which is a permanent change to a screen people look at for hours. Worth testing on dense junctions rather than clean ones.</li>
+      </ol>
+
+      <hr>
+
+      <h2>7. The Sources</h2>
+
+      <ul>
+        <li>My own device, an iPhone 16 running iOS 26.6.1. Screenshots and replication notes, September 2, 2026.</li>
+        <li>Google Maps and Google Street View imagery of 15th Street at North Valley Drive and North Ardmore Avenue, Manhattan Beach, California, captured September 2, 2026. Imagery &copy; Google.</li>
+        <li>Apple support documentation on viewing route steps in Maps. <a href="https://support.apple.com/guide/iphone/use-maps-iph02f94fc1c/ios">support.apple.com/guide/iphone/use-maps-iph02f94fc1c/ios</a></li>
+      </ul>
+
+
+    </article>
+  </div>
+
+</main>
+
+<footer class="contact" id="contact">
+  <div class="wrap inner">
+    <span class="caption">Get In Touch</span>
+    <h2>Looking for a passionate product manager?</h2>
+    <p>Currently in Los Angeles, looking for product roles in guest experience, consumer platforms, and technical products where improving experiences is the highest priority.</p>
+    <div class="pills">
+      <a class="pill pill--primary" href="mailto:erick.mercado2016@gmail.com">Email me</a>
+      <a class="pill" href="https://www.linkedin.com/in/erick-mercado/">LinkedIn</a>
+      <a class="pill" href="../ErickMercadoResume.pdf">R&eacute;sum&eacute;</a>
+    </div>
+  </div>
+  <div class="colophon">ERICK MERCADO &middot; LOS ANGELES &middot; <span id="year">2026</span></div>
+</footer>
+
+<script>
+document.getElementById("year").textContent = new Date().getFullYear();
+</script>
+
+</body>
+</html>
